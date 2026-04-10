@@ -7,7 +7,7 @@ import ClassResults from './ClassResults';
 import toast, { Toaster } from 'react-hot-toast';
 import { BarChart3, Trash, Copy, Archive, RotateCcw } from 'lucide-react';
 
-const API_BASE = "http://localhost:3000/api/v1";
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 
 const Dashboard = () => {
     const [activeTab, setActiveTab] = useState('overview');

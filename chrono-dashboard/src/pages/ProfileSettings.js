@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Save, Eye, EyeOff, Lock } from 'lucide-react';
 
 const ProfileSettings = () => {
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
     const { teacher, setTeacher } = useContext(AuthContext);
 
     const [name, setName] = useState(teacher?.name || '');
@@ -25,7 +26,7 @@ const ProfileSettings = () => {
         e.preventDefault();
         setAccountLoading(true);
         try {
-            const { data } = await axios.put('http://localhost:3000/api/v1/auth/profile',
+            const { data } = await axios.put(`${API_BASE}/auth/profile`,
                 { name, email },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -52,7 +53,7 @@ const ProfileSettings = () => {
         }
         setPasswordLoading(true);
         try {
-            await axios.put('http://localhost:3000/api/v1/auth/change-password',
+            await axios.put(`${API_BASE}/auth/change-password`,
                 { currentPassword, newPassword },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
