@@ -11,6 +11,9 @@ const RegisterPage = () => {
     const [errors, setErrors] = useState({ name: '', email: '', password: '', confirmPassword: '' });
     const navigate = useNavigate();
 
+    // UPDATED: Dynamic API URL based on environment (Vercel vs Local)
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -64,11 +67,13 @@ const RegisterPage = () => {
 
         setIsLoading(true);
         try {
-            await axios.post('http://localhost:3000/api/v1/auth/register', {
+            // UPDATED: Now uses the API_BASE variable instead of a hardcoded string
+            await axios.post(`${API_BASE}/auth/register`, {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password
             });
+
             toast.success("Account created successfully! Please login.");
             setTimeout(() => navigate('/login'), 1500);
         } catch (error) {

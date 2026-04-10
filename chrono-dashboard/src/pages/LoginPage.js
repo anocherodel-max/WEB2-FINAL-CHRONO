@@ -15,6 +15,9 @@ const LoginPage = () => {
     const { login, teacher } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    // Setup the API URL based on environment (Vercel vs Local)
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -60,7 +63,10 @@ const LoginPage = () => {
                 email: email.trim().toLowerCase(),
                 password: password
             };
-            const response = await axios.post('http://localhost:3000/api/v1/auth/login', payload);
+
+            // UPDATED: Now uses the dynamic API_BASE variable
+            const response = await axios.post(`${API_BASE}/auth/login`, payload);
+
             const data = response.data;
             if (data.token && (data.teacher || data.name)) {
                 const teacherData = data.teacher || data;
