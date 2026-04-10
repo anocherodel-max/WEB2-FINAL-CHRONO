@@ -1,0 +1,51 @@
+# --- CHRONOQUEST MASTER GITIGNORE ---
+
+# 1. Dependencies
+# Ignore node_modules in root, chrono-dashboard, and chronoquest-api
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# 2. Security (CRITICAL)
+# Protects your MongoDB URI and JWT_SECRET
+.env
+**/.env
+*.env
+.env*.local
+
+# 3. Production & Build Artifacts
+# Frontend build folders
+build/
+dist/
+out/
+# Backend/Next.js artifacts
+.next/
+bin/
+obj/
+
+# 4. Logs & Debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+logs/
+pids/
+*.pid
+*.seed
+*.flare
+
+# 5. Editor & OS Specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 6. Testing
+coverage/
+*.lcov
