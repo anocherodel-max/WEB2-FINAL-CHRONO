@@ -7,46 +7,39 @@ const apiRoutes = require('./src/routes/apiRoutes');
 dotenv.config();
 const app = express();
 
-// 1. Middleware
 app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "https://web2finalchronodashboard.vercel.app"
-    ],
+    origin: ["http://localhost:3000", "http://localhost:3001", "https://web2finalchronodashboard.vercel.app"],
     credentials: true
 }));
-
 app.use(express.json());
 
-// 2. Logging
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
+const MONGO_URI = process.env.MONGO_URI;
+
+// Middleware to ensure DB is connected before handling any request
+app.use(async (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        try {
+            console.log("⏳ Attempting to connect to MongoDB...");
+            await mongoose.connect(MONGO_URI, {
+                serverSelectionTimeoutMS: 5000,
+            });
+            console.log("✅ Connected to MongoDB");
+        } catch (err) {
+            console.error("❌ Connection Error:", err.message);
+        }
+    }
     next();
 });
 
-// 3. Updated Debug Route (Helps us see the URI status)
 app.get('/api/v1/debug', (req, res) => {
     res.json({
-        message: "Checking connection...",
+        message: "Server is responsive",
         dbStatus: mongoose.connection.readyState,
-        hasUri: !!process.env.MONGO_URI,
-        uriStart: process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 20) : "Missing"
+        hasUri: !!MONGO_URI,
+        uriStart: MONGO_URI ? MONGO_URI.substring(0, 20) : "Missing"
     });
 });
 
-// 4. Routes
 app.use('/api/v1', apiRoutes);
 
-// 5. MongoDB Connection Logic
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/chronoquest';
-
-// Optimized for Vercel: Connect without wrapping the app in a .then()
-mongoose.connect(MONGO_URI)
-    .then(() => console.log(`✅ MongoDB Connected`))
-    .catch(err => {
-        console.error('❌ MongoDB Error:', err.message);
-    });
-
-// 6. Export for Vercel (This replaces the need for app.listen)
 module.exports = app;
