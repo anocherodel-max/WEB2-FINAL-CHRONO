@@ -90,13 +90,8 @@ exports.deleteUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        // Only super admin can update users
-        if (req.user.adminLevel !== 'super_admin') {
-            return res.status(403).json({ message: 'Only super admin can update users' });
-        }
-
         const { userId, userType } = req.params;
-        const { name, email, role, adminLevel } = req.body;
+        const { name, email, role } = req.body;
 
         if (userType === 'teacher') {
             // Validate email uniqueness if provided
@@ -112,19 +107,10 @@ exports.updateUser = async (req, res) => {
                 return res.status(400).json({ message: 'Invalid role' });
             }
 
-            // Validate adminLevel if role is being set to admin
-            if (role === 'admin' && adminLevel) {
-                if (!['super_admin', 'content_admin', 'support_admin'].includes(adminLevel)) {
-                    return res.status(400).json({ message: 'Invalid admin level' });
-                }
-            }
-
             const updateData = {};
             if (name) updateData.name = name;
             if (email) updateData.email = email;
             if (role) updateData.role = role;
-            if (role === 'admin' && adminLevel) updateData.adminLevel = adminLevel;
-            if (role === 'teacher') updateData.adminLevel = null; // Clear admin level if downgrading
 
             const updatedTeacher = await Teacher.findByIdAndUpdate(
                 userId,

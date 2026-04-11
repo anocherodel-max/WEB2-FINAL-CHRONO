@@ -1,6 +1,6 @@
 # ChronoQuest System Documentation — Version 2.0
 **Last Updated:** April 11, 2026  
-**Version:** 2.0.1 (Updated with permission-based access control and enhanced activity analytics)
+**Version:** 2.0.2 (Updated with master admin role system and enhanced activity analytics)
 
 ---
 
@@ -11,7 +11,7 @@
 3. [Architecture & Tech Stack](#architecture--tech-stack)
 4. [Current Implementation Status](#current-implementation-status)
 5. [Features Overview](#features-overview)
-6. [Permission-Based Access Control](#permission-based-access-control)
+6. [Admin Access Control](#admin-access-control)
 7. [Environment Configuration](#environment-configuration)
 8. [Deployment Guide](#deployment-guide)
 9. [Project Structure](#project-structure)
@@ -169,10 +169,10 @@ CHRONO-API/ (Monorepo)
 - **UsersList.js**: Stabilizes search input focus during user table filtering
 - **FeedbackSection.js**: Expandable card component with detailed metadata display
 
-✅ **Permission-Based Access Control** (NEW - April 11, 2026):
-- **Middleware**: `checkPermission(requiredPermission)` enables granular permission control
-- **Implementation**: Feedback response and settings update endpoints now check for specific permissions
-- **Benefits**: Flexible admin role management with different permission levels
+✅ **Master Admin Role System** (UPDATED - April 11, 2026):
+- **Structure**: Single master admin role with equal permissions for all admins
+- **Simplification**: Removed multiple admin types (super_admin, content_admin, support_admin)
+- **Benefits**: Streamlined admin management and simplified role assignment
 
 ✅ **Enhanced Activity Analytics** (NEW - April 11, 2026):
 - **New Endpoint**: `/admin/activity-logs-detailed` for recent activity with enriched data
@@ -242,57 +242,50 @@ CHRONO-API/ (Monorepo)
 
 ---
 
-## 🔐 Permission-Based Access Control
+## 🔐 Admin Access Control
 
 ### Overview
 
-ChronoQuest implements a flexible permission-based access control system that allows granular control over admin operations. This enables different levels of administrative access without requiring different code paths.
+ChronoQuest implements a unified master admin role system where all administrators have equal, full system access. This simplified approach ensures consistency in admin permissions and reduces complexity in admin management workflows.
 
 ### Middleware Implementation
 
-**`checkPermission(requiredPermission)`** — Middleware factory for permission checking
+**`adminOnly`** — Basic admin role verification middleware
 
 ```javascript
 // Usage in routes:
-router.post('/feedback/:id/respond', checkPermission('manage_feedback'), adminController.respondToFeedback);
-router.post('/settings', checkPermission('manage_settings'), adminController.updateSystemSetting);
+router.post('/admin/feedback/:id/respond', adminOnly, adminController.respondToFeedback);
+router.post('/admin/settings', adminOnly, adminController.updateSystemSetting);
 ```
 
 **How It Works:**
 1. Verifies user is authenticated (from `protect` middleware)
 2. Confirms user role is 'admin'
-3. Checks if user has the required permission in their `permissions` array
-4. Denies access with clear error message if permission is missing
+3. Grants access to all admin operations
+4. Denies access with clear error message if not admin
 
-### Current Protected Endpoints
+### Admin Capabilities
 
-| Endpoint | Required Permission | Description |
-|----------|-------------------|-------------|
-| `POST /admin/feedback/:id/respond` | `manage_feedback` | Respond to user feedback |
-| `POST /admin/settings` | `manage_settings` | Update system configuration |
+All administrators have unrestricted access to:
+- **User Management** — Create, update, deactivate, and delete users (both teachers and students)
+- **System Settings** — Configure platform settings and system parameters
+- **Feedback Management** — View and respond to user feedback
+- **Analytics & Reporting** — Access detailed analytics and activity logs
+- **Content Management** — Create, edit, and delete questions/missions
+- **Admin Promotion** — Promote teachers to admin status (since all admins are equal)
 
-### Future Extensibility
+### Current Admin Endpoints
 
-Additional permissions can be added without modifying the middleware:
-
-```javascript
-// Example: Adding new permission checks
-router.patch('/admin/users/:userId/role', 
-  checkPermission('manage_admin_roles'), 
-  adminController.updateUserRole);
-
-router.post('/admin/content/publish',
-  checkPermission('publish_content'),
-  contentController.publishContent);
-```
-
-### Admin Role Hierarchy
-
-| Admin Level | Current Permissions | Purpose |
-|------------|-------------------|---------|
-| `super_admin` | All (implied) | Full system control, user management |
-| `content_admin` | manage_settings | Content and configuration only |
-| `support_admin` | manage_feedback | Feedback and support only |
+| Endpoint | Description |
+|----------|-------------|
+| `GET /admin/users` | Retrieve all users |
+| `PATCH /admin/users/:userId/:userType` | Update user role or details |
+| `POST /admin/users/deactivate` | Deactivate a user |
+| `DELETE /admin/users/:userId` | Delete a user |
+| `GET /admin/analytics` | Get system analytics |
+| `GET /admin/activity-logs-detailed` | Get recent activity logs |
+| `POST /admin/feedback/:id/respond` | Respond to feedback |
+| `POST /admin/settings` | Update system settings |
 
 ---
 
@@ -527,7 +520,6 @@ chronoquest-api/
   password: String (required, hashed),
   classCode: String (unique, auto-generated),
   role: String (enum: ['teacher', 'admin'], default: 'teacher'),
-  adminLevel: String (enum: ['super_admin', 'content_admin', 'support_admin']),
   isActive: Boolean (default: true),
   sections: [{
     sectionName: String (required),

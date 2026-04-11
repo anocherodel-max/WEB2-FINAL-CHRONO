@@ -51,11 +51,6 @@ const teacherSchema = new mongoose.Schema({
     // Allows one teacher to have multiple sections
     sections: [sectionSchema],
     // Admin-specific fields
-    adminLevel: {
-        type: String,
-        enum: ['super_admin', 'content_admin', 'support_admin'],
-        default: null
-    },
     permissions: [{
         type: String
         // e.g., 'manage_users', 'manage_content', 'view_analytics', 'manage_feedback'

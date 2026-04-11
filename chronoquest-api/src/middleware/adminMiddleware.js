@@ -42,13 +42,7 @@ exports.checkPermission = (requiredPermission) => {
             return res.status(403).json({ message: "Admin access required" });
         }
 
-        if (req.user.permissions && !req.user.permissions.includes(requiredPermission)) {
-            return res.status(403).json({
-                message: `Permission denied. Required: ${requiredPermission}`,
-                userPermissions: req.user.permissions
-            });
-        }
-
+        // All admins have full permissions
         next();
     };
 };

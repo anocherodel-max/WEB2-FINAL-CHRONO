@@ -102,15 +102,14 @@ Content-Type: application/json
 }
 ```
 
-### Create Admin (Via Postman - Requires Another Admin)
+### Promote Teacher to Admin (Via Postman - Requires Another Admin)
 ```
 PATCH {{BASE_URL}}/admin/users/{TEACHER_ID}/teacher
 Authorization: Bearer {{ADMIN_TOKEN}}
 Content-Type: application/json
 
 {
-  "role": "admin",
-  "adminLevel": "super_admin"
+  "role": "admin"
 }
 ```
 
@@ -295,7 +294,6 @@ mongodb://localhost:27017
   "password": "$2a$10$nOUIs5kJ7naTuTFkWK1Be.JjReI5/CHF.pWQby7Cm8KqUgzQq6uvy",
   "classCode": "DEF456",
   "role": "teacher",
-  "adminLevel": null,
   "isActive": true,
   "sections": []
 }
@@ -316,7 +314,7 @@ mongodb://localhost:27017
   "password": "$2a$10$nOUIs5kJ7naTuTFkWK1Be.JjReI5/CHF.pWQby7Cm8KqUgzQq6uvy",
   "classCode": "ABC789",
   "score": 0,
-  "levelReached": "Era 1: Prehistoric"
+  "levelReached": "Era 1: Pre-Colonial"
 }
 ```
 
@@ -324,7 +322,6 @@ mongodb://localhost:27017
 1. Find teacher in **teachers** collection
 2. Edit and change:
    - `"role": "admin"`
-   - `"adminLevel": "super_admin"`
 3. Click **Update**
 
 ### MongoDB Queries

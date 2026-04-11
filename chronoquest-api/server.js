@@ -48,4 +48,13 @@ app.get('/', (req, res) => {
 // 5. API Routes
 app.use(BASE_URI, apiRoutes);
 
+// 6. Start Server (Only on local, not on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`\n🚀 ChronoQuest API is running on http://localhost:${PORT}`);
+        console.log(`📍 Base endpoint: http://localhost:${PORT}${BASE_URI}\n`);
+    });
+}
+
 module.exports = app;

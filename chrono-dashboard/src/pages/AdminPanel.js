@@ -31,7 +31,7 @@ const AdminPanel = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [editingUserType, setEditingUserType] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher', adminLevel: '' });
+    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
 
     const [analytics, setAnalytics] = useState(null);
     const [activityLogs, setActivityLogs] = useState([]);
@@ -94,7 +94,7 @@ const AdminPanel = () => {
     const handleEditUser = (user, userType) => {
         setEditingUser(user);
         setEditingUserType(userType);
-        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher', adminLevel: user.adminLevel || '' });
+        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
         setEditModalOpen(true);
     };
 
@@ -397,28 +397,13 @@ const AdminPanel = () => {
                                         <label className="form-label-sm">Role</label>
                                         <select
                                             value={editFormData.role}
-                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value, adminLevel: e.target.value === 'teacher' ? '' : prev.adminLevel }))}
+                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
                                             className="form-select"
                                         >
                                             <option value="teacher">Teacher</option>
                                             <option value="admin">Admin</option>
                                         </select>
                                     </div>
-                                    {editFormData.role === 'admin' && (
-                                        <div className="form-group">
-                                            <label className="form-label-sm">Admin Level</label>
-                                            <select
-                                                value={editFormData.adminLevel}
-                                                onChange={(e) => setEditFormData(prev => ({ ...prev, adminLevel: e.target.value }))}
-                                                className="form-select"
-                                            >
-                                                <option value="">Select Level</option>
-                                                <option value="super_admin">Super Admin</option>
-                                                <option value="content_admin">Content Admin</option>
-                                                <option value="support_admin">Support Admin</option>
-                                            </select>
-                                        </div>
-                                    )}
                                 </>
                             )}
                             <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
