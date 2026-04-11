@@ -22,8 +22,15 @@ A learning platform for **Philippine History** where:
 ```bash
 cd chronoquest-api
 npm install
-npm run dev
-# Runs on: http://localhost:3000/api/v1
+npm start
+# Output:
+# 🚀 ChronoQuest API is running on http://localhost:3000
+# 📍 Base endpoint: http://localhost:3000/api/v1
+```
+
+**For development with auto-reload:**
+```bash
+npm run dev  # Uses nodemon, restarts on file changes
 ```
 
 **Terminal 2 - Frontend:**
@@ -152,22 +159,32 @@ Authorization: Bearer {{TEACHER_TOKEN}}
 
 ## 👨‍🎓 Student Operations
 
-### Register Student
+### Create Student (Recommended - via API)
 ```
-POST {{BASE_URL}}/auth/register-student
+POST {{BASE_URL}}/students
+Authorization: Bearer {{TEACHER_TOKEN}}
 Content-Type: application/json
 
 {
   "name": "Juan Dela Cruz",
   "email": "juan@example.com",
   "password": "Password123",
-  "classCode": "ABC789"  <-- Use code from teacher's section
+  "classCode": "ABC789",
+  "score": 0,
+  "levelReached": "Era 1: Pre-Colonial"
 }
 ```
 
+**Important:**
+- `classCode` must match a section you created
+- Use the teacher token from the section's creator
+- Email must be unique
+- Password must be at least 6 characters
+- Password is automatically hashed with bcrypt
+
 ### Login Student
 ```
-POST {{BASE_URL}}/auth/login-student
+POST {{BASE_URL}}/auth/login
 Content-Type: application/json
 
 {
@@ -175,6 +192,8 @@ Content-Type: application/json
   "password": "Password123"
 }
 ```
+
+**Response:** Includes `token` → **Save to `STUDENT_TOKEN`**
 
 ---
 
@@ -212,9 +231,17 @@ Content-Type: application/json
 
 ### Delete User
 ```
-DELETE {{BASE_URL}}/admin/users/{userId}
+POST {{BASE_URL}}/admin/users/delete
 Authorization: Bearer {{ADMIN_TOKEN}}
+Content-Type: application/json
+
+{
+  "userId": "USER_ID_HERE",
+  "userType": "teacher"
+}
 ```
+
+**Note:** Admins are stored as teachers with `role: "admin"`. Specify `userType: "teacher"` when deleting an admin. The last admin account cannot be deleted.
 
 ---
 
@@ -222,20 +249,27 @@ Authorization: Bearer {{ADMIN_TOKEN}}
 
 ### Create Question
 ```
-POST {{BASE_URL}}/questions/create
+POST {{BASE_URL}}/questions
 Authorization: Bearer {{TEACHER_TOKEN}}
 Content-Type: application/json
 
 {
-  "question": "Who was the first president?",
+  "title": "Who was the first president?",
+  "description": "Answer explanation here",
   "options": ["option1", "option2", "option3", "option4"],
-  "correctOption": 0,
-  "era": "Era 3: Revolutionary Period",
-  "difficulty": "Medium",
-  "topic": "Presidents",
-  "explanation": "Answer explanation here"
+  "correctAnswer": 0,
+  "period": "Revolutionary",
+  "difficultyLevel": "Medium",
+  "topic": "Presidents"
 }
 ```
+
+**Valid Period Values:**
+- `"Pre-colonial"`
+- `"Spanish Colonization"`
+- `"Revolutionary"`
+- `"American/Japanese"`
+- `"Post-war"`
 
 ---
 
@@ -243,7 +277,7 @@ Content-Type: application/json
 
 ### Submit Feedback
 ```
-POST {{BASE_URL}}/auth/submit-feedback
+POST {{BASE_URL}}/auth/feedback
 Authorization: Bearer {{TEACHER_TOKEN}}
 Content-Type: application/json
 
@@ -317,6 +351,10 @@ mongodb://localhost:27017
   "levelReached": "Era 1: Pre-Colonial"
 }
 ```
+
+**Note:** Passwords are automatically hashed with bcrypt when created via API. For direct MongoDB insertion:
+- Generate bcrypt hash: https://bcrypt-generator.com/
+- Use "password123" for testing
 
 ### Promote Teacher to Admin (MongoDB)
 1. Find teacher in **teachers** collection
@@ -410,7 +448,10 @@ Copy `classCode` (e.g., "XYZ789")
 
 **3. Register 3 Students**
 ```
-POST {{BASE_URL}}/auth/register-student
+POST {{BASE_URL}}/students
+Authorization: Bearer {{TEACHER_TOKEN}}
+Content-Type: application/json
+
 {
   "name":"Student 1",
   "email":"student1@example.com",
@@ -448,15 +489,15 @@ Authorization: Bearer {{ADMIN_TOKEN}}
 |--------|--------|----------|
 | Register Teacher | POST | `/auth/register` |
 | Login Teacher | POST | `/auth/login` |
-| Register Student | POST | `/auth/register-student` |
-| Login Student | POST | `/auth/login-student` |
+| Register Student | POST | `/students` |
+| Login Student | POST | `/auth/login` |
 | Create Section | POST | `/teacher/add-section` |
 | Delete Section | DELETE | `/teacher/delete-section/{code}` |
 | Get All Users | GET | `/admin/users` |
 | Promote Teacher | PATCH | `/admin/users/{id}/teacher` |
 | Get Analytics | GET | `/admin/analytics` |
-| Create Question | POST | `/questions/create` |
-| Submit Feedback | POST | `/auth/submit-feedback` |
+| Create Question | POST | `/questions` |
+| Submit Feedback | POST | `/auth/feedback` |
 | Get Feedback | GET | `/admin/feedback` |
 | Respond Feedback | POST | `/admin/feedback/{id}/respond` |
 

@@ -46,8 +46,7 @@ exports.deactivateUser = async (req, res) => {
                 status: 'success'
             });
         } else if (userType === 'student') {
-            // For students, we might disable their account or just mark as inactive
-            await Student.findByIdAndUpdate(userId, { active: false }, { new: true });
+            await Student.findByIdAndUpdate(userId, { isActive: false });
             await ActivityLog.create({
                 userId: req.user._id,
                 userRole: req.user.role,
@@ -67,7 +66,23 @@ exports.deleteUser = async (req, res) => {
     try {
         const { userId, userType } = req.body;
 
+        // Validate userType
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({
+                message: 'Invalid userType. Use "teacher" or "student". Note: admins are teachers with role="admin"',
+                errorCode: 'INVALID_USER_TYPE'
+            });
+        }
+
         if (userType === 'teacher') {
+            // Check if this is the last admin
+            const adminCount = await Teacher.countDocuments({ role: 'admin' });
+            const userToDelete = await Teacher.findById(userId);
+
+            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
+                return res.status(400).json({ message: 'Cannot delete the last admin account' });
+            }
+
             await Teacher.findByIdAndDelete(userId);
         } else if (userType === 'student') {
             await Student.findByIdAndDelete(userId);

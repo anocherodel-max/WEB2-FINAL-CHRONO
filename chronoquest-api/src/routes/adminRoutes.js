@@ -9,8 +9,8 @@ router.use(adminOnly);
 
 router.get('/users', adminController.getAllUsers);
 router.post('/users/deactivate', adminController.deactivateUser);
+router.post('/users/delete', adminController.deleteUser);
 router.patch('/users/:userId/:userType', adminController.updateUser);
-router.delete('/users/:userId', adminController.deleteUser);
 router.get('/users/:userId/logs', adminController.getUserActivityLogs);
 router.get('/activity-logs', adminController.getAllActivityLogs);
 router.get('/activity-logs-detailed', adminController.getRecentActivityLogs);

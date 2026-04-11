@@ -1,4 +1,5 @@
 const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
 const Feedback = require('../models/feedbackModel');
 const jwt = require('jsonwebtoken');
 
@@ -64,25 +65,26 @@ exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).json({
-                message: 'Invalid email format',
-                errorCode: 'INVALID_EMAIL_FORMAT'
-            });
+        // First check in teachers collection
+        let user = await Teacher.findOne({ email });
+        let userType = 'teacher';
+
+        // If not found in teachers, check students collection
+        if (!user) {
+            user = await Student.findOne({ email });
+            userType = 'student';
         }
 
-        const teacher = await Teacher.findOne({ email });
-
-        if (!teacher) {
+        // If user not found in either collection
+        if (!user) {
             return res.status(401).json({
                 message: 'Email not registered',
                 errorCode: 'EMAIL_NOT_FOUND'
             });
         }
 
-        const passwordMatches = await teacher.matchPassword(password);
+        // Verify password
+        const passwordMatches = await user.matchPassword(password);
         if (!passwordMatches) {
             return res.status(401).json({
                 message: 'Incorrect password',
@@ -90,15 +92,38 @@ exports.loginUser = async (req, res) => {
             });
         }
 
-        return res.json({
-            _id: teacher._id,
-            name: teacher.name,
-            email: teacher.email,
-            classCode: teacher.classCode,
-            sections: teacher.sections,
-            role: teacher.role,
-            token: generateToken(teacher._id, teacher.role)
-        });
+        // Check if user account is active
+        if (user.isActive === false) {
+            return res.status(401).json({
+                message: 'User account deactivated',
+                errorCode: 'USER_DEACTIVATED'
+            });
+        }
+
+        // Return appropriate response based on user type
+        if (userType === 'teacher') {
+            return res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                classCode: user.classCode,
+                sections: user.sections,
+                role: user.role,
+                userType: 'teacher',
+                token: generateToken(user._id, user.role)
+            });
+        } else {
+            return res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                classCode: user.classCode,
+                score: user.score,
+                levelReached: user.levelReached,
+                userType: 'student',
+                token: generateToken(user._id, 'student')
+            });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

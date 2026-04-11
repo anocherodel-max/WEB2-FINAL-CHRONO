@@ -72,9 +72,8 @@ const questionSchema = new mongoose.Schema(
 );
 
 // Sync topic → period for backward compat
-questionSchema.pre('save', function (next) {
+questionSchema.pre('save', function () {
     if (this.period) this.topic = this.period;
-    next();
 });
 
 questionSchema.index({ createdBy: 1, period: 1 });

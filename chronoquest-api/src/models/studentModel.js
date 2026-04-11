@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const studentSchema = new mongoose.Schema({
     name: {
@@ -25,16 +26,31 @@ const studentSchema = new mongoose.Schema({
     },
     levelReached: {
         type: String,
-        default: "Era 1: Prehistoric"
+        default: "Era 1: Pre-Colonial"
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true });
 
-// Pre-save hook to clamp score to 100
-studentSchema.pre('save', function (next) {
+// Pre-save hook to hash password and clamp score
+studentSchema.pre('save', async function () {
+    // Hash password if modified
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+
+    // Clamp score to 100
     if (this.score > 100) {
         this.score = 100;
     }
-    next();
 });
+
+// Password comparison method
+studentSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model('Student', studentSchema);

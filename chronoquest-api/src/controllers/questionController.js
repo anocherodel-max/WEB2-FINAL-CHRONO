@@ -4,18 +4,29 @@ const Question = require('../models/questionModel');
 // @access  Private/Admin
 exports.createQuestion = async (req, res) => {
     try {
-        const { title, description, topic, difficultyLevel } = req.body;
+        const { title, description, topic, period, difficultyLevel, options, correctAnswer } = req.body;
 
         // Validation
-        if (!title || !topic) {
-            return res.status(400).json({ message: 'Title and topic are required' });
+        if (!title || !topic || !period || !options || correctAnswer === undefined) {
+            return res.status(400).json({
+                message: 'Title, topic, period, options, and correctAnswer are required'
+            });
+        }
+
+        if (options.length !== 4) {
+            return res.status(400).json({
+                message: 'Exactly 4 options are required'
+            });
         }
 
         const newQuestion = new Question({
             title,
             description,
             topic,
+            period,
             difficultyLevel: difficultyLevel || 'Medium',
+            options,
+            correctAnswer,
             createdBy: req.user._id
         });
 
@@ -27,7 +38,7 @@ exports.createQuestion = async (req, res) => {
         });
     } catch (error) {
         console.error('Create Question Error:', error);
-        res.status(500).json({ message: 'Error creating question' });
+        res.status(500).json({ message: 'Error creating question', error: error.message });
     }
 };
 

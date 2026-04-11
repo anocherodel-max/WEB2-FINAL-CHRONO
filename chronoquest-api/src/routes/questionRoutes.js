@@ -11,9 +11,9 @@ const {
 } = require('../controllers/questionController');
 
 
-router.post('/', protect, adminOnly, createQuestion);
-router.get('/', protect, adminOnly, getAllQuestions);
-router.get('/teacher/:teacherId', protect, adminOnly, getQuestionsByTeacher);
+router.post('/', protect, createQuestion);
+router.get('/', protect, getAllQuestions);
+router.get('/teacher/:teacherId', protect, getQuestionsByTeacher);
 router.patch('/:questionId', protect, updateQuestion);
 router.delete('/:questionId', protect, deleteQuestion);
 router.post('/:questionId/toggle', protect, toggleQuestionStatus);
