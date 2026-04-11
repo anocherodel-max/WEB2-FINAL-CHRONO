@@ -39,13 +39,9 @@ app.use(async (req, res, next) => {
     next();
 });
 
-// 4. Debug Route
-app.get(`${BASE_URI}/debug`, (req, res) => {
+app.get('/', (req, res) => {
     res.json({
-        message: "Server is responsive",
-        dbStatus: mongoose.connection.readyState,
-        hasUri: !!MONGO_URI,
-        uriStart: MONGO_URI ? MONGO_URI.substring(0, 20) : "Missing"
+        message: "ChronoQuest API is live!",
     });
 });
 

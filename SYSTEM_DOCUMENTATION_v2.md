@@ -1,6 +1,6 @@
 # ChronoQuest System Documentation — Version 2.0
-**Last Updated:** April 10, 2026  
-**Version:** 2.0 (Updated with API environment configuration and code quality improvements)
+**Last Updated:** April 11, 2026  
+**Version:** 2.0.1 (Updated with permission-based access control and enhanced activity analytics)
 
 ---
 
@@ -11,12 +11,12 @@
 3. [Architecture & Tech Stack](#architecture--tech-stack)
 4. [Current Implementation Status](#current-implementation-status)
 5. [Features Overview](#features-overview)
-6. [Environment Configuration](#environment-configuration)
-7. [Deployment Guide](#deployment-guide)
-8. [Project Structure](#project-structure)
-9. [Database Models](#database-models)
-10. [API Endpoints & Reference](#api-endpoints--reference)
-11. [Key Features & Functionality](#key-features--functionality)
+6. [Permission-Based Access Control](#permission-based-access-control)
+7. [Environment Configuration](#environment-configuration)
+8. [Deployment Guide](#deployment-guide)
+9. [Project Structure](#project-structure)
+10. [Database Models](#database-models)
+11. [API Endpoints & Reference](#api-endpoints--reference)
 12. [Recent Updates (April 2026)](#recent-updates-april-2026)
 13. [Getting Started](#getting-started)
 14. [Troubleshooting](#troubleshooting)
@@ -114,6 +114,7 @@ CHRONO-API/ (Monorepo)
 | Lucide React | 1.7.0 | Icon library |
 | React Hot Toast | 2.6.0 | Toast notifications |
 | React Scripts | 5.0.1 | Build tooling |
+| Recharts | 3.8.1 | Chart/graph visualizations (installed, available for analytics dashboards) |
 
 ### Backend Technology Stack
 
@@ -127,6 +128,7 @@ CHRONO-API/ (Monorepo)
 | CORS | 2.8.6 | Cross-origin requests |
 | Dotenv | 17.4.0 | Environment variables |
 | Nodemon | 3.1.14 | Development auto-reload |
+| Express Rate Limit | 8.3.2 | DDoS/brute-force protection (installed, ready for implementation) |
 
 ---
 
@@ -149,7 +151,7 @@ CHRONO-API/ (Monorepo)
 | **System Settings** | ⚠️ 50% | UI and API functional; persistence limited |
 | **Content Management** | ❌ 0% | Phase 2 planned |
 
-### Code Quality Improvements (April 10, 2026)
+### Code Quality Improvements (April 10-11, 2026)
 
 ✅ **Comment Cleanup**: All unnecessary comments removed from:
 - Backend route files (apiRoutes, authRoutes, adminRoutes, questionRoutes)
@@ -166,6 +168,16 @@ CHRONO-API/ (Monorepo)
 ✅ **Component Extraction**: Critical components extracted to prevent React re-render state loss
 - **UsersList.js**: Stabilizes search input focus during user table filtering
 - **FeedbackSection.js**: Expandable card component with detailed metadata display
+
+✅ **Permission-Based Access Control** (NEW - April 11, 2026):
+- **Middleware**: `checkPermission(requiredPermission)` enables granular permission control
+- **Implementation**: Feedback response and settings update endpoints now check for specific permissions
+- **Benefits**: Flexible admin role management with different permission levels
+
+✅ **Enhanced Activity Analytics** (NEW - April 11, 2026):
+- **New Endpoint**: `/admin/activity-logs-detailed` for recent activity with enriched data
+- **Aggregation Pipeline**: Uses MongoDB aggregation with `$lookup` to join user details
+- **Usage**: Supports configurable limit parameter (default 50) for dashboard feeds
 
 ---
 
@@ -227,6 +239,60 @@ CHRONO-API/ (Monorepo)
   - Expandable card design with detailed view
   - Priority and type badges
   - Admin response tracking
+
+---
+
+## 🔐 Permission-Based Access Control
+
+### Overview
+
+ChronoQuest implements a flexible permission-based access control system that allows granular control over admin operations. This enables different levels of administrative access without requiring different code paths.
+
+### Middleware Implementation
+
+**`checkPermission(requiredPermission)`** — Middleware factory for permission checking
+
+```javascript
+// Usage in routes:
+router.post('/feedback/:id/respond', checkPermission('manage_feedback'), adminController.respondToFeedback);
+router.post('/settings', checkPermission('manage_settings'), adminController.updateSystemSetting);
+```
+
+**How It Works:**
+1. Verifies user is authenticated (from `protect` middleware)
+2. Confirms user role is 'admin'
+3. Checks if user has the required permission in their `permissions` array
+4. Denies access with clear error message if permission is missing
+
+### Current Protected Endpoints
+
+| Endpoint | Required Permission | Description |
+|----------|-------------------|-------------|
+| `POST /admin/feedback/:id/respond` | `manage_feedback` | Respond to user feedback |
+| `POST /admin/settings` | `manage_settings` | Update system configuration |
+
+### Future Extensibility
+
+Additional permissions can be added without modifying the middleware:
+
+```javascript
+// Example: Adding new permission checks
+router.patch('/admin/users/:userId/role', 
+  checkPermission('manage_admin_roles'), 
+  adminController.updateUserRole);
+
+router.post('/admin/content/publish',
+  checkPermission('publish_content'),
+  contentController.publishContent);
+```
+
+### Admin Role Hierarchy
+
+| Admin Level | Current Permissions | Purpose |
+|------------|-------------------|---------|
+| `super_admin` | All (implied) | Full system control, user management |
+| `content_admin` | manage_settings | Content and configuration only |
+| `support_admin` | manage_feedback | Feedback and support only |
 
 ---
 
@@ -641,6 +707,7 @@ const API_BASE = process.env.REACT_APP_API_BASE
 | PATCH | `/admin/users/:userId/:userType` | Update user details |
 | GET | `/admin/users/:userId/logs` | Get activity logs for a user |
 | GET | `/admin/activity-logs` | Get all system activity logs |
+| GET | `/admin/activity-logs-detailed` | Get recent activity logs with enriched data (user details via aggregation) |
 | GET | `/admin/analytics` | Get platform-wide analytics |
 | GET | `/admin/usage-stats` | Get usage statistics |
 | GET | `/admin/feedback` | Get all instructor feedback |
