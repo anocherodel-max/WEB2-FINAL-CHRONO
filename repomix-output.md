@@ -34,53 +34,7 @@ The content is organized as follows:
 
 # Directory Structure
 ```
-chrono-dashboard/.git/COMMIT_EDITMSG
-chrono-dashboard/.git/config
-chrono-dashboard/.git/description
-chrono-dashboard/.git/gk/config
-chrono-dashboard/.git/HEAD
-chrono-dashboard/.git/hooks/applypatch-msg.sample
-chrono-dashboard/.git/hooks/commit-msg.sample
-chrono-dashboard/.git/hooks/fsmonitor-watchman.sample
-chrono-dashboard/.git/hooks/post-update.sample
-chrono-dashboard/.git/hooks/pre-applypatch.sample
-chrono-dashboard/.git/hooks/pre-commit.sample
-chrono-dashboard/.git/hooks/pre-merge-commit.sample
-chrono-dashboard/.git/hooks/pre-push.sample
-chrono-dashboard/.git/hooks/pre-rebase.sample
-chrono-dashboard/.git/hooks/pre-receive.sample
-chrono-dashboard/.git/hooks/prepare-commit-msg.sample
-chrono-dashboard/.git/hooks/push-to-checkout.sample
-chrono-dashboard/.git/hooks/sendemail-validate.sample
-chrono-dashboard/.git/hooks/update.sample
-chrono-dashboard/.git/index
-chrono-dashboard/.git/info/exclude
-chrono-dashboard/.git/logs/HEAD
-chrono-dashboard/.git/logs/refs/heads/master
-chrono-dashboard/.git/objects/08/0d6c77ac21bb2ef88a6992b2b73ad93daaca92
-chrono-dashboard/.git/objects/1f/03afeece5ac28064fa3c73a29215037465f789
-chrono-dashboard/.git/objects/32/0a416f822bbbab9232596266e41c1a0645de38
-chrono-dashboard/.git/objects/37/845757234ccb68531c10cf7a2ffc589c47e342
-chrono-dashboard/.git/objects/4d/29575de80483b005c29bfcac5061cd2f45313e
-chrono-dashboard/.git/objects/52/53d3ad9e6be6690549cb255f5952337b02401d
-chrono-dashboard/.git/objects/58/beeaccd87e230076cab531b8f418f40b6d1aeb
-chrono-dashboard/.git/objects/74/b5e053450a48a6bdb4d71aad648e7af821975c
-chrono-dashboard/.git/objects/7b/1e172334cdc980bee9ad6a8a87cf21e0ed18d8
-chrono-dashboard/.git/objects/8e/29b36dea7f04ae8729d8b33ecc05c3c9b0fe46
-chrono-dashboard/.git/objects/8f/2609b7b3e0e3897ab3bcaad13caf6876e48699
-chrono-dashboard/.git/objects/9d/fc1c058cebbef8b891c5062be6f31033d7d186
-chrono-dashboard/.git/objects/a1/1777cc471a4344702741ab1c8a588998b1311a
-chrono-dashboard/.git/objects/a4/e47a6545bc15971f8f63fba70e4013df88a664
-chrono-dashboard/.git/objects/a9/ae81ec66cc71915511974a1bd6cb6d08db212d
-chrono-dashboard/.git/objects/aa/069f27cbd9d53394428171c3989fd03db73c76
-chrono-dashboard/.git/objects/cf/261d3b38113169d6b2f5343f445fe41d84962b
-chrono-dashboard/.git/objects/d5/63c0fb10ba0e42724b21286eb546ee4e5734fc
-chrono-dashboard/.git/objects/e9/e57dc4d41b9b46e05112e9f45b7ea6ac0ba15e
-chrono-dashboard/.git/objects/ec/2585e8c0bb8188184ed1e0703c4c8f2a8419b0
-chrono-dashboard/.git/objects/f7/251c5082bdb322a0be6d37f6606b0c030b33c7
-chrono-dashboard/.git/objects/fc/44b0a3796c0e0a64c3d858ca038bd4570465d9
-chrono-dashboard/.git/refs/heads/master
-chrono-dashboard/.gitignore
+.gitignore
 chrono-dashboard/package.json
 chrono-dashboard/postcss.config.js
 chrono-dashboard/public/favicon.ico
@@ -93,6 +47,8 @@ chrono-dashboard/README.md
 chrono-dashboard/src/App.css
 chrono-dashboard/src/App.js
 chrono-dashboard/src/App.test.js
+chrono-dashboard/src/components/admin/FeedbackSection.js
+chrono-dashboard/src/components/admin/UsersList.js
 chrono-dashboard/src/components/AdminSidebar.js
 chrono-dashboard/src/components/TeacherSidebar.js
 chrono-dashboard/src/context/AuthContext.js
@@ -108,7 +64,6 @@ chrono-dashboard/src/pages/QuestionManagement.js
 chrono-dashboard/src/pages/RegisterPage.js
 chrono-dashboard/src/reportWebVitals.js
 chrono-dashboard/src/setupTests.js
-chronoquest-api/.env
 chronoquest-api/package.json
 chronoquest-api/server.js
 chronoquest-api/src/config/db.js
@@ -131,1018 +86,1165 @@ chronoquest-api/src/routes/apiRoutes.js
 chronoquest-api/src/routes/authRoutes.js
 chronoquest-api/src/routes/questionRoutes.js
 chronoquest-api/src/utils/generateCode.js
-SYSTEM_DOCUMENTATION.md
+chronoquest-api/vercel.json
+POSTMAN_VSCODE_GUIDE.md
+SYSTEM_DOCUMENTATION_v2.md
 ```
 
 # Files
 
-## File: chrono-dashboard/.git/COMMIT_EDITMSG
-````
-Initialize project using Create React App
-````
+## File: POSTMAN_VSCODE_GUIDE.md
+````markdown
+# 📮 Postman in VS Code — Complete Guide
 
-## File: chrono-dashboard/.git/config
-````
-[core]
-	repositoryformatversion = 0
-	filemode = false
-	bare = false
-	logallrefupdates = true
-	symlinks = false
-	ignorecase = true
-````
+**Version:** 1.0  
+**Last Updated:** April 12, 2026  
+**For:** Testing API endpoints directly in VS Code
 
-## File: chrono-dashboard/.git/description
-````
-Unnamed repository; edit this file 'description' to name the repository.
-````
+---
 
-## File: chrono-dashboard/.git/gk/config
-````
-[branch "master"]
-	gk-last-accessed = 2026-04-10T10:29:41.121Z
-	gk-last-modified = 2026-04-04T02:06:49.210Z
-````
+## 🎯 What is Postman Extension?
 
-## File: chrono-dashboard/.git/HEAD
-````
-ref: refs/heads/master
-````
+Postman is now available **directly in VS Code** — no separate app needed!
 
-## File: chrono-dashboard/.git/hooks/applypatch-msg.sample
-````
-#!/bin/sh
-#
-# An example hook script to check the commit log message taken by
-# applypatch from an e-mail message.
-#
-# The hook should exit with non-zero status after issuing an
-# appropriate message if it wants to stop the commit.  The hook is
-# allowed to edit the commit message file.
-#
-# To enable this hook, rename this file to "applypatch-msg".
+**Benefits:**
+- ✅ Make API requests without leaving VS Code
+- ✅ See responses instantly
+- ✅ Save environment variables
+- ✅ Test authentication (tokens, bearers)
+- ✅ Works with ChronoQuest or any API
 
-. git-sh-setup
-commitmsg="$(git rev-parse --git-path hooks/commit-msg)"
-test -x "$commitmsg" && exec "$commitmsg" ${1+"$@"}
-:
-````
+---
 
-## File: chrono-dashboard/.git/hooks/commit-msg.sample
-````
-#!/bin/sh
-#
-# An example hook script to check the commit log message.
-# Called by "git commit" with one argument, the name of the file
-# that has the commit message.  The hook should exit with non-zero
-# status after issuing an appropriate message if it wants to stop the
-# commit.  The hook is allowed to edit the commit message file.
-#
-# To enable this hook, rename this file to "commit-msg".
+## 📚 Quick Navigation
 
-# Uncomment the below to add a Signed-off-by line to the message.
-# Doing this in a hook is a bad idea in general, but the prepare-commit-msg
-# hook is more suited to it.
-#
-# SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-# grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+| Task | Section | Time |
+|------|---------|------|
+| 📥 Install extension | [Install Postman](#-install-postman-extension) | 2 min |
+| 🌐 Create request | [Make Your First Request](#-make-your-first-request) | 3 min |
+| 🔑 Set environment variables | [Use Variables](#-set-environment-variables) | 3 min |
+| 🔐 Add authentication | [Add Auth Headers](#-add-authentication-headers) | 2 min |
+| 💾 Send JSON body | [Send Request Body](#-send-request-body) | 3 min |
+| 📊 View responses | [View Responses](#-view-responses-clearly) | 2 min |
+| 🔄 Reuse requests | [Save & Reuse](#-save--reuse-requests) | 3 min |
+| 🎯 Test all endpoints | [ChronoQuest Examples](#-chronoquest-api-examples) | 10 min |
 
-# This example catches duplicate Signed-off-by lines.
+**Total Time:** ~30 minutes
 
-test "" = "$(grep '^Signed-off-by: ' "$1" |
-	 sort | uniq -c | sed -e '/^[ 	]*1[ 	]/d')" || {
-	echo >&2 Duplicate Signed-off-by lines.
-	exit 1
+---
+
+## 📥 Install Postman Extension
+
+### Step 1️⃣ Open VS Code Extensions
+
+Press **Ctrl + Shift + X** (or **Cmd + Shift + X** on Mac)
+
+You'll see the Extensions sidebar on the left.
+
+---
+
+### Step 2️⃣ Search for Postman
+
+In the search box at the top, type: `postman`
+
+You'll see **"Postman"** by Postman Inc. with the purple icon.
+
+---
+
+### Step 3️⃣ Click Install
+
+1. Click the **Postman** extension
+2. Click **Install** button
+3. Wait for installation (30 seconds)
+
+✅ **You'll see:** "Installed" badge appears
+
+---
+
+### Step 4️⃣ Open Postman
+
+After installation, you have two options:
+
+**Option A: Use the command palette**
+- Press **Ctrl + Shift + P** (or **Cmd + Shift + P**)
+- Type `Postman: Open`
+- Press **Enter**
+
+**Option B: Click the Postman icon**
+- Look in left sidebar (bottom area)
+- You'll see a purple Postman icon
+- Click it
+
+✅ **Result:** Postman panel opens on the right side!
+
+---
+
+## 🌐 Make Your First Request
+
+### Step 1️⃣ Create a New Request Tab
+
+In the Postman panel:
+1. Look for **"+"** button
+2. Click it to create new request
+
+---
+
+### Step 2️⃣ Set Method & URL
+
+At the top of request:
+
+1. Click dropdown (shows "GET")
+2. Select **GET** (if not already selected)
+3. Paste URL: `http://localhost:3000/api/v1/test`
+4. Press **Enter**
+
+---
+
+### Step 3️⃣ Send Request
+
+Click the **Send** button (looks like play button ▶️)
+
+---
+
+### Step 4️⃣ View Response
+
+Response appears below in the panel:
+
+```
+Status: 200 OK
+Body: 
+{
+  "message": "API is running",
+  "timestamp": "2026-04-12T10:30:00Z"
 }
-````
+```
 
-## File: chrono-dashboard/.git/hooks/fsmonitor-watchman.sample
-````
-#!/usr/bin/perl
+✅ **Success!** Your first request is done!
 
-use strict;
-use warnings;
-use IPC::Open2;
+---
 
-# An example hook script to integrate Watchman
-# (https://facebook.github.io/watchman/) with git to speed up detecting
-# new and modified files.
-#
-# The hook is passed a version (currently 2) and last update token
-# formatted as a string and outputs to stdout a new update token and
-# all files that have been modified since the update token. Paths must
-# be relative to the root of the working tree and separated by a single NUL.
-#
-# To enable this hook, rename this file to "query-watchman" and set
-# 'git config core.fsmonitor .git/hooks/query-watchman'
-#
-my ($version, $last_update_token) = @ARGV;
+## 🔑 Set Environment Variables
 
-# Uncomment for debugging
-# print STDERR "$0 $version $last_update_token\n";
+Variables let you use `{{VARIABLE_NAME}}` instead of typing URLs/tokens repeatedly.
 
-# Check the hook interface version
-if ($version ne 2) {
-	die "Unsupported query-fsmonitor hook version '$version'.\n" .
-	    "Falling back to scanning...\n";
+### Step 1️⃣ Open Environment Settings
+
+In Postman panel:
+1. Look for **gear icon** ⚙️ (usually top right of panel)
+2. Click it → Select **"Environments"** or **"Variables"**
+
+---
+
+### Step 2️⃣ Create/Edit Variables
+
+You should see a section like:
+
+```
+VARIABLE NAME          TYPE          VALUE
+BASE_URL              string        [empty]
+TEACHER_TOKEN         string        [empty]
+CLASS_CODE            string        [empty]
+```
+
+---
+
+### Step 3️⃣ Add Your Values
+
+For **BASE_URL**:
+- Value: `http://localhost:3000/api/v1`
+
+For **TEACHER_TOKEN**:
+- Value: (leave empty for now, fill after login)
+
+For **CLASS_CODE**:
+- Value: (leave empty for now)
+
+Click **Save** ✅
+
+---
+
+### Step 4️⃣ Use Variables in Requests
+
+Now in any request, use `{{VARIABLE_NAME}}`:
+
+**Example URL:**
+```
+GET {{BASE_URL}}/auth/profile
+```
+
+When you send, it becomes:
+```
+GET http://localhost:3000/api/v1/auth/profile
+```
+
+✅ Postman replaces variables automatically!
+
+---
+
+## 🔐 Add Authentication Headers
+
+### Method 1: Add Header Manually
+
+In request:
+1. Click **Headers** tab
+2. Click **Add** (or empty row)
+3. Add header:
+   - **Key:** `Authorization`
+   - **Value:** `Bearer {{TEACHER_TOKEN}}`
+
+---
+
+### Method 2: Use Auth Tab (Easier!)
+
+In request:
+1. Click **Auth** tab (above Headers)
+2. Select **Bearer Token** from dropdown
+3. In **Token** field, paste: `{{TEACHER_TOKEN}}`
+
+✅ **Result:** Header is automatically added!
+
+---
+
+## 💾 Send Request Body
+
+### Step 1️⃣ Select Method
+
+Change from **GET** to **POST**:
+1. Click method dropdown
+2. Select **POST**
+
+---
+
+### Step 2️⃣ Open Body Tab
+
+Click **Body** tab in request
+
+---
+
+### Step 3️⃣ Select Raw JSON
+
+1. Click **raw** radio button  
+2. Click dropdown (shows "Text")
+3. Select **JSON** from list
+
+---
+
+### Step 4️⃣ Write JSON
+
+In the text area, paste your JSON:
+
+```json
+{
+  "name": "Mrs. Santos",
+  "email": "santos@example.com",
+  "password": "Password123"
 }
+```
 
-my $git_work_tree = get_working_dir();
+---
 
-my $retry = 1;
+### Step 5️⃣ Send & Check Response
 
-my $json_pkg;
-eval {
-	require JSON::XS;
-	$json_pkg = "JSON::XS";
-	1;
-} or do {
-	require JSON::PP;
-	$json_pkg = "JSON::PP";
-};
+1. Click **Send**
+2. Response appears below
+3. Look for status (should be 200 or 201)
 
-launch_watchman();
+✅ **Success!**
 
-sub launch_watchman {
-	my $o = watchman_query();
-	if (is_work_tree_watched($o)) {
-		output_result($o->{clock}, @{$o->{files}});
-	}
+---
+
+## 📊 View Responses Clearly
+
+### Response Panel
+
+After sending request:
+
+**Top section shows:**
+```
+Status: 201 Created
+Size: 512 B
+Time: 245 ms
+```
+
+**Body section shows:**
+```json
+{
+  "message": "User created",
+  "token": "eyJhbGciOiJIUzI1..."
 }
+```
 
-sub output_result {
-	my ($clockid, @files) = @_;
+### Copy Response Data
 
-	# Uncomment for debugging watchman output
-	# open (my $fh, ">", ".git/watchman-output.out");
-	# binmode $fh, ":utf8";
-	# print $fh "$clockid\n@files\n";
-	# close $fh;
+1. Click on **body** text
+2. Select text (Ctrl + A)
+3. Copy (Ctrl + C)
+4. Paste anywhere
 
-	binmode STDOUT, ":utf8";
-	print $clockid;
-	print "\0";
-	local $, = "\0";
-	print @files;
+### Pretty Print
+
+By default, JSON is formatted nicely. If it's not:
+1. Look for **Pretty** button
+2. Click it ✅
+
+### Search in Response
+
+1. Ctrl + F (when response is focused)
+2. Type search term
+3. See matching lines highlighted
+
+---
+
+## 🔄 Save & Reuse Requests
+
+### Save Request to History
+
+Every request is **automatically saved** in history!
+
+1. Click **History** in left sidebar
+2. See all your past requests
+3. Click any request to reuse it
+4. Click **Send** again
+
+---
+
+### Save as Snippet (Optional)
+
+To save a request template:
+
+1. In request, click **Save** button
+2. Give it a name: "Register Teacher"
+3. Click **Save**
+4. Can reuse from **Saved** section
+
+---
+
+## 🎯 ChronoQuest API Examples
+
+Now let's test **your actual API** with real requests!
+
+---
+
+## Example 1: Register Teacher (POST)
+
+### Setup Request
+
+1. Create new request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/auth/register`
+
+### Headers Tab
+
+Add header:
+- Key: `Content-Type`
+- Value: `application/json`
+
+### Body Tab (Raw JSON)
+
+```json
+{
+  "name": "Mrs. Santos",
+  "email": "santos@example.com",
+  "password": "Password123"
 }
+```
 
-sub watchman_clock {
-	my $response = qx/watchman clock "$git_work_tree"/;
-	die "Failed to get clock id on '$git_work_tree'.\n" .
-		"Falling back to scanning...\n" if $? != 0;
+### Click Send
 
-	return $json_pkg->new->utf8->decode($response);
+**Expected Response (Status 201):**
+```json
+{
+  "message": "Registration successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "Mrs. Santos",
+    "email": "santos@example.com",
+    "classCode": "ABC123",
+    "role": "teacher"
+  }
 }
+```
 
-sub watchman_query {
-	my $pid = open2(\*CHLD_OUT, \*CHLD_IN, 'watchman -j --no-pretty')
-	or die "open2() failed: $!\n" .
-	"Falling back to scanning...\n";
+### Save Token to Environment
 
-	# In the query expression below we're asking for names of files that
-	# changed since $last_update_token but not from the .git folder.
-	#
-	# To accomplish this, we're using the "since" generator to use the
-	# recency index to select candidate nodes and "fields" to limit the
-	# output to file names only. Then we're using the "expression" term to
-	# further constrain the results.
-	my $last_update_line = "";
-	if (substr($last_update_token, 0, 1) eq "c") {
-		$last_update_token = "\"$last_update_token\"";
-		$last_update_line = qq[\n"since": $last_update_token,];
-	}
-	my $query = <<"	END";
-		["query", "$git_work_tree", {$last_update_line
-			"fields": ["name"],
-			"expression": ["not", ["dirname", ".git"]]
-		}]
-	END
+1. From response, copy the **token** value (long string)
+2. Click **Environment/Variables** ⚙️
+3. Set `TEACHER_TOKEN` = (paste token)
+4. Click **Save**
 
-	# Uncomment for debugging the watchman query
-	# open (my $fh, ">", ".git/watchman-query.json");
-	# print $fh $query;
-	# close $fh;
+✅ Now `{{TEACHER_TOKEN}}` is available in all requests!
 
-	print CHLD_IN $query;
-	close CHLD_IN;
-	my $response = do {local $/; <CHLD_OUT>};
+---
 
-	# Uncomment for debugging the watch response
-	# open ($fh, ">", ".git/watchman-response.json");
-	# print $fh $response;
-	# close $fh;
+## Example 2: Get Your Profile (GET)
 
-	die "Watchman: command returned no output.\n" .
-	"Falling back to scanning...\n" if $response eq "";
-	die "Watchman: command returned invalid output: $response\n" .
-	"Falling back to scanning...\n" unless $response =~ /^\{/;
+### Setup Request
 
-	return $json_pkg->new->utf8->decode($response);
+1. New request
+2. Method: **GET**
+3. URL: `{{BASE_URL}}/auth/profile`
+
+### Auth Tab
+
+1. Select **Bearer Token**
+2. Token: `{{TEACHER_TOKEN}}`
+
+### Click Send
+
+**Expected Response (Status 200):**
+```json
+{
+  "message": "Profile retrieved",
+  "user": {
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "Mrs. Santos",
+    "email": "santos@example.com",
+    "classCode": "ABC123",
+    "role": "teacher",
+    "sections": []
+  }
 }
+```
 
-sub is_work_tree_watched {
-	my ($output) = @_;
-	my $error = $output->{error};
-	if ($retry > 0 and $error and $error =~ m/unable to resolve root .* directory (.*) is not watched/) {
-		$retry--;
-		my $response = qx/watchman watch "$git_work_tree"/;
-		die "Failed to make watchman watch '$git_work_tree'.\n" .
-		    "Falling back to scanning...\n" if $? != 0;
-		$output = $json_pkg->new->utf8->decode($response);
-		$error = $output->{error};
-		die "Watchman: $error.\n" .
-		"Falling back to scanning...\n" if $error;
+✅ You're logged in!
 
-		# Uncomment for debugging watchman output
-		# open (my $fh, ">", ".git/watchman-output.out");
-		# close $fh;
+---
 
-		# Watchman will always return all files on the first query so
-		# return the fast "everything is dirty" flag to git and do the
-		# Watchman query just to get it over with now so we won't pay
-		# the cost in git to look up each individual file.
-		my $o = watchman_clock();
-		$error = $output->{error};
+## Example 3: Create a Class (POST)
 
-		die "Watchman: $error.\n" .
-		"Falling back to scanning...\n" if $error;
+### Setup Request
 
-		output_result($o->{clock}, ("/"));
-		$last_update_token = $o->{clock};
+1. New request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/teacher/add-section`
 
-		eval { launch_watchman() };
-		return 0;
-	}
+### Auth Tab
 
-	die "Watchman: $error.\n" .
-	"Falling back to scanning...\n" if $error;
+- Bearer Token: `{{TEACHER_TOKEN}}`
 
-	return 1;
+### Headers Tab
+
+- `Content-Type: application/json`
+
+### Body Tab (Raw JSON)
+
+```json
+{
+  "sectionName": "Grade 4 - Morning Class"
 }
+```
 
-sub get_working_dir {
-	my $working_dir;
-	if ($^O =~ 'msys' || $^O =~ 'cygwin') {
-		$working_dir = Win32::GetCwd();
-		$working_dir =~ tr/\\/\//;
-	} else {
-		require Cwd;
-		$working_dir = Cwd::cwd();
-	}
+### Click Send
 
-	return $working_dir;
+**Expected Response (Status 201):**
+```json
+{
+  "message": "Section created successfully",
+  "section": {
+    "sectionName": "Grade 4 - Morning Class",
+    "classCode": "XYZ789",
+    "createdAt": "2026-04-12T10:30:00Z",
+    "isArchived": false
+  }
 }
-````
+```
 
-## File: chrono-dashboard/.git/hooks/post-update.sample
-````
-#!/bin/sh
-#
-# An example hook script to prepare a packed repository for use over
-# dumb transports.
-#
-# To enable this hook, rename this file to "post-update".
+### Save Class Code
 
-exec git update-server-info
-````
+1. Copy `classCode` from response (e.g., "XYZ789")
+2. Set `CLASS_CODE` = XYZ789 in environment
+3. Click **Save**
 
-## File: chrono-dashboard/.git/hooks/pre-applypatch.sample
-````
-#!/bin/sh
-#
-# An example hook script to verify what is about to be committed
-# by applypatch from an e-mail message.
-#
-# The hook should exit with non-zero status after issuing an
-# appropriate message if it wants to stop the commit.
-#
-# To enable this hook, rename this file to "pre-applypatch".
+---
 
-. git-sh-setup
-precommit="$(git rev-parse --git-path hooks/pre-commit)"
-test -x "$precommit" && exec "$precommit" ${1+"$@"}
-:
-````
+## Example 4: Add a Student (POST)
 
-## File: chrono-dashboard/.git/hooks/pre-commit.sample
-````
-#!/bin/sh
-#
-# An example hook script to verify what is about to be committed.
-# Called by "git commit" with no arguments.  The hook should
-# exit with non-zero status after issuing an appropriate message if
-# it wants to stop the commit.
-#
-# To enable this hook, rename this file to "pre-commit".
+### Setup Request
 
-if git rev-parse --verify HEAD >/dev/null 2>&1
-then
-	against=HEAD
-else
-	# Initial commit: diff against an empty tree object
-	against=$(git hash-object -t tree /dev/null)
-fi
+1. New request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/students`
 
-# If you want to allow non-ASCII filenames set this variable to true.
-allownonascii=$(git config --type=bool hooks.allownonascii)
+### Auth Tab
 
-# Redirect output to stderr.
-exec 1>&2
+- Bearer Token: `{{TEACHER_TOKEN}}`
 
-# Cross platform projects tend to avoid non-ASCII filenames; prevent
-# them from being added to the repository. We exploit the fact that the
-# printable range starts at the space character and ends with tilde.
-if [ "$allownonascii" != "true" ] &&
-	# Note that the use of brackets around a tr range is ok here, (it's
-	# even required, for portability to Solaris 10's /usr/bin/tr), since
-	# the square bracket bytes happen to fall in the designated range.
-	test $(git diff-index --cached --name-only --diff-filter=A -z $against |
-	  LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0
-then
-	cat <<\EOF
-Error: Attempt to add a non-ASCII file name.
+### Headers Tab
 
-This can cause problems if you want to work with people on other platforms.
+- `Content-Type: application/json`
 
-To be portable it is advisable to rename the file.
+### Body Tab (Raw JSON)
 
-If you know what you are doing you can disable this check using:
-
-  git config hooks.allownonascii true
-EOF
-	exit 1
-fi
-
-# If there are whitespace errors, print the offending file names and fail.
-exec git diff-index --check --cached $against --
-````
-
-## File: chrono-dashboard/.git/hooks/pre-merge-commit.sample
-````
-#!/bin/sh
-#
-# An example hook script to verify what is about to be committed.
-# Called by "git merge" with no arguments.  The hook should
-# exit with non-zero status after issuing an appropriate message to
-# stderr if it wants to stop the merge commit.
-#
-# To enable this hook, rename this file to "pre-merge-commit".
-
-. git-sh-setup
-test -x "$GIT_DIR/hooks/pre-commit" &&
-        exec "$GIT_DIR/hooks/pre-commit"
-:
-````
-
-## File: chrono-dashboard/.git/hooks/pre-push.sample
-````
-#!/bin/sh
-
-# An example hook script to verify what is about to be pushed.  Called by "git
-# push" after it has checked the remote status, but before anything has been
-# pushed.  If this script exits with a non-zero status nothing will be pushed.
-#
-# This hook is called with the following parameters:
-#
-# $1 -- Name of the remote to which the push is being done
-# $2 -- URL to which the push is being done
-#
-# If pushing without using a named remote those arguments will be equal.
-#
-# Information about the commits which are being pushed is supplied as lines to
-# the standard input in the form:
-#
-#   <local ref> <local oid> <remote ref> <remote oid>
-#
-# This sample shows how to prevent push of commits where the log message starts
-# with "WIP" (work in progress).
-
-remote="$1"
-url="$2"
-
-zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
-
-while read local_ref local_oid remote_ref remote_oid
-do
-	if test "$local_oid" = "$zero"
-	then
-		# Handle delete
-		:
-	else
-		if test "$remote_oid" = "$zero"
-		then
-			# New branch, examine all commits
-			range="$local_oid"
-		else
-			# Update to existing branch, examine new commits
-			range="$remote_oid..$local_oid"
-		fi
-
-		# Check for WIP commit
-		commit=$(git rev-list -n 1 --grep '^WIP' "$range")
-		if test -n "$commit"
-		then
-			echo >&2 "Found WIP commit in $local_ref, not pushing"
-			exit 1
-		fi
-	fi
-done
-
-exit 0
-````
-
-## File: chrono-dashboard/.git/hooks/pre-rebase.sample
-````
-#!/bin/sh
-#
-# Copyright (c) 2006, 2008 Junio C Hamano
-#
-# The "pre-rebase" hook is run just before "git rebase" starts doing
-# its job, and can prevent the command from running by exiting with
-# non-zero status.
-#
-# The hook is called with the following parameters:
-#
-# $1 -- the upstream the series was forked from.
-# $2 -- the branch being rebased (or empty when rebasing the current branch).
-#
-# This sample shows how to prevent topic branches that are already
-# merged to 'next' branch from getting rebased, because allowing it
-# would result in rebasing already published history.
-
-publish=next
-basebranch="$1"
-if test "$#" = 2
-then
-	topic="refs/heads/$2"
-else
-	topic=`git symbolic-ref HEAD` ||
-	exit 0 ;# we do not interrupt rebasing detached HEAD
-fi
-
-case "$topic" in
-refs/heads/??/*)
-	;;
-*)
-	exit 0 ;# we do not interrupt others.
-	;;
-esac
-
-# Now we are dealing with a topic branch being rebased
-# on top of master.  Is it OK to rebase it?
-
-# Does the topic really exist?
-git show-ref -q "$topic" || {
-	echo >&2 "No such branch $topic"
-	exit 1
+```json
+{
+  "name": "Juan Dela Cruz",
+  "email": "juan@example.com",
+  "password": "Password123",
+  "classCode": "{{CLASS_CODE}}",
+  "score": 0,
+  "levelReached": "Era 1: Pre-Colonial"
 }
+```
 
-# Is topic fully merged to master?
-not_in_master=`git rev-list --pretty=oneline ^master "$topic"`
-if test -z "$not_in_master"
-then
-	echo >&2 "$topic is fully merged to master; better remove it."
-	exit 1 ;# we could allow it, but there is no point.
-fi
+### Click Send
 
-# Is topic ever merged to next?  If so you should not be rebasing it.
-only_next_1=`git rev-list ^master "^$topic" ${publish} | sort`
-only_next_2=`git rev-list ^master           ${publish} | sort`
-if test "$only_next_1" = "$only_next_2"
-then
-	not_in_topic=`git rev-list "^$topic" master`
-	if test -z "$not_in_topic"
-	then
-		echo >&2 "$topic is already up to date with master"
-		exit 1 ;# we could allow it, but there is no point.
-	else
-		exit 0
-	fi
-else
-	not_in_next=`git rev-list --pretty=oneline ^${publish} "$topic"`
-	/usr/bin/perl -e '
-		my $topic = $ARGV[0];
-		my $msg = "* $topic has commits already merged to public branch:\n";
-		my (%not_in_next) = map {
-			/^([0-9a-f]+) /;
-			($1 => 1);
-		} split(/\n/, $ARGV[1]);
-		for my $elem (map {
-				/^([0-9a-f]+) (.*)$/;
-				[$1 => $2];
-			} split(/\n/, $ARGV[2])) {
-			if (!exists $not_in_next{$elem->[0]}) {
-				if ($msg) {
-					print STDERR $msg;
-					undef $msg;
-				}
-				print STDERR " $elem->[1]\n";
-			}
-		}
-	' "$topic" "$not_in_next" "$not_in_master"
-	exit 1
-fi
-
-<<\DOC_END
-
-This sample hook safeguards topic branches that have been
-published from being rewound.
-
-The workflow assumed here is:
-
- * Once a topic branch forks from "master", "master" is never
-   merged into it again (either directly or indirectly).
-
- * Once a topic branch is fully cooked and merged into "master",
-   it is deleted.  If you need to build on top of it to correct
-   earlier mistakes, a new topic branch is created by forking at
-   the tip of the "master".  This is not strictly necessary, but
-   it makes it easier to keep your history simple.
-
- * Whenever you need to test or publish your changes to topic
-   branches, merge them into "next" branch.
-
-The script, being an example, hardcodes the publish branch name
-to be "next", but it is trivial to make it configurable via
-$GIT_DIR/config mechanism.
-
-With this workflow, you would want to know:
-
-(1) ... if a topic branch has ever been merged to "next".  Young
-    topic branches can have stupid mistakes you would rather
-    clean up before publishing, and things that have not been
-    merged into other branches can be easily rebased without
-    affecting other people.  But once it is published, you would
-    not want to rewind it.
-
-(2) ... if a topic branch has been fully merged to "master".
-    Then you can delete it.  More importantly, you should not
-    build on top of it -- other people may already want to
-    change things related to the topic as patches against your
-    "master", so if you need further changes, it is better to
-    fork the topic (perhaps with the same name) afresh from the
-    tip of "master".
-
-Let's look at this example:
-
-		   o---o---o---o---o---o---o---o---o---o "next"
-		  /       /           /           /
-		 /   a---a---b A     /           /
-		/   /               /           /
-	       /   /   c---c---c---c B         /
-	      /   /   /             \         /
-	     /   /   /   b---b C     \       /
-	    /   /   /   /             \     /
-    ---o---o---o---o---o---o---o---o---o---o---o "master"
-
-
-A, B and C are topic branches.
-
- * A has one fix since it was merged up to "next".
-
- * B has finished.  It has been fully merged up to "master" and "next",
-   and is ready to be deleted.
-
- * C has not merged to "next" at all.
-
-We would want to allow C to be rebased, refuse A, and encourage
-B to be deleted.
-
-To compute (1):
-
-	git rev-list ^master ^topic next
-	git rev-list ^master        next
-
-	if these match, topic has not merged in next at all.
-
-To compute (2):
-
-	git rev-list master..topic
-
-	if this is empty, it is fully merged to "master".
-
-DOC_END
-````
-
-## File: chrono-dashboard/.git/hooks/pre-receive.sample
-````
-#!/bin/sh
-#
-# An example hook script to make use of push options.
-# The example simply echoes all push options that start with 'echoback='
-# and rejects all pushes when the "reject" push option is used.
-#
-# To enable this hook, rename this file to "pre-receive".
-
-if test -n "$GIT_PUSH_OPTION_COUNT"
-then
-	i=0
-	while test "$i" -lt "$GIT_PUSH_OPTION_COUNT"
-	do
-		eval "value=\$GIT_PUSH_OPTION_$i"
-		case "$value" in
-		echoback=*)
-			echo "echo from the pre-receive-hook: ${value#*=}" >&2
-			;;
-		reject)
-			exit 1
-		esac
-		i=$((i + 1))
-	done
-fi
-````
-
-## File: chrono-dashboard/.git/hooks/prepare-commit-msg.sample
-````
-#!/bin/sh
-#
-# An example hook script to prepare the commit log message.
-# Called by "git commit" with the name of the file that has the
-# commit message, followed by the description of the commit
-# message's source.  The hook's purpose is to edit the commit
-# message file.  If the hook fails with a non-zero status,
-# the commit is aborted.
-#
-# To enable this hook, rename this file to "prepare-commit-msg".
-
-# This hook includes three examples. The first one removes the
-# "# Please enter the commit message..." help message.
-#
-# The second includes the output of "git diff --name-status -r"
-# into the message, just before the "git status" output.  It is
-# commented because it doesn't cope with --amend or with squashed
-# commits.
-#
-# The third example adds a Signed-off-by line to the message, that can
-# still be edited.  This is rarely a good idea.
-
-COMMIT_MSG_FILE=$1
-COMMIT_SOURCE=$2
-SHA1=$3
-
-/usr/bin/perl -i.bak -ne 'print unless(m/^. Please enter the commit message/..m/^#$/)' "$COMMIT_MSG_FILE"
-
-# case "$COMMIT_SOURCE,$SHA1" in
-#  ,|template,)
-#    /usr/bin/perl -i.bak -pe '
-#       print "\n" . `git diff --cached --name-status -r`
-# 	 if /^#/ && $first++ == 0' "$COMMIT_MSG_FILE" ;;
-#  *) ;;
-# esac
-
-# SOB=$(git var GIT_COMMITTER_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-# git interpret-trailers --in-place --trailer "$SOB" "$COMMIT_MSG_FILE"
-# if test -z "$COMMIT_SOURCE"
-# then
-#   /usr/bin/perl -i.bak -pe 'print "\n" if !$first_line++' "$COMMIT_MSG_FILE"
-# fi
-````
-
-## File: chrono-dashboard/.git/hooks/push-to-checkout.sample
-````
-#!/bin/sh
-
-# An example hook script to update a checked-out tree on a git push.
-#
-# This hook is invoked by git-receive-pack(1) when it reacts to git
-# push and updates reference(s) in its repository, and when the push
-# tries to update the branch that is currently checked out and the
-# receive.denyCurrentBranch configuration variable is set to
-# updateInstead.
-#
-# By default, such a push is refused if the working tree and the index
-# of the remote repository has any difference from the currently
-# checked out commit; when both the working tree and the index match
-# the current commit, they are updated to match the newly pushed tip
-# of the branch. This hook is to be used to override the default
-# behaviour; however the code below reimplements the default behaviour
-# as a starting point for convenient modification.
-#
-# The hook receives the commit with which the tip of the current
-# branch is going to be updated:
-commit=$1
-
-# It can exit with a non-zero status to refuse the push (when it does
-# so, it must not modify the index or the working tree).
-die () {
-	echo >&2 "$*"
-	exit 1
+**Expected Response (Status 201):**
+```json
+{
+  "message": "Student registered successfully",
+  "student": {
+    "_id": "507f...",
+    "name": "Juan Dela Cruz",
+    "email": "juan@example.com",
+    "classCode": "XYZ789",
+    "score": 0,
+    "levelReached": "Era 1: Pre-Colonial"
+  }
 }
+```
 
-# Or it can make any necessary changes to the working tree and to the
-# index to bring them to the desired state when the tip of the current
-# branch is updated to the new commit, and exit with a zero status.
-#
-# For example, the hook can simply run git read-tree -u -m HEAD "$1"
-# in order to emulate git fetch that is run in the reverse direction
-# with git push, as the two-tree form of git read-tree -u -m is
-# essentially the same as git switch or git checkout that switches
-# branches while keeping the local changes in the working tree that do
-# not interfere with the difference between the branches.
+✅ Student created!
 
-# The below is a more-or-less exact translation to shell of the C code
-# for the default behaviour for git's push-to-checkout hook defined in
-# the push_to_deploy() function in builtin/receive-pack.c.
-#
-# Note that the hook will be executed from the repository directory,
-# not from the working tree, so if you want to perform operations on
-# the working tree, you will have to adapt your code accordingly, e.g.
-# by adding "cd .." or using relative paths.
+---
 
-if ! git update-index -q --ignore-submodules --refresh
-then
-	die "Up-to-date check failed"
-fi
+## Example 5: Create Question (POST)
 
-if ! git diff-files --quiet --ignore-submodules --
-then
-	die "Working directory has unstaged changes"
-fi
+### Setup Request
 
-# This is a rough translation of:
-#
-#   head_has_history() ? "HEAD" : EMPTY_TREE_SHA1_HEX
-if git cat-file -e HEAD 2>/dev/null
-then
-	head=HEAD
-else
-	head=$(git hash-object -t tree --stdin </dev/null)
-fi
+1. New request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/questions`
 
-if ! git diff-index --quiet --cached --ignore-submodules $head --
-then
-	die "Working directory has staged changes"
-fi
+### Auth Tab
 
-if ! git read-tree -u -m "$commit"
-then
-	die "Could not update working tree to new HEAD"
-fi
-````
+- Bearer Token: `{{TEACHER_TOKEN}}`
 
-## File: chrono-dashboard/.git/hooks/sendemail-validate.sample
-````
-#!/bin/sh
+### Headers Tab
 
-# An example hook script to validate a patch (and/or patch series) before
-# sending it via email.
-#
-# The hook should exit with non-zero status after issuing an appropriate
-# message if it wants to prevent the email(s) from being sent.
-#
-# To enable this hook, rename this file to "sendemail-validate".
-#
-# By default, it will only check that the patch(es) can be applied on top of
-# the default upstream branch without conflicts in a secondary worktree. After
-# validation (successful or not) of the last patch of a series, the worktree
-# will be deleted.
-#
-# The following config variables can be set to change the default remote and
-# remote ref that are used to apply the patches against:
-#
-#   sendemail.validateRemote (default: origin)
-#   sendemail.validateRemoteRef (default: HEAD)
-#
-# Replace the TODO placeholders with appropriate checks according to your
-# needs.
+- `Content-Type: application/json`
 
-validate_cover_letter () {
-	file="$1"
-	# TODO: Replace with appropriate checks (e.g. spell checking).
-	true
+### Body Tab (Raw JSON)
+
+```json
+{
+  "title": "Who was the first president of the Philippines?",
+  "description": "He led the revolutionary government.",
+  "options": [
+    "Jose Rizal",
+    "Emilio Aguinaldo",
+    "Francisco Luna",
+    "Andres Bonifacio"
+  ],
+  "correctAnswer": 1,
+  "period": "Revolutionary",
+  "difficultyLevel": "Medium",
+  "topic": "Presidents"
 }
+```
 
-validate_patch () {
-	file="$1"
-	# Ensure that the patch applies without conflicts.
-	git am -3 "$file" || return
-	# TODO: Replace with appropriate checks for this patch
-	# (e.g. checkpatch.pl).
-	true
+### Click Send
+
+**Expected Response (Status 201):**
+```json
+{
+  "message": "Question created successfully",
+  "question": {
+    "_id": "507f...",
+    "title": "Who was the first president...",
+    "correctAnswer": 1,
+    "createdBy": "teacher-id"
+  }
 }
+```
 
-validate_series () {
-	# TODO: Replace with appropriate checks for the whole series
-	# (e.g. quick build, coding style checks, etc.).
-	true
+✅ Question created!
+
+---
+
+## Example 6: Student Login (POST)
+
+### Setup Request
+
+1. New request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/auth/login`
+
+### Headers Tab
+
+- `Content-Type: application/json`
+
+### Body Tab (Raw JSON)
+
+```json
+{
+  "email": "juan@example.com",
+  "password": "Password123"
 }
+```
 
-# main -------------------------------------------------------------------------
+---
 
-if test "$GIT_SENDEMAIL_FILE_COUNTER" = 1
-then
-	remote=$(git config --default origin --get sendemail.validateRemote) &&
-	ref=$(git config --default HEAD --get sendemail.validateRemoteRef) &&
-	worktree=$(mktemp --tmpdir -d sendemail-validate.XXXXXXX) &&
-	git worktree add -fd --checkout "$worktree" "refs/remotes/$remote/$ref" &&
-	git config --replace-all sendemail.validateWorktree "$worktree"
-else
-	worktree=$(git config --get sendemail.validateWorktree)
-fi || {
-	echo "sendemail-validate: error: failed to prepare worktree" >&2
-	exit 1
+### Click Send
+
+**Expected Response (Status 200):**
+```json
+{
+  "message": "Login successful",
+  "token": "eyJhbGciOiJIUzI1..."
 }
+```
 
-unset GIT_DIR GIT_WORK_TREE
-cd "$worktree" &&
+### Save Student Token
 
-if grep -q "^diff --git " "$1"
-then
-	validate_patch "$1"
-else
-	validate_cover_letter "$1"
-fi &&
+1. Copy token
+2. Set `STUDENT_TOKEN` = (paste)
+3. Click **Save**
 
-if test "$GIT_SENDEMAIL_FILE_COUNTER" = "$GIT_SENDEMAIL_FILE_TOTAL"
-then
-	git config --unset-all sendemail.validateWorktree &&
-	trap 'git worktree remove -ff "$worktree"' EXIT &&
-	validate_series
-fi
+---
+
+## Example 7: Admin - Get All Users (GET)
+
+> ⚠️ **Requires:** Admin account
+
+### Setup Request
+
+1. New request
+2. Method: **GET**
+3. URL: `{{BASE_URL}}/admin/users`
+
+### Auth Tab
+
+- Bearer Token: `{{ADMIN_TOKEN}}`
+
+### Click Send
+
+**Expected Response (Status 200):**
+```json
+{
+  "message": "Users retrieved successfully",
+  "data": {
+    "teachers": [
+      {
+        "_id": "507f...",
+        "name": "Mrs. Santos",
+        "email": "santos@example.com"
+      }
+    ],
+    "students": [
+      {
+        "_id": "507f...",
+        "name": "Juan Dela Cruz",
+        "classCode": "XYZ789"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## Example 8: Admin - Get Analytics (GET)
+
+### Setup Request
+
+1. New request
+2. Method: **GET**
+3. URL: `{{BASE_URL}}/admin/analytics`
+
+### Auth Tab
+
+- Bearer Token: `{{ADMIN_TOKEN}}`
+
+### Click Send
+
+**Expected Response:**
+```json
+{
+  "message": "Analytics retrieved successfully",
+  "data": {
+    "totalTeachers": 5,
+    "totalStudents": 25,
+    "totalSections": 8,
+    "averageStudentsPerSection": 3.1
+  }
+}
+```
+
+---
+
+## Example 9: Submit Feedback (POST)
+
+### Setup Request
+
+1. New request
+2. Method: **POST**
+3. URL: `{{BASE_URL}}/auth/feedback`
+
+### Auth Tab
+
+- Bearer Token: `{{TEACHER_TOKEN}}`
+
+### Headers Tab
+
+- `Content-Type: application/json`
+
+### Body Tab
+
+```json
+{
+  "title": "Login button bug on mobile",
+  "description": "Cannot login from phone",
+  "type": "bug_report",
+  "priority": "high"
+}
+```
+
+### Click Send
+
+**Expected Response:**
+```json
+{
+  "message": "Feedback submitted successfully",
+  "feedback": {
+    "_id": "507f...",
+    "title": "Login button bug on mobile",
+    "status": "open"
+  }
+}
+```
+
+---
+
+## Example 10: Update Question (PATCH)
+
+### Setup Request
+
+1. New request
+2. Method: **PATCH**
+3. URL: `{{BASE_URL}}/questions/QUESTION_ID_HERE`
+
+### Auth Tab
+
+- Bearer Token: `{{TEACHER_TOKEN}}`
+
+### Headers Tab
+
+- `Content-Type: application/json`
+
+### Body Tab
+
+```json
+{
+  "title": "Who was Emilio Aguinaldo?",
+  "difficultyLevel": "Hard"
+}
+```
+
+### Click Send
+
+**Expected Response:**
+```json
+{
+  "message": "Question updated successfully",
+  "question": {
+    "_id": "507f...",
+    "title": "Who was Emilio Aguinaldo?",
+    "difficultyLevel": "Hard"
+  }
+}
+```
+
+---
+
+## 💡 Pro Tips & Tricks
+
+### Tip 1: Keyboard Shortcuts
+
+| Action | Shortcut |
+|--------|----------|
+| Send request | Ctrl + Enter |
+| Open command palette | Ctrl + Shift + P |
+| Search in response | Ctrl + F |
+| Copy response | Ctrl + C |
+
+---
+
+### Tip 2: Copy cURL Command
+
+Sometimes you need a `curl` command:
+
+1. In request, look for **...** menu
+2. Click **"Copy as cURL"**
+3. Paste in terminal
+
+Example:
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Mrs. Santos","email":"santos@example.com","password":"Password123"}'
+```
+
+---
+
+### Tip 3: Check Request Before Sending
+
+Before clicking Send:
+
+✅ Method is correct (GET/POST/PATCH/DELETE)  
+✅ URL has correct variables replaced  
+✅ Auth token is present  
+✅ Headers include `Content-Type: application/json`  
+✅ Body JSON is valid (no syntax errors)
+
+---
+
+### Tip 4: View Raw Response
+
+Sometimes you need to see the exact response:
+
+1. In response panel, look for tabs
+2. Click **"Body"** or **"Raw"** tab
+3. See un formatted response
+
+---
+
+### Tip 5: Test Different Status Codes
+
+APIs return different status codes:
+
+| Status | Meaning | When You'll See It |
+|--------|---------|-------------------|
+| 200 | Success | GET request works |
+| 201 | Created | POST creates new resource |
+| 400 | Bad Request | Wrong data in body |
+| 401 | Unauthorized | Missing/invalid token |
+| 404 | Not Found | URL doesn't exist |
+| 500 | Server Error | Backend crashed |
+
+---
+
+## ⚡ Quick Reference
+
+### All HTTP Methods in Postman
+
+| Method | When to Use | Example |
+|--------|-----------|---------|
+| **GET** | Read data | Get profile, list users |
+| **POST** | Create data | Register user, create question |
+| **PATCH** | Update partially | Change question title |
+| **DELETE** | Remove data | Delete question |
+| **PUT** | Replace entire data | Update profile |
+
+---
+
+### All ChronoQuest Endpoints
+
+```
+🔐 AUTH
+  POST   /auth/register               - Create teacher account
+  POST   /auth/login                  - Login teacher/student
+  GET    /auth/profile                - Get profile
+  PUT    /auth/profile                - Update profile
+  POST   /auth/feedback               - Submit feedback
+
+👨‍🏫 TEACHER
+  POST   /teacher/add-section         - Create class
+  POST   /teacher/archive-section/{c} - Hide class
+  POST   /teacher/unarchive-section/{c} - Restore class
+  DELETE /teacher/delete-section/{c}  - Delete class
+
+❓ QUESTIONS
+  POST   /questions                   - Create question
+  GET    /questions                   - Get all questions
+  GET    /questions/teacher/{id}      - Get my questions
+  PATCH  /questions/{id}              - Update question
+  DELETE /questions/{id}              - Delete question
+  POST   /questions/{id}/toggle       - Toggle active
+
+🔑 ADMIN
+  GET    /admin/users                 - List all users
+  PATCH  /admin/users/{id}/{type}     - Update user
+  POST   /admin/users/deactivate      - Lock user
+  POST   /admin/users/delete          - Delete user
+  GET    /admin/activity-logs-detailed - View logs
+  GET    /admin/analytics             - Stats
+  GET    /admin/feedback              - Get feedback
+  POST   /admin/feedback/{id}/respond - Reply feedback
+```
+
+---
+
+## 🆘 Troubleshooting
+
+### "Cannot GET /"
+
+**Problem:** Request returns error
+
+**Fix:**
+1. Check URL is correct
+2. Check backend is running (terminal showing port 3000)
+3. Check {{BASE_URL}} is replaced properly
+
+---
+
+### "401 Unauthorized"
+
+**Problem:** Token is missing or invalid
+
+**Fix:**
+1. Check `Authorization` header present
+2. Check token format: `Bearer {{TEACHER_TOKEN}}`
+3. Re-login to get fresh token
+
+---
+
+### "Request timeout"
+
+**Problem:** Request takes too long
+
+**Fix:**
+1. Check backend is running
+2. Check MongoDB is running
+3. Check internet connection
+
+---
+
+### "Invalid JSON in body"
+
+**Problem:** Body has syntax error
+
+**Fix:**
+1. Make sure quotes are straight: `"name"` not `"name"`
+2. No trailing commas in JSON
+3. Use JSON formatter to validate
+
+---
+
+### "classCode not found"
+
+**Problem:** Class code doesn't exist
+
+**Fix:**
+1. Create class first (POST /teacher/add-section)
+2. Copy new classCode
+3. Use same classCode for students
+
+---
+
+## 📝 Complete Workflow in VS Code
+
+Start to finish in ~30 minutes:
+
+```
+1️⃣ Install Postman extension
+   ↓
+2️⃣ Create environment with variables
+   ↓
+3️⃣ POST /auth/register → get token
+   ↓
+4️⃣ POST /teacher/add-section → get classCode
+   ↓
+5️⃣ POST /students → create students
+   ↓
+6️⃣ POST /questions → create quiz questions
+   ↓
+7️⃣ POST /auth/login (as student)
+   ↓
+8️⃣ GET /admin/analytics (if admin)
+   ↓
+✅ System tested!
+```
+
+---
+
+## 🎯 Step-by-Step First Time
+
+**Follow this exactly:**
+
+### First: Setup (~5 min)
+1. Install Postman extension
+2. Create "Local" environment
+3. Set BASE_URL variable
+4. Create first request (GET {{BASE_URL}}/test)
+5. Send → See response
+
+### Second: Register (~5 min)
+1. Create POST request
+2. URL: {{BASE_URL}}/auth/register
+3. Body: name, email, password
+4. Send → Copy token
+5. Save token to TEACHER_TOKEN
+
+### Third: Create Class (~3 min)
+1. Create POST request
+2. URL: {{BASE_URL}}/teacher/add-section
+3. Auth: Bearer {{TEACHER_TOKEN}}
+4. Body: sectionName
+5. Send → Copy classCode
+6. Save to CLASS_CODE
+
+### Fourth: Add Student (~3 min)
+1. Create POST request
+2. URL: {{BASE_URL}}/students
+3. Auth: Bearer {{TEACHER_TOKEN}}
+4. Body: name, email, password, classCode
+5. Send → See student created
+
+### Fifth: Test Admin (~3 min)
+1. Make yourself admin in MongoDB
+2. Create GET request
+3. URL: {{BASE_URL}}/admin/users
+4. Auth: Bearer {{ADMIN_TOKEN}}
+5. Send → See all users
+
+✅ **Total: ~20 minutes, fully tested!**
+
+---
+
+## 📞 Common Commands by Goal
+
+### Goal: Test Login
+```
+POST {{BASE_URL}}/auth/login
+Body: {
+  "email": "santos@example.com",
+  "password": "Password123"
+}
+```
+
+### Goal: Get Current User
+```
+GET {{BASE_URL}}/auth/profile
+Auth: Bearer {{TEACHER_TOKEN}}
+```
+
+### Goal: Create Class
+```
+POST {{BASE_URL}}/teacher/add-section
+Auth: Bearer {{TEACHER_TOKEN}}
+Body: {
+  "sectionName": "Grade 4"
+}
+```
+
+### Goal: Add Student
+```
+POST {{BASE_URL}}/students
+Auth: Bearer {{TEACHER_TOKEN}}
+Body: {
+  "name": "Juan",
+  "email": "juan@example.com",
+  "password": "Pass123",
+  "classCode": "XYZ789"
+}
+```
+
+### Goal: Create Quiz Question
+```
+POST {{BASE_URL}}/questions
+Auth: Bearer {{TEACHER_TOKEN}}
+Body: {
+  "title": "Question here?",
+  "options": ["A", "B", "C", "D"],
+  "correctAnswer": 0,
+  "period": "Revolutionary",
+  "difficultyLevel": "Medium"
+}
+```
+
+### Goal: View System Analytics
+```
+GET {{BASE_URL}}/admin/analytics
+Auth: Bearer {{ADMIN_TOKEN}}
+```
+
+---
+
+## ✅ Success Checklist
+
+- [ ] Postman extension installed
+- [ ] Environment "Local" created
+- [ ] Variables set (BASE_URL, TEACHER_TOKEN, etc.)
+- [ ] First request sent (GET /test) → Success
+- [ ] Teacher registered → Token saved
+- [ ] Class created → ClassCode saved
+- [ ] Student added → Verified
+- [ ] Question created → Verified
+- [ ] Admin access → Analytics viewed
+- [ ] All responses show correct status codes
+- [ ] 🎉 Ready for production!
+
+---
+
+## 📚 Resources
+
+- **Postman Official Docs:** https://learning.postman.com/
+- **Postman VS Code Extension:** https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode
+- **REST API Guide:** https://restfulapi.net/
+- **JSON Validator:** https://jsonlint.com/
+
+---
+
+**Version:** 1.0  
+**Last Updated:** April 12, 2026  
+**Status:** ✅ Ready to Use  
+**IDE:** VS Code only
 ````
 
-## File: chrono-dashboard/.git/hooks/update.sample
+## File: .gitignore
 ````
-#!/bin/sh
-#
-# An example hook script to block unannotated tags from entering.
-# Called by "git receive-pack" with arguments: refname sha1-old sha1-new
-#
-# To enable this hook, rename this file to "update".
-#
-# Config
-# ------
-# hooks.allowunannotated
-#   This boolean sets whether unannotated tags will be allowed into the
-#   repository.  By default they won't be.
-# hooks.allowdeletetag
-#   This boolean sets whether deleting tags will be allowed in the
-#   repository.  By default they won't be.
-# hooks.allowmodifytag
-#   This boolean sets whether a tag may be modified after creation. By default
-#   it won't be.
-# hooks.allowdeletebranch
-#   This boolean sets whether deleting branches will be allowed in the
-#   repository.  By default they won't be.
-# hooks.denycreatebranch
-#   This boolean sets whether remotely creating branches will be denied
-#   in the repository.  By default this is allowed.
-#
+# --- CHRONOQUEST MASTER GITIGNORE ---
 
-# --- Command line
-refname="$1"
-oldrev="$2"
-newrev="$3"
-
-# --- Safety check
-if [ -z "$GIT_DIR" ]; then
-	echo "Don't run this script from the command line." >&2
-	echo " (if you want, you could supply GIT_DIR then run" >&2
-	echo "  $0 <ref> <oldrev> <newrev>)" >&2
-	exit 1
-fi
-
-if [ -z "$refname" -o -z "$oldrev" -o -z "$newrev" ]; then
-	echo "usage: $0 <ref> <oldrev> <newrev>" >&2
-	exit 1
-fi
-
-# --- Config
-allowunannotated=$(git config --type=bool hooks.allowunannotated)
-allowdeletebranch=$(git config --type=bool hooks.allowdeletebranch)
-denycreatebranch=$(git config --type=bool hooks.denycreatebranch)
-allowdeletetag=$(git config --type=bool hooks.allowdeletetag)
-allowmodifytag=$(git config --type=bool hooks.allowmodifytag)
-
-# check for no description
-projectdesc=$(sed -e '1q' "$GIT_DIR/description")
-case "$projectdesc" in
-"Unnamed repository"* | "")
-	echo "*** Project description file hasn't been set" >&2
-	exit 1
-	;;
-esac
-
-# --- Check types
-# if $newrev is 0000...0000, it's a commit to delete a ref.
-zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
-if [ "$newrev" = "$zero" ]; then
-	newrev_type=delete
-else
-	newrev_type=$(git cat-file -t $newrev)
-fi
-
-case "$refname","$newrev_type" in
-	refs/tags/*,commit)
-		# un-annotated tag
-		short_refname=${refname##refs/tags/}
-		if [ "$allowunannotated" != "true" ]; then
-			echo "*** The un-annotated tag, $short_refname, is not allowed in this repository" >&2
-			echo "*** Use 'git tag [ -a | -s ]' for tags you want to propagate." >&2
-			exit 1
-		fi
-		;;
-	refs/tags/*,delete)
-		# delete tag
-		if [ "$allowdeletetag" != "true" ]; then
-			echo "*** Deleting a tag is not allowed in this repository" >&2
-			exit 1
-		fi
-		;;
-	refs/tags/*,tag)
-		# annotated tag
-		if [ "$allowmodifytag" != "true" ] && git rev-parse $refname > /dev/null 2>&1
-		then
-			echo "*** Tag '$refname' already exists." >&2
-			echo "*** Modifying a tag is not allowed in this repository." >&2
-			exit 1
-		fi
-		;;
-	refs/heads/*,commit)
-		# branch
-		if [ "$oldrev" = "$zero" -a "$denycreatebranch" = "true" ]; then
-			echo "*** Creating a branch is not allowed in this repository" >&2
-			exit 1
-		fi
-		;;
-	refs/heads/*,delete)
-		# delete branch
-		if [ "$allowdeletebranch" != "true" ]; then
-			echo "*** Deleting a branch is not allowed in this repository" >&2
-			exit 1
-		fi
-		;;
-	refs/remotes/*,commit)
-		# tracking branch
-		;;
-	refs/remotes/*,delete)
-		# delete tracking branch
-		if [ "$allowdeletebranch" != "true" ]; then
-			echo "*** Deleting a tracking branch is not allowed in this repository" >&2
-			exit 1
-		fi
-		;;
-	*)
-		# Anything else (is there anything else?)
-		echo "*** Update hook: unknown type of update to ref $refname of type $newrev_type" >&2
-		exit 1
-		;;
-esac
-
-# --- Finished
-exit 0
-````
-
-## File: chrono-dashboard/.git/info/exclude
-````
-# git ls-files --others --exclude-from=.git/info/exclude
-# Lines that start with '#' are comments.
-# For a project mostly in C, the following would be a good set of
-# exclude patterns (uncomment them if you want to use them):
-# *.[oa]
-# *~
-````
-
-## File: chrono-dashboard/.git/logs/HEAD
-````
-0000000000000000000000000000000000000000 f7251c5082bdb322a0be6d37f6606b0c030b33c7 revillozajohnharold-debug <revilloza.johnharold@marsu.edu.ph> 1775268256 +0800	commit (initial): Initialize project using Create React App
-````
-
-## File: chrono-dashboard/.git/logs/refs/heads/master
-````
-0000000000000000000000000000000000000000 f7251c5082bdb322a0be6d37f6606b0c030b33c7 revillozajohnharold-debug <revilloza.johnharold@marsu.edu.ph> 1775268256 +0800	commit (initial): Initialize project using Create React App
-````
-
-## File: chrono-dashboard/.git/refs/heads/master
-````
-f7251c5082bdb322a0be6d37f6606b0c030b33c7
-````
-
-## File: chrono-dashboard/.gitignore
-````
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# 1. Dependencies
+# Ignore node_modules in root, chrono-dashboard, and chronoquest-api
+node_modules/
+**/node_modules/
+.pnp
 .pnp.js
 
-# testing
-/coverage
+# 2. Security (CRITICAL)
+# Protects your MongoDB URI and JWT_SECRET
+.env
+**/.env
+*.env
+.env*.local
 
-# production
-/build
+# 3. Production & Build Artifacts
+# Frontend build folders
+build/
+dist/
+out/
+# Backend/Next.js artifacts
+.next/
+bin/
+obj/
 
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
+# 4. Logs & Debugging
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
+logs/
+pids/
+*.pid
+*.seed
+*.flare
+
+# 5. Editor & OS Specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 6. Testing
+coverage/
+*.lcov
 ````
 
 ## File: chrono-dashboard/package.json
@@ -1451,6 +1553,364 @@ test('renders learn react link', () => {
   const linkElement = screen.getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });
+````
+
+## File: chrono-dashboard/src/components/admin/FeedbackSection.js
+````javascript
+import React from 'react';
+import { MessageSquare, ChevronDown, ChevronUp, CheckCircle, Clock, FileText } from 'lucide-react';
+
+const FeedbackSection = ({
+    feedbackSearch,
+    setFeedbackSearch,
+    filteredFeedback,
+    feedback,
+    expandedFeedback,
+    setExpandedFeedback
+}) => {
+    const getPriorityColor = (priority) => {
+        const colors = {
+            critical: 'badge-critical',
+            high: 'badge-high',
+            medium: 'badge-medium',
+            low: 'badge-low'
+        };
+        return colors[priority] || 'badge-default';
+    };
+
+    const getPriorityLabel = (priority) => {
+        return priority ? priority.charAt(0).toUpperCase() + priority.slice(1) : 'Normal';
+    };
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const formatDateTime = (date) => {
+        return new Date(date).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    return (
+        <div className="space-y-8">
+            <div className="flex-between">
+                <div>
+                    <h2 className="page-title">Feedback & Support</h2>
+                    <p className="page-subtitle">Instructor feedback and support tickets</p>
+                </div>
+                <input
+                    type="text"
+                    placeholder="Search feedback..."
+                    value={feedbackSearch}
+                    onChange={(e) => setFeedbackSearch(e.target.value)}
+                    className="form-input-sm"
+                    style={{ width: '240px' }}
+                />
+            </div>
+
+            <div className="card">
+                <h3 className="section-title" style={{ marginBottom: '24px' }}>
+                    Tickets ({filteredFeedback.length}{feedbackSearch ? ` of ${feedback.length}` : ''})
+                </h3>
+                <div className="space-y-4">
+                    {filteredFeedback.length === 0 ? (
+                        <div className="empty-state">
+                            <MessageSquare className="empty-state-icon" size={48} />
+                            <p className="empty-state-text">No feedback found</p>
+                        </div>
+                    ) : filteredFeedback.map(fb => {
+                        const isExpanded = expandedFeedback === fb._id;
+                        const hasResponse = fb.response && fb.response.respondedAt;
+                        const hasAttachments = fb.attachments && fb.attachments.length > 0;
+
+                        return (
+                            <div
+                                key={fb._id}
+                                className="feedback-item"
+                                style={{
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '8px',
+                                    overflow: 'hidden',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
+                            >
+                                {/* Header - Always Visible */}
+                                <div
+                                    style={{
+                                        padding: '16px',
+                                        backgroundColor: '#f8fafc',
+                                        borderBottom: isExpanded ? '1px solid #e2e8f0' : 'none',
+                                        cursor: 'pointer',
+                                        transition: 'background-color 0.2s ease'
+                                    }}
+                                    onClick={() => setExpandedFeedback(isExpanded ? null : fb._id)}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px' }}>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                                                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                    {fb.title}
+                                                </h4>
+                                                {hasResponse && (
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', fontWeight: 600, color: '#059669', backgroundColor: '#d1fae5', padding: '2px 8px', borderRadius: '4px', flexShrink: 0 }}>
+                                                        <CheckCircle size={12} /> Responded
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {fb.submittedBy?.name || fb.submittedBy?.email || '—'} • {formatDate(fb.createdAt)}
+                                            </p>
+                                        </div>
+
+                                        {/* Badge Section */}
+                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                                            {fb.priority && (
+                                                <span className={`badge ${getPriorityColor(fb.priority)}`} style={{ fontSize: '0.75rem' }}>
+                                                    {getPriorityLabel(fb.priority)}
+                                                </span>
+                                            )}
+                                            <span className={`badge ${fb.type === 'bug_report' ? 'badge-red' : fb.type === 'feature_request' ? 'badge-blue' : 'badge-amber'}`} style={{ fontSize: '0.75rem' }}>
+                                                {fb.type?.replace(/_/g, ' ').charAt(0).toUpperCase() + fb.type?.replace(/_/g, ' ').slice(1) || 'Feedback'}
+                                            </span>
+                                            <span className={`badge ${fb.status === 'open' ? 'badge-open' : fb.status === 'in_progress' ? 'badge-warning' : 'badge-resolved'}`} style={{ fontSize: '0.75rem' }}>
+                                                {fb.status?.replace(/_/g, ' ').toUpperCase()}
+                                            </span>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setExpandedFeedback(isExpanded ? null : fb._id);
+                                                }}
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: '#64748b',
+                                                    padding: '4px',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    flexShrink: 0
+                                                }}
+                                            >
+                                                {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Expanded Content */}
+                                {isExpanded && (
+                                    <div style={{ padding: '16px', backgroundColor: '#fafbfc' }}>
+                                        {/* Full Description */}
+                                        <div style={{ marginBottom: '16px' }}>
+                                            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#475569', marginBottom: '8px' }}>Description:</p>
+                                            <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: '1.5', margin: 0 }}>
+                                                {fb.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Metadata Row */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #e2e8f0' }}>
+                                            <div>
+                                                <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Submitted By</p>
+                                                <p style={{ fontSize: '0.875rem', color: '#1e293b', margin: 0 }}>{fb.submittedBy?.name || '—'}</p>
+                                                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '2px 0 0 0' }}>{fb.submittedBy?.email || '—'}</p>
+                                            </div>
+                                            <div>
+                                                <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Created</p>
+                                                <p style={{ fontSize: '0.875rem', color: '#1e293b', margin: 0 }}>{formatDate(fb.createdAt)}</p>
+                                            </div>
+                                            {fb.updatedAt && fb.updatedAt !== fb.createdAt && (
+                                                <div>
+                                                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Last Updated</p>
+                                                    <p style={{ fontSize: '0.875rem', color: '#1e293b', margin: 0 }}>{formatDate(fb.updatedAt)}</p>
+                                                </div>
+                                            )}
+                                            {hasAttachments && (
+                                                <div>
+                                                    <p style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', marginBottom: '4px' }}>Attachments</p>
+                                                    <p style={{ fontSize: '0.875rem', color: '#1e293b', margin: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                        <FileText size={14} /> {fb.attachments.length} file{fb.attachments.length !== 1 ? 's' : ''}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Admin Response */}
+                                        {hasResponse ? (
+                                            <div
+                                                style={{
+                                                    backgroundColor: '#f0fdf4',
+                                                    border: '1px solid #d1fae5',
+                                                    borderRadius: '6px',
+                                                    padding: '12px',
+                                                    marginTop: '12px'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                                    <CheckCircle size={16} style={{ color: '#059669' }} />
+                                                    <p style={{ fontSize: '0.875rem', fontWeight: 600, color: '#059669', margin: 0 }}>
+                                                        Response from {fb.response.admin?.name || 'Admin'}
+                                                    </p>
+                                                </div>
+                                                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '4px 0', fontStyle: 'italic' }}>
+                                                    {formatDateTime(fb.response.respondedAt)}
+                                                </p>
+                                                <p style={{ fontSize: '0.875rem', color: '#047857', lineHeight: '1.5', marginTop: '8px', marginBottom: 0 }}>
+                                                    {fb.response.message}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    backgroundColor: '#fef3c7',
+                                                    border: '1px solid #fcd34d',
+                                                    borderRadius: '6px',
+                                                    padding: '12px',
+                                                    marginTop: '12px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px'
+                                                }}
+                                            >
+                                                <Clock size={16} style={{ color: '#d97706' }} />
+                                                <p style={{ fontSize: '0.875rem', color: '#92400e', margin: 0 }}>
+                                                    Awaiting response
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default FeedbackSection;
+````
+
+## File: chrono-dashboard/src/components/admin/UsersList.js
+````javascript
+import React from 'react';
+import { Trash2, Edit2, AlertCircle } from 'lucide-react';
+
+const UsersList = ({
+    searchTerm,
+    setSearchTerm,
+    users,
+    filteredTeachers,
+    filteredStudents,
+    handleEditUser,
+    handleDeactivateUser,
+    handleDeleteUser
+}) => {
+    return (
+        <div className="space-y-8">
+            <div className="flex-between">
+                <h2 className="page-title">User Management</h2>
+                <input
+                    type="text"
+                    placeholder="Search by name, email, or class code..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="form-input-sm"
+                    style={{ width: '280px' }}
+                />
+            </div>
+
+            <div className="card">
+                <h3 className="section-title" style={{ marginBottom: '24px' }}>
+                    Instructors ({filteredTeachers.length}{searchTerm ? ` of ${users.teachers?.length || 0}` : ''})
+                </h3>
+                <div className="table-wrapper">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Classes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredTeachers.length === 0 ? (
+                                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No instructors match your search</td></tr>
+                            ) : filteredTeachers.map(t => (
+                                <tr key={t._id}>
+                                    <td className="table-cell-name">{t.name}</td>
+                                    <td className="table-cell-sub">{t.email}</td>
+                                    <td className="table-cell-sub">{t.totalSections}</td>
+                                    <td>
+                                        <span className={`badge ${t.isActive ? 'badge-active' : 'badge-inactive'}`}>
+                                            {t.isActive ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className="table-actions">
+                                            <button onClick={() => handleEditUser(t, 'teacher')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleDeactivateUser(t._id, 'teacher')} className="btn-icon btn-icon-yellow" title="Deactivate"><AlertCircle size={16} /></button>
+                                            <button onClick={() => handleDeleteUser(t._id, 'teacher')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div className="card">
+                <h3 className="section-title" style={{ marginBottom: '24px' }}>
+                    Learners ({filteredStudents.length}{searchTerm ? ` of ${users.students?.length || 0}` : ''})
+                </h3>
+                <div className="table-wrapper">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Class Code</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredStudents.length === 0 ? (
+                                <tr><td colSpan={4} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No learners match your search</td></tr>
+                            ) : filteredStudents.map(s => (
+                                <tr key={s._id}>
+                                    <td className="table-cell-name">{s.name}</td>
+                                    <td className="table-cell-sub">{s.email}</td>
+                                    <td className="table-cell-mono">{s.classCode}</td>
+                                    <td>
+                                        <div className="table-actions">
+                                            <button onClick={() => handleEditUser(s, 'student')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleDeleteUser(s._id, 'student')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default UsersList;
 ````
 
 ## File: chrono-dashboard/src/components/AdminSidebar.js
@@ -2000,6 +2460,22 @@ body {
     border-color: #94a3b8;
 }
 
+.form-input:invalid {
+    border-color: #ef4444;
+}
+
+.form-input-error {
+    border-color: #ef4444 !important;
+}
+
+.form-error-text {
+    color: #ef4444;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 8px;
+    display: block;
+}
+
 .form-input::placeholder {
     color: #cbd5e1;
 }
@@ -2484,6 +2960,88 @@ body {
     display: flex;
     align-items: flex-end;
     gap: 16px;
+}
+
+/* ========================================
+   LEADERBOARD
+   ======================================== */
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.leaderboard-item {
+    display: grid;
+    grid-template-columns: 40px 1fr 60px;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.leaderboard-item:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.leaderboard-rank {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #0f172a;
+    text-align: center;
+}
+
+.leaderboard-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.leaderboard-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.leaderboard-code {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.leaderboard-score {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #2563eb;
+    text-align: right;
 }
 
 /* ========================================
@@ -3646,592 +4204,6 @@ reportWebVitals();
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3"><g fill="#61DAFB"><path d="M666.3 296.5c0-32.5-40.7-63.3-103.1-82.4 14.4-63.6 8-114.2-20.2-130.4-6.5-3.8-14.1-5.6-22.4-5.6v22.3c4.6 0 8.3.9 11.4 2.6 13.6 7.8 19.5 37.5 14.9 75.7-1.1 9.4-2.9 19.3-5.1 29.4-19.6-4.8-41-8.5-63.5-10.9-13.5-18.5-27.5-35.3-41.6-50 32.6-30.3 63.2-46.9 84-46.9V78c-27.5 0-63.5 19.6-99.9 53.6-36.4-33.8-72.4-53.2-99.9-53.2v22.3c20.7 0 51.4 16.5 84 46.6-14 14.7-28 31.4-41.3 49.9-22.6 2.4-44 6.1-63.6 11-2.3-10-4-19.7-5.2-29-4.7-38.2 1.1-67.9 14.6-75.8 3-1.8 6.9-2.6 11.5-2.6V78.5c-8.4 0-16 1.8-22.6 5.6-28.1 16.2-34.4 66.7-19.9 130.1-62.2 19.2-102.7 49.9-102.7 82.3 0 32.5 40.7 63.3 103.1 82.4-14.4 63.6-8 114.2 20.2 130.4 6.5 3.8 14.1 5.6 22.5 5.6 27.5 0 63.5-19.6 99.9-53.6 36.4 33.8 72.4 53.2 99.9 53.2 8.4 0 16-1.8 22.6-5.6 28.1-16.2 34.4-66.7 19.9-130.1 62-19.1 102.5-49.9 102.5-82.3zm-130.2-66.7c-3.7 12.9-8.3 26.2-13.5 39.5-4.1-8-8.4-16-13.1-24-4.6-8-9.5-15.8-14.4-23.4 14.2 2.1 27.9 4.7 41 7.9zm-45.8 106.5c-7.8 13.5-15.8 26.3-24.1 38.2-14.9 1.3-30 2-45.2 2-15.1 0-30.2-.7-45-1.9-8.3-11.9-16.4-24.6-24.2-38-7.6-13.1-14.5-26.4-20.8-39.8 6.2-13.4 13.2-26.8 20.7-39.9 7.8-13.5 15.8-26.3 24.1-38.2 14.9-1.3 30-2 45.2-2 15.1 0 30.2.7 45 1.9 8.3 11.9 16.4 24.6 24.2 38 7.6 13.1 14.5 26.4 20.8 39.8-6.3 13.4-13.2 26.8-20.7 39.9zm32.3-13c5.4 13.4 10 26.8 13.8 39.8-13.1 3.2-26.9 5.9-41.2 8 4.9-7.7 9.8-15.6 14.4-23.7 4.6-8 8.9-16.1 13-24.1zM421.2 430c-9.3-9.6-18.6-20.3-27.8-32 9 .4 18.2.7 27.5.7 9.4 0 18.7-.2 27.8-.7-9 11.7-18.3 22.4-27.5 32zm-74.4-58.9c-14.2-2.1-27.9-4.7-41-7.9 3.7-12.9 8.3-26.2 13.5-39.5 4.1 8 8.4 16 13.1 24 4.7 8 9.5 15.8 14.4 23.4zM420.7 163c9.3 9.6 18.6 20.3 27.8 32-9-.4-18.2-.7-27.5-.7-9.4 0-18.7.2-27.8.7 9-11.7 18.3-22.4 27.5-32zm-74 58.9c-4.9 7.7-9.8 15.6-14.4 23.7-4.6 8-8.9 16-13 24-5.4-13.4-10-26.8-13.8-39.8 13.1-3.1 26.9-5.8 41.2-7.9zm-90.5 125.2c-35.4-15.1-58.3-34.9-58.3-50.6 0-15.7 22.9-35.6 58.3-50.6 8.6-3.7 18-7 27.7-10.1 5.7 19.6 13.2 40 22.5 60.9-9.2 20.8-16.6 41.1-22.2 60.6-9.9-3.1-19.3-6.5-28-10.2zM310 490c-13.6-7.8-19.5-37.5-14.9-75.7 1.1-9.4 2.9-19.3 5.1-29.4 19.6 4.8 41 8.5 63.5 10.9 13.5 18.5 27.5 35.3 41.6 50-32.6 30.3-63.2 46.9-84 46.9-4.5-.1-8.3-1-11.3-2.7zm237.2-76.2c4.7 38.2-1.1 67.9-14.6 75.8-3 1.8-6.9 2.6-11.5 2.6-20.7 0-51.4-16.5-84-46.6 14-14.7 28-31.4 41.3-49.9 22.6-2.4 44-6.1 63.6-11 2.3 10.1 4.1 19.8 5.2 29.1zm38.5-66.7c-8.6 3.7-18 7-27.7 10.1-5.7-19.6-13.2-40-22.5-60.9 9.2-20.8 16.6-41.1 22.2-60.6 9.9 3.1 19.3 6.5 28.1 10.2 35.4 15.1 58.3 34.9 58.3 50.6-.1 15.7-23 35.6-58.4 50.6zM320.8 78.4z"/><circle cx="420.9" cy="296.5" r="45.7"/><path d="M520.5 78.1z"/></g></svg>
 ````
 
-## File: chrono-dashboard/src/pages/AdminPanel.js
-````javascript
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import AdminSidebar from '../components/AdminSidebar';
-import QuestionManagement from './QuestionManagement';
-import toast, { Toaster } from 'react-hot-toast';
-import { Users, Trash2, BookOpen, Edit2, AlertCircle, Lock, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
-
-const API_BASE = "http://localhost:3000/api/v1";
-
-const StatCard = ({ title, value, icon }) => (
-    <div className="stat-card">
-        <p className="stat-card-label">{title}</p>
-        <div className="stat-card-icon-row">
-            <div className="text-slate-900">{icon}</div>
-            <p className="stat-card-value">{value}</p>
-        </div>
-    </div>
-);
-
-const AdminPanel = () => {
-    const { teacher, logout } = useContext(AuthContext);
-    const [activeTab, setActiveTab] = useState('dashboard');
-    const [loading, setLoading] = useState(false);
-
-    const [users, setUsers] = useState({ teachers: [], students: [] });
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [editingUserType, setEditingUserType] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher', adminLevel: '' });
-
-    const [analytics, setAnalytics] = useState(null);
-    const [activityLogs, setActivityLogs] = useState([]);
-    const [feedback, setFeedback] = useState([]);
-    const [feedbackSearch, setFeedbackSearch] = useState('');
-    const [expandedFeedback, setExpandedFeedback] = useState(null);
-
-    const [settingsForm, setSettingsForm] = useState({
-        max_learning_groups_per_instructor: '',
-        max_learners_per_group: ''
-    });
-    const [settingsSaving, setSettingsSaving] = useState(false);
-
-    const token = localStorage.getItem('teacherToken');
-    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
-
-    useEffect(() => {
-        if (teacher && teacher.role !== 'admin') {
-            toast.error('Admin access required');
-            logout();
-        }
-    }, [teacher, logout]);
-
-    const fetchAllUsers = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
-            setUsers(data);
-            toast.success('Users loaded');
-        } catch (error) {
-            toast.error('Failed to load users');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleDeactivateUser = async (userId, userType) => {
-        if (window.confirm('Are you sure you want to deactivate this user?')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
-                toast.success('User deactivated');
-                fetchAllUsers();
-            } catch (error) {
-                toast.error('Failed to deactivate user');
-            }
-        }
-    };
-
-    const handleDeleteUser = async (userId, userType) => {
-        if (window.confirm('Confirm deletion? This action cannot be undone!')) {
-            try {
-                await axios.delete(`${API_BASE}/admin/users/${userId}`, { headers, data: { userId, userType } });
-                toast.success('User deleted');
-                fetchAllUsers();
-            } catch (error) {
-                toast.error('Failed to delete user');
-            }
-        }
-    };
-
-    const handleEditUser = (user, userType) => {
-        setEditingUser(user);
-        setEditingUserType(userType);
-        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher', adminLevel: user.adminLevel || '' });
-        setEditModalOpen(true);
-    };
-
-    const handleUpdateUser = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
-            toast.success('User updated successfully');
-            setEditModalOpen(false);
-            fetchAllUsers();
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update user');
-        }
-    };
-
-    const fetchAnalytics = useCallback(async () => {
-        setLoading(true);
-        try {
-            const [analyticsRes, activityRes] = await Promise.all([
-                axios.get(`${API_BASE}/admin/analytics`, { headers }),
-                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
-            ]);
-            setAnalytics(analyticsRes.data);
-            setActivityLogs(activityRes.data.logs || []);
-        } catch (error) {
-            toast.error('Failed to load analytics');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const fetchFeedback = useCallback(async () => {
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
-            setFeedback(data);
-        } catch (error) {
-            toast.error('Failed to load feedback');
-        }
-    }, [headers]);
-
-    const fetchSettings = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
-            setSettingsForm(prev => ({
-                ...prev,
-                max_learning_groups_per_instructor: data.max_learning_groups_per_instructor?.value || 5,
-                max_learners_per_group: data.max_learners_per_group?.value || 50
-            }));
-        } catch (error) {
-            toast.error('Failed to load settings');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleSaveSettings = async () => {
-        setSettingsSaving(true);
-        try {
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learning_groups_per_instructor',
-                value: parseInt(settingsForm.max_learning_groups_per_instructor),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learners_per_group',
-                value: parseInt(settingsForm.max_learners_per_group),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            toast.success('Settings saved successfully');
-            fetchSettings();
-        } catch (error) {
-            toast.error('Failed to save settings');
-        }
-        setSettingsSaving(false);
-    };
-
-    useEffect(() => {
-        if (activeTab === 'users') fetchAllUsers();
-        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
-        else if (activeTab === 'feedback') fetchFeedback();
-        else if (activeTab === 'settings') fetchSettings();
-    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
-
-    // Search filters — computed outside sub-components so they react to state changes
-    const filteredTeachers = users.teachers?.filter(t =>
-        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.email.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredStudents = users.students?.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredFeedback = feedback.filter(fb => {
-        if (!feedbackSearch) return true;
-        const q = feedbackSearch.toLowerCase();
-        return (
-            fb.title?.toLowerCase().includes(q) ||
-            fb.description?.toLowerCase().includes(q) ||
-            fb.submittedBy?.email?.toLowerCase().includes(q) ||
-            fb.submittedBy?.name?.toLowerCase().includes(q) ||
-            fb.type?.toLowerCase().includes(q) ||
-            fb.status?.toLowerCase().includes(q)
-        );
-    });
-
-    const UsersList = () => (
-        <div className="space-y-8">
-            <div className="flex-between">
-                <h2 className="page-title">User Management</h2>
-                <input
-                    type="text"
-                    placeholder="Search by name, email, or class code..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="form-input-sm"
-                    style={{ width: '280px' }}
-                />
-            </div>
-
-            <div className="card">
-                <h3 className="section-title" style={{ marginBottom: '24px' }}>
-                    Instructors ({filteredTeachers.length}{searchTerm ? ` of ${users.teachers?.length || 0}` : ''})
-                </h3>
-                <div className="table-wrapper">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Classes</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredTeachers.length === 0 ? (
-                                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No instructors match your search</td></tr>
-                            ) : filteredTeachers.map(t => (
-                                <tr key={t._id}>
-                                    <td className="table-cell-name">{t.name}</td>
-                                    <td className="table-cell-sub">{t.email}</td>
-                                    <td className="table-cell-sub">{t.totalSections}</td>
-                                    <td>
-                                        <span className={`badge ${t.isActive ? 'badge-active' : 'badge-inactive'}`}>
-                                            {t.isActive ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className="table-actions">
-                                            <button onClick={() => handleEditUser(t, 'teacher')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
-                                            <button onClick={() => handleDeactivateUser(t._id, 'teacher')} className="btn-icon btn-icon-yellow" title="Deactivate"><AlertCircle size={16} /></button>
-                                            <button onClick={() => handleDeleteUser(t._id, 'teacher')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div className="card">
-                <h3 className="section-title" style={{ marginBottom: '24px' }}>
-                    Learners ({filteredStudents.length}{searchTerm ? ` of ${users.students?.length || 0}` : ''})
-                </h3>
-                <div className="table-wrapper">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Class Code</th>
-                                <th>Performance</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredStudents.length === 0 ? (
-                                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No learners match your search</td></tr>
-                            ) : filteredStudents.map(s => (
-                                <tr key={s._id}>
-                                    <td className="table-cell-name">{s.name}</td>
-                                    <td className="table-cell-sub">{s.email}</td>
-                                    <td className="table-cell-mono">{s.classCode}</td>
-                                    <td><span className="badge badge-amber">{s.score || 0}</span></td>
-                                    <td>
-                                        <div className="table-actions">
-                                            <button onClick={() => handleEditUser(s, 'student')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
-                                            <button onClick={() => handleDeleteUser(s._id, 'student')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
-
-    const AnalyticsDashboard = () => {
-        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
-        return (
-            <div className="space-y-10">
-                <div>
-                    <h2 className="page-title">Learning Analytics</h2>
-                    <p className="page-subtitle">System-wide overview and statistics</p>
-                </div>
-                <div className="grid-4">
-                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={24} />} />
-                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={24} />} />
-                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={24} />} />
-                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={24} />} />
-                </div>
-
-                {activityLogs.length > 0 && (
-                    <div className="card">
-                        <div style={{ marginBottom: '24px' }}>
-                            <h3 className="section-title">Recent Activity</h3>
-                            <p className="section-subtitle">Last 50 system activities</p>
-                        </div>
-                        <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
-                                            <th key={h} style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.875rem' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {activityLogs.map(log => (
-                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
-                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
-                                                <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '4px 0 0 0' }}>{log.userEmail}</p>
-                                            </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
-                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '4px 8px', borderRadius: '4px', fontWeight: 600 }}>
-                                                    {log.action?.replace(/_/g, ' ')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                                                {new Date(log.createdAt).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
-                                                <span style={{
-                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
-                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
-                                                    padding: '4px 8px', borderRadius: '4px', fontWeight: 600
-                                                }}>
-                                                    {log.status?.toUpperCase()}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                {log.details ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    };
-
-    const FeedbackSection = () => (
-        <div className="space-y-8">
-            <div className="flex-between">
-                <div>
-                    <h2 className="page-title">Feedback & Support</h2>
-                    <p className="page-subtitle">Instructor feedback and support tickets</p>
-                </div>
-                <input
-                    type="text"
-                    placeholder="Search feedback..."
-                    value={feedbackSearch}
-                    onChange={(e) => setFeedbackSearch(e.target.value)}
-                    className="form-input-sm"
-                    style={{ width: '240px' }}
-                />
-            </div>
-
-            <div className="card">
-                <h3 className="section-title" style={{ marginBottom: '24px' }}>
-                    Tickets ({filteredFeedback.length}{feedbackSearch ? ` of ${feedback.length}` : ''})
-                </h3>
-                <div className="space-y-4">
-                    {filteredFeedback.length === 0 ? (
-                        <div className="empty-state">
-                            <MessageSquare className="empty-state-icon" size={48} />
-                            <p className="empty-state-text">No feedback found</p>
-                        </div>
-                    ) : filteredFeedback.map(fb => {
-                        const isExpanded = expandedFeedback === fb._id;
-                        return (
-                            <div key={fb._id} className="feedback-item">
-                                <div className="feedback-item-body">
-                                    <div style={{ flex: 1 }}>
-                                        <h4 className="feedback-item-title">{fb.title}</h4>
-                                        <p className="feedback-item-desc">
-                                            {isExpanded
-                                                ? fb.description
-                                                : `${fb.description?.substring(0, 120) || ''}${fb.description?.length > 120 ? '...' : ''}`
-                                            }
-                                        </p>
-                                        <div className="feedback-item-meta">
-                                            <p className="table-cell-meta">From: {fb.submittedBy?.name || fb.submittedBy?.email || '—'}</p>
-                                            <span className="text-slate-400">•</span>
-                                            <p className="table-cell-meta">{new Date(fb.createdAt).toLocaleDateString()}</p>
-                                        </div>
-                                    </div>
-                                    <div className="feedback-item-badges">
-                                        <span className={`badge ${fb.type === 'bug_report' ? 'badge-red' : 'badge-blue'}`}>
-                                            {fb.type?.replace(/_/g, ' ')}
-                                        </span>
-                                        <span className={`badge ${fb.status === 'open' ? 'badge-open' : 'badge-resolved'}`}>
-                                            {fb.status}
-                                        </span>
-                                        {fb.description?.length > 120 && (
-                                            <button
-                                                onClick={() => setExpandedFeedback(isExpanded ? null : fb._id)}
-                                                style={{
-                                                    background: 'none', border: '1px solid #e2e8f0',
-                                                    borderRadius: '6px', padding: '3px 8px',
-                                                    cursor: 'pointer', color: '#64748b',
-                                                    display: 'inline-flex', alignItems: 'center', gap: '3px',
-                                                    fontSize: '0.75rem', fontWeight: 600,
-                                                }}
-                                            >
-                                                {isExpanded ? <><ChevronUp size={12} /> Less</> : <><ChevronDown size={12} /> More</>}
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </div>
-    );
-
-    const SettingsSection = () => (
-        <div className="space-y-8">
-            <h2 className="page-title">System Settings</h2>
-            <div className="card">
-                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
-                </h3>
-                {loading ? (
-                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
-                ) : (
-                    <div className="space-y-6">
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
-                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learning_groups_per_instructor}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learners Per Learning Group</p>
-                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learners_per_group}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
-                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
-                                {settingsSaving ? 'Saving...' : 'Save Settings'}
-                            </button>
-                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-
-    return (
-        <div className="page">
-            <Toaster position="top-right" />
-            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-            <main className="main-padded">
-                <header className="page-header">
-                    <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
-                </header>
-
-                {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700 }}>Loading...</div>}
-                {activeTab === 'dashboard' && <AnalyticsDashboard />}
-                {activeTab === 'users' && <UsersList />}
-                {activeTab === 'questions' && <QuestionManagement />}
-                {activeTab === 'feedback' && <FeedbackSection />}
-                {activeTab === 'settings' && <SettingsSection />}
-            </main>
-
-            {editModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-md">
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
-                        <form onSubmit={handleUpdateUser} className="space-y-6">
-                            <div className="form-group">
-                                <label className="form-label-sm">Name</label>
-                                <input
-                                    type="text"
-                                    value={editFormData.name}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="User name"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label-sm">Email</label>
-                                <input
-                                    type="email"
-                                    value={editFormData.email}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="user@example.com"
-                                />
-                            </div>
-                            {editingUserType === 'teacher' && (
-                                <>
-                                    <div className="form-group">
-                                        <label className="form-label-sm">Role</label>
-                                        <select
-                                            value={editFormData.role}
-                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value, adminLevel: e.target.value === 'teacher' ? '' : prev.adminLevel }))}
-                                            className="form-select"
-                                        >
-                                            <option value="teacher">Teacher</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </div>
-                                    {editFormData.role === 'admin' && (
-                                        <div className="form-group">
-                                            <label className="form-label-sm">Admin Level</label>
-                                            <select
-                                                value={editFormData.adminLevel}
-                                                onChange={(e) => setEditFormData(prev => ({ ...prev, adminLevel: e.target.value }))}
-                                                className="form-select"
-                                            >
-                                                <option value="">Select Level</option>
-                                                <option value="super_admin">Super Admin</option>
-                                                <option value="content_admin">Content Admin</option>
-                                                <option value="support_admin">Support Admin</option>
-                                            </select>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
-                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
-                                <button type="submit" className="btn-indigo">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default AdminPanel;
-````
-
 ## File: chrono-dashboard/src/pages/ClassResults.js
 ````javascript
 import React, { useState, useEffect, useCallback } from 'react';
@@ -4394,721 +4366,6 @@ const ClassResults = ({ sections = [], selectedSection = '', onSectionSelect = (
 };
 
 export default ClassResults;
-````
-
-## File: chrono-dashboard/src/pages/Dashboard.js
-````javascript
-import React, { useState, useContext, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import TeacherSidebar from '../components/TeacherSidebar';
-import ProfileSettings from './ProfileSettings';
-import ClassResults from './ClassResults';
-import toast, { Toaster } from 'react-hot-toast';
-import { BarChart3, Trash, Copy, Archive, RotateCcw } from 'lucide-react';
-
-const API_BASE = "http://localhost:3000/api/v1";
-
-const Dashboard = () => {
-    const [activeTab, setActiveTab] = useState('overview');
-    const { teacher, setTeacher } = useContext(AuthContext);
-    const [selectedSection, setSelectedSection] = useState("");
-    const [newSectionName, setNewSectionName] = useState("");
-    const [summary, setSummary] = useState({ totalStudents: 0, avgScore: 0, totalAssessments: 0 });
-    const [modalOpen, setModalOpen] = useState(false);
-    const [showArchived, setShowArchived] = useState(false);
-
-    const [feedbackTitle, setFeedbackTitle] = useState("");
-    const [feedbackDescription, setFeedbackDescription] = useState("");
-    const [feedbackType, setFeedbackType] = useState("general_feedback");
-    const [feedbackPriority, setFeedbackPriority] = useState("medium");
-    const [feedbackLoading, setFeedbackLoading] = useState(false);
-
-    const fetchTeacherProfile = useCallback(async () => {
-        const token = localStorage.getItem('teacherToken');
-        if (!token) return;
-        try {
-            const { data } = await axios.get(`${API_BASE}/auth/profile?t=${Date.now()}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setTeacher(data);
-        } catch (err) {
-            console.error("Session expired or sync failed");
-        }
-    }, [setTeacher]);
-
-    useEffect(() => {
-        if (teacher?.sections?.length > 0) {
-            const activeSections = teacher.sections.filter(s => !s.isArchived);
-            const sectionExists = teacher.sections.some(s => s.classCode === selectedSection);
-            if (!selectedSection || !sectionExists) {
-                const initialSection = activeSections.length > 0
-                    ? activeSections[0].classCode
-                    : teacher.sections[0].classCode;
-                setSelectedSection(initialSection);
-            }
-        } else {
-            setSelectedSection("");
-        }
-    }, [teacher, selectedSection]);
-
-    const fetchSummary = useCallback(async () => {
-        if (!selectedSection) {
-            setSummary({ totalStudents: 0, avgScore: 0, totalAssessments: 0 });
-            return;
-        }
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const headers = { Authorization: `Bearer ${token}` };
-            const [scoresRes, questRes] = await Promise.all([
-                axios.get(`${API_BASE}/analytics/overall`, { headers }),
-                axios.get(`${API_BASE}/questions`, { headers })
-            ]);
-            const filtered = scoresRes.data.filter(s => s.classCode === selectedSection);
-            setSummary({
-                totalStudents: filtered.length,
-                avgScore: filtered.length > 0
-                    ? (filtered.reduce((acc, curr) => acc + (curr.score || 0), 0) / filtered.length).toFixed(1)
-                    : 0,
-                totalAssessments: questRes.data.length
-            });
-        } catch (err) {
-            console.error("Summary fetch error");
-        }
-    }, [selectedSection]);
-
-    useEffect(() => { fetchTeacherProfile(); }, [fetchTeacherProfile]);
-    useEffect(() => { fetchSummary(); }, [fetchSummary]);
-    useEffect(() => {
-        if (teacher) localStorage.setItem('teacherData', JSON.stringify(teacher));
-    }, [teacher]);
-
-    const handleDeleteSection = async (classCode, e) => {
-        e.stopPropagation();
-        if (!window.confirm("Are you sure? This will permanently delete the section and its scores.")) return;
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.delete(`${API_BASE}/teacher/delete-section/${classCode}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            toast.success("Section removed successfully");
-            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
-            else fetchTeacherProfile();
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to delete section");
-        }
-    };
-
-    const handleArchiveSection = async (classCode, e) => {
-        e.stopPropagation();
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.post(`${API_BASE}/teacher/archive-section/${classCode}`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            toast.success("Section archived successfully");
-            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to archive section");
-        }
-    };
-
-    const handleUnarchiveSection = async (classCode, e) => {
-        e.stopPropagation();
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.post(`${API_BASE}/teacher/unarchive-section/${classCode}`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            toast.success("Section restored successfully");
-            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to restore section");
-        }
-    };
-
-    const handleAddSection = async () => {
-        if (!newSectionName.trim()) return toast.error("Enter section name");
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.post(`${API_BASE}/teacher/add-section`,
-                { sectionName: newSectionName },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setTeacher(data.updatedTeacher);
-            setSelectedSection(data.newSection.classCode);
-            setModalOpen(false);
-            setNewSectionName("");
-            toast.success("Section created");
-        } catch (err) { toast.error("Failed to create section"); }
-    };
-
-    const handleSubmitFeedback = async () => {
-        if (!feedbackTitle.trim() || !feedbackDescription.trim()) {
-            return toast.error("Title and description are required");
-        }
-        setFeedbackLoading(true);
-        try {
-            const token = localStorage.getItem('teacherToken');
-            await axios.post(`${API_BASE}/auth/feedback`, {
-                title: feedbackTitle,
-                description: feedbackDescription,
-                type: feedbackType,
-                priority: feedbackPriority
-            }, { headers: { Authorization: `Bearer ${token}` } });
-            toast.success("Feedback submitted successfully!");
-            setFeedbackTitle("");
-            setFeedbackDescription("");
-            setFeedbackType("general_feedback");
-            setFeedbackPriority("medium");
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to submit feedback");
-        } finally {
-            setFeedbackLoading(false);
-        }
-    };
-
-    const activeSections = teacher?.sections?.filter(s => !s.isArchived) || [];
-    const archivedSections = teacher?.sections?.filter(s => s.isArchived) || [];
-
-    return (
-        <div className="page">
-            <Toaster position="top-right" />
-            <TeacherSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-
-            <main className="main-content">
-
-                {activeTab === 'overview' && (
-                    <div className="content-area">
-                        <header className="page-header">
-                            <h2 className="page-title">Welcome, {teacher?.name || 'Instructor'}</h2>
-                            <button onClick={() => setModalOpen(true)} className="btn-dark">
-                                New Section
-                            </button>
-                        </header>
-
-                        <div className="space-y-4" style={{ marginBottom: '40px' }}>
-                            <div className="section-panel">
-                                <div className="section-panel-header">
-                                    <p className="section-panel-label">Active Classes</p>
-                                    <span className="section-panel-count">({activeSections.length})</span>
-                                </div>
-                                <div className="section-chips">
-                                    {activeSections.length > 0 ? activeSections.map(sec => (
-                                        <div key={sec.classCode} className="section-chip">
-                                            <button
-                                                onClick={() => setSelectedSection(sec.classCode)}
-                                                className={`section-chip-btn${selectedSection === sec.classCode ? ' active' : ''}`}
-                                            >
-                                                {sec.sectionName}
-                                            </button>
-                                            <button onClick={(e) => handleArchiveSection(sec.classCode, e)} title="Archive" className="section-chip-icon-btn">
-                                                <Archive size={14} />
-                                            </button>
-                                            <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
-                                                <Trash size={14} />
-                                            </button>
-                                        </div>
-                                    )) : (
-                                        <p className="no-results">No active sections created yet.</p>
-                                    )}
-                                </div>
-                            </div>
-
-                            {archivedSections.length > 0 && (
-                                <div className="section-panel">
-                                    <button onClick={() => setShowArchived(!showArchived)} className="archived-toggle-btn">
-                                        <span className="archived-toggle-label">
-                                            <Archive size={16} /> Archived Classes
-                                        </span>
-                                        <span className="section-panel-count">({archivedSections.length})</span>
-                                        <span className={`archive-chevron${showArchived ? ' open' : ''}`}>▼</span>
-                                    </button>
-                                    {showArchived && (
-                                        <div className="section-chips">
-                                            {archivedSections.map(sec => (
-                                                <div key={sec.classCode} className="section-chip section-chip-archived">
-                                                    <button onClick={() => setSelectedSection(sec.classCode)} className="section-chip-btn">
-                                                        {sec.sectionName}
-                                                    </button>
-                                                    <button onClick={(e) => handleUnarchiveSection(sec.classCode, e)} title="Restore" className="section-chip-icon-btn">
-                                                        <RotateCcw size={14} />
-                                                    </button>
-                                                    <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
-                                                        <Trash size={14} />
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="space-y-10">
-                            <div className="grid-3">
-                                <div className="stat-card">
-                                    <p className="stat-card-label">Learners</p>
-                                    <p className="stat-card-value">{summary.totalStudents}</p>
-                                </div>
-                                <div className="stat-card">
-                                    <p className="stat-card-label">Missions</p>
-                                    <p className="stat-card-value">{summary.totalAssessments}</p>
-                                </div>
-                                <div className="stat-card">
-                                    <p className="stat-card-label">Average Score</p>
-                                    <p className="stat-card-value">{summary.avgScore}</p>
-                                </div>
-                            </div>
-
-                            {selectedSection && (
-                                <div className="access-code-card">
-                                    <p className="access-code-label">Section Access Code</p>
-                                    <div className="access-code-row">
-                                        <p className="access-code-text">{selectedSection}</p>
-                                        <button
-                                            onClick={() => { navigator.clipboard.writeText(selectedSection); toast.success("Copied!"); }}
-                                            className="access-code-copy-btn"
-                                        >
-                                            <Copy size={20} />
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'results' && (
-                    <ClassResults
-                        sections={activeSections}
-                        selectedSection={selectedSection}
-                        onSectionSelect={setSelectedSection}
-                    />
-                )}
-
-                {activeTab === 'settings' && (
-                    <div className="content-area">
-                        <ProfileSettings />
-                    </div>
-                )}
-
-                {activeTab === 'feedback' && (
-                    <div className="content-area space-y-8">
-                        <div>
-                            <h2 className="page-title">Send Feedback</h2>
-                            <p className="page-subtitle">Help us improve by sharing your thoughts</p>
-                        </div>
-
-                        <div className="card">
-                            <div className="space-y-6">
-                                <div className="form-group">
-                                    <label className="form-label-sm">Title *</label>
-                                    <input
-                                        type="text"
-                                        className="form-input-sm"
-                                        placeholder="Brief title of your feedback"
-                                        value={feedbackTitle}
-                                        onChange={(e) => setFeedbackTitle(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label-sm">Description *</label>
-                                    <textarea
-                                        className="form-textarea"
-                                        placeholder="Detailed description of your feedback"
-                                        rows="4"
-                                        value={feedbackDescription}
-                                        onChange={(e) => setFeedbackDescription(e.target.value)}
-                                    />
-                                </div>
-                                <div className="grid-2">
-                                    <div className="form-group">
-                                        <label className="form-label-sm">Type</label>
-                                        <select className="form-select-lg" value={feedbackType} onChange={(e) => setFeedbackType(e.target.value)}>
-                                            <option value="general_feedback">General Feedback</option>
-                                            <option value="bug_report">Bug Report</option>
-                                            <option value="feature_request">Feature Request</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label-sm">Priority</label>
-                                        <select className="form-select-lg" value={feedbackPriority} onChange={(e) => setFeedbackPriority(e.target.value)}>
-                                            <option value="low">Low</option>
-                                            <option value="medium">Medium</option>
-                                            <option value="high">High</option>
-                                            <option value="critical">Critical</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <button onClick={handleSubmitFeedback} disabled={feedbackLoading} className="btn-indigo-full">
-                                    {feedbackLoading ? "Submitting..." : "Submit Feedback"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'overview' && !selectedSection && activeSections.length === 0 && (
-                    <div className="content-area" style={{ paddingTop: 0 }}>
-                        <div className="empty-state">
-                            <BarChart3 className="empty-state-icon" size={56} />
-                            <p className="empty-state-text">Create your first section to get started</p>
-                        </div>
-                    </div>
-                )}
-            </main>
-
-            {modalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <h3 className="modal-title">New Section</h3>
-                        <p className="modal-subtitle">Give your classroom a unique identifier.</p>
-                        <input
-                            type="text"
-                            className="modal-input"
-                            placeholder="e.g. Grade 10 - Rizal"
-                            value={newSectionName}
-                            onChange={(e) => setNewSectionName(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAddSection()}
-                        />
-                        <div className="modal-actions">
-                            <button onClick={() => setModalOpen(false)} className="btn-ghost" style={{ flex: 1 }}>Cancel</button>
-                            <button onClick={handleAddSection} className="btn-indigo" style={{ flex: 2 }}>
-                                Create Section
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default Dashboard;
-````
-
-## File: chrono-dashboard/src/pages/LoginPage.js
-````javascript
-import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import toast, { Toaster } from 'react-hot-toast';
-import { Eye, EyeOff } from 'lucide-react';
-
-const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
-    const { login, teacher } = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (teacher) navigate('/dashboard');
-    }, [teacher, navigate]);
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            const payload = {
-                email: email.trim().toLowerCase(),
-                password: password
-            };
-            const response = await axios.post('http://localhost:3000/api/v1/auth/login', payload);
-            const data = response.data;
-            if (data.token && (data.teacher || data.name)) {
-                const teacherData = data.teacher || data;
-                login(teacherData, data.token);
-                toast.success("Login Successful!");
-                navigate('/dashboard');
-            }
-        } catch (error) {
-            console.error("Login Error:", error.response?.data);
-            toast.error(error.response?.data?.message || "Invalid email or password.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className="page-centered">
-            <Toaster position="top-right" />
-
-            <div className="auth-wrapper">
-                <div className="auth-brand">
-                    <h1 className="auth-brand-title">ChronoQuest</h1>
-                    <p className="auth-brand-subtitle">Instructor Portal</p>
-                </div>
-
-                <div className="auth-card">
-                    <h2 className="auth-card-title">Sign In</h2>
-
-                    <form onSubmit={handleLogin} className="form-stack">
-                        <div className="form-group">
-                            <label className="form-label">Email Address</label>
-                            <input
-                                type="email"
-                                value={email}
-                                placeholder="your.email@school.com"
-                                className="form-input"
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label">Password</label>
-                            <div className="input-password-wrapper">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    placeholder="Enter your password"
-                                    className="form-input"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="password-toggle"
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="submit" disabled={isLoading} className="btn-primary">
-                            {isLoading ? "Authenticating..." : "Sign In"}
-                        </button>
-                    </form>
-
-                    <div className="auth-footer">
-                        <p className="auth-footer-text">
-                            New instructor?{' '}
-                            <Link to="/register" className="auth-footer-link">Create Account</Link>
-                        </p>
-                    </div>
-                </div>
-
-                <div className="auth-security-note">
-                    <p className="auth-security-text">Secure & Encrypted</p>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default LoginPage;
-````
-
-## File: chrono-dashboard/src/pages/ProfileSettings.js
-````javascript
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import toast from 'react-hot-toast';
-import { Save, Eye, EyeOff, Lock } from 'lucide-react';
-
-const ProfileSettings = () => {
-    const { teacher, setTeacher } = useContext(AuthContext);
-
-    const [name, setName] = useState(teacher?.name || '');
-    const [email, setEmail] = useState(teacher?.email || '');
-    const [accountLoading, setAccountLoading] = useState(false);
-
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordLoading, setPasswordLoading] = useState(false);
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const token = localStorage.getItem('teacherToken');
-
-    const handleUpdateProfile = async (e) => {
-        e.preventDefault();
-        setAccountLoading(true);
-        try {
-            const { data } = await axios.put('http://localhost:3000/api/v1/auth/profile',
-                { name, email },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const updatedTeacher = { ...teacher, name: data.name, email: data.email };
-            setTeacher(updatedTeacher);
-            localStorage.setItem('teacherData', JSON.stringify(updatedTeacher));
-            toast.success("Account information updated.");
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to update profile.");
-        } finally {
-            setAccountLoading(false);
-        }
-    };
-
-    const handleChangePassword = async (e) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) {
-            toast.error("New passwords do not match.");
-            return;
-        }
-        if (newPassword.length < 6) {
-            toast.error("Password must be at least 6 characters long.");
-            return;
-        }
-        setPasswordLoading(true);
-        try {
-            await axios.put('http://localhost:3000/api/v1/auth/change-password',
-                { currentPassword, newPassword },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-            toast.success("Password changed successfully.");
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to change password.");
-        } finally {
-            setPasswordLoading(false);
-        }
-    };
-
-    return (
-        <div style={{ width: '100%', paddingTop: '48px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
-            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '48px' }}>
-                    <h1 className="page-title">Profile Settings</h1>
-                    <p className="page-subtitle">Manage your account information and security preferences.</p>
-                </div>
-
-                <div className="space-y-8">
-                    <div className="card">
-                        <div className="section-header-icon-row">
-                            <div className="profile-section-icon profile-section-icon-default">
-                                <Lock size={20} style={{ color: '#475569' }} />
-                            </div>
-                            <div>
-                                <h2 className="section-title">Account Information</h2>
-                                <p className="section-subtitle">Update your professional identity</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleUpdateProfile} className="space-y-6">
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">Full Name</label>
-                                    <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Email Address</label>
-                                    <input
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="divider" style={{ paddingTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-                                <button type="submit" disabled={accountLoading} className="btn-save">
-                                    <Save size={16} />
-                                    {accountLoading ? "Saving..." : "Save Changes"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="card">
-                        <div className="section-header-icon-row">
-                            <div className="profile-section-icon profile-section-icon-danger">
-                                <Lock size={20} style={{ color: '#dc2626' }} />
-                            </div>
-                            <div>
-                                <h2 className="section-title">Security</h2>
-                                <p className="section-subtitle">Change your password regularly for security</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleChangePassword} className="space-y-6">
-                            <div className="form-group">
-                                <label className="form-label">Current Password</label>
-                                <div className="input-password-wrapper">
-                                    <input
-                                        type={showCurrentPassword ? "text" : "password"}
-                                        value={currentPassword}
-                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                    <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-toggle">
-                                        {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">New Password</label>
-                                    <div className="input-password-wrapper">
-                                        <input
-                                            type={showNewPassword ? "text" : "password"}
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            className="form-input"
-                                            required
-                                        />
-                                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="password-toggle">
-                                            {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Confirm Password</label>
-                                    <div className="input-password-wrapper">
-                                        <input
-                                            type={showConfirmPassword ? "text" : "password"}
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="form-input"
-                                            required
-                                        />
-                                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
-                                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ paddingTop: '24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end' }}>
-                                <button type="submit" disabled={passwordLoading} className="btn-red">
-                                    <Lock size={16} />
-                                    {passwordLoading ? "Updating..." : "Change Password"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="alert-info">
-                        <span style={{ color: '#2563eb' }}>Security Note:</span> All changes are automatically encrypted and securely stored in the ChronoQuest system. Your account security is monitored continuously. Never share your password with anyone, including administrators.
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default ProfileSettings;
 ````
 
 ## File: chrono-dashboard/src/pages/QuestionManagement.js
@@ -5512,117 +4769,6 @@ const QuestionManagement = () => {
 export default QuestionManagement;
 ````
 
-## File: chrono-dashboard/src/pages/RegisterPage.js
-````javascript
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
-import { Eye, EyeOff } from 'lucide-react';
-
-const RegisterPage = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
-
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        try {
-            await axios.post('http://localhost:3000/api/v1/auth/register', formData);
-            toast.success("Account created successfully! Please login.");
-            setTimeout(() => navigate('/login'), 1500);
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Registration failed.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className="page-centered">
-            <Toaster position="top-right" />
-
-            <div className="auth-wrapper">
-                <div className="auth-brand">
-                    <h1 className="auth-brand-title">ChronoQuest</h1>
-                    <p className="auth-brand-subtitle">Instructor Portal</p>
-                </div>
-
-                <div className="auth-card">
-                    <h2 className="auth-card-title">Create Account</h2>
-
-                    <form onSubmit={handleRegister} className="form-stack">
-                        <div className="form-group">
-                            <label className="form-label">Full Name</label>
-                            <input
-                                type="text"
-                                placeholder="Your name"
-                                value={formData.name}
-                                className="form-input"
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label">Email Address</label>
-                            <input
-                                type="email"
-                                placeholder="your.email@school.com"
-                                value={formData.email}
-                                className="form-input"
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label className="form-label">Password</label>
-                            <div className="input-password-wrapper">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Create a password"
-                                    value={formData.password}
-                                    className="form-input"
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="password-toggle"
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="submit" disabled={isLoading} className="btn-primary">
-                            {isLoading ? "Creating Account..." : "Create Account"}
-                        </button>
-                    </form>
-
-                    <div className="auth-footer">
-                        <p className="auth-footer-text">
-                            Already have an account?{' '}
-                            <Link to="/login" className="auth-footer-link">Sign In</Link>
-                        </p>
-                    </div>
-                </div>
-
-                <div className="auth-security-note">
-                    <p className="auth-security-text">Secure & Encrypted</p>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default RegisterPage;
-````
-
 ## File: chrono-dashboard/src/reportWebVitals.js
 ````javascript
 const reportWebVitals = onPerfEntry => {
@@ -5649,13 +4795,1639 @@ export default reportWebVitals;
 import '@testing-library/jest-dom';
 ````
 
+## File: chronoquest-api/src/config/db.js
+````javascript
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`❌ Error: ${error.message}`);
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;
+````
+
+## File: chronoquest-api/src/controllers/analyticsController.js
+````javascript
+const Score = require('../models/scoreModel');
+
+exports.getClassProgress = async (req, res) => {
+    try {
+        // Find all scores where teacherId matches the logged-in teacher
+        const progress = await Score.find({ teacherId: req.user.id })
+            .sort({ createdAt: -1 }); // Latest sync first
+
+        res.status(200).json({
+            message: 'Class progress retrieved successfully',
+            progress
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+exports.getStudentPerformance = async (req, res) => {
+    try {
+        const { studentName } = req.params;
+        const performance = await Score.find({
+            teacherId: req.user.id,
+            studentName: studentName
+        });
+
+        res.status(200).json({
+            message: 'Student performance retrieved successfully',
+            performance
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+````
+
+## File: chronoquest-api/src/controllers/studentController.js
+````javascript
+const Score = require('../models/scoreModel');
+const Teacher = require('../models/teacherModel');
+
+exports.simulateSync = async (req, res) => {
+    try {
+        const { studentName, classCode, levelReached, score } = req.body;
+
+        const teacher = await Teacher.findOne({ classCode });
+        if (!teacher) {
+            return res.status(404).json({ message: 'Invalid Class Code' });
+        }
+
+        const newScore = await Score.create({
+            studentName,
+            classCode,
+            levelReached,
+            score,
+            teacherId: teacher._id
+        });
+
+        res.status(201).json({ message: 'Sync Successful', data: newScore });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+````
+
+## File: chronoquest-api/src/middleware/authMiddleware.js
+````javascript
+const jwt = require('jsonwebtoken');
+const Teacher = require('../models/teacherModel');
+
+exports.protect = async (req, res, next) => {
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+        return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        req.user = await Teacher.findById(decoded.id).select('-password');
+
+        if (!req.user) {
+            return res.status(401).json({ message: 'User not found' });
+        }
+
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
+    }
+};
+
+// Admin-only middleware
+exports.adminOnly = (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Access denied: Admin privileges required' });
+    }
+};
+````
+
+## File: chronoquest-api/src/models/activityLogModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const activityLogSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+        required: true
+    },
+    userRole: {
+        type: String,
+        enum: ['teacher', 'student', 'admin'],
+        required: true
+    },
+    action: {
+        type: String,
+        required: true  // e.g., "LOGIN", "CREATE_SECTION", "DELETE_STUDENT"
+    },
+    resource: {
+        type: String  // e.g., "Section", "Student", "Question"
+    },
+    resourceId: {
+        type: mongoose.Schema.Types.ObjectId
+    },
+    details: {
+        type: Object,
+        default: {}  // Store additional context
+    },
+    ipAddress: String,
+    status: {
+        type: String,
+        enum: ['success', 'failure'],
+        default: 'success'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        index: true
+    }
+}, { timestamps: false });
+
+module.exports = mongoose.model('ActivityLog', activityLogSchema);
+````
+
+## File: chronoquest-api/src/models/feedbackModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const feedbackSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['bug_report', 'feature_request', 'general_feedback'],
+        required: true
+    },
+    submittedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    priority: {
+        type: String,
+        enum: ['low', 'medium', 'high', 'critical'],
+        default: 'medium'
+    },
+    status: {
+        type: String,
+        enum: ['open', 'in_progress', 'resolved', 'closed'],
+        default: 'open'
+    },
+    attachments: [String],
+    response: {
+        admin: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Teacher'
+        },
+        message: String,
+        respondedAt: Date
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = mongoose.model('Feedback', feedbackSchema);
+````
+
+## File: chronoquest-api/src/models/scoreModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const scoreSchema = new mongoose.Schema({
+    studentName: { type: String, required: true },
+    classCode: { type: String, required: true },
+    levelReached: { type: String, required: true },
+    score: { type: Number, required: true },
+    teacherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+        required: true
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('Score', scoreSchema);
+````
+
+## File: chronoquest-api/src/models/systemSettingsModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const systemSettingsSchema = new mongoose.Schema({
+    key: {
+        type: String,
+        required: true,
+        unique: true
+
+    },
+    value: mongoose.Schema.Types.Mixed,
+
+    type: {
+        type: String,
+        enum: ['string', 'number', 'boolean', 'json'],
+        default: 'string'
+    },
+    description: String,
+    category: {
+        type: String,
+        enum: ['general', 'security', 'performance', 'email', 'features'],
+        default: 'general'
+    },
+    updatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher'
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = mongoose.model('SystemSettings', systemSettingsSchema);
+````
+
+## File: chronoquest-api/src/routes/apiRoutes.js
+````javascript
+const express = require('express');
+const router = express.Router();
+
+const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+const { protect } = require('../middleware/authMiddleware');
+const generateClassCode = require('../utils/generateCode');
+
+const authRoutes = require('./authRoutes');
+const adminRoutes = require('./adminRoutes');
+const questionRoutes = require('./questionRoutes');
+
+router.get('/test', (req, res) => res.json({ message: "API is working on Port 5000!" }));
+
+router.use('/auth', authRoutes);
+router.use('/admin', adminRoutes);
+router.use('/questions', questionRoutes);
+
+router.post('/teacher/add-section', protect, async (req, res) => {
+    const { sectionName } = req.body;
+
+    if (!sectionName) {
+        return res.status(400).json({ message: "Section name is required" });
+    }
+
+    try {
+        const teacherId = req.user._id;
+        const newClassCode = generateClassCode();
+
+        const newSection = {
+            sectionName,
+            classCode: newClassCode
+        };
+
+        const updatedTeacher = await Teacher.findByIdAndUpdate(
+            teacherId,
+            { $push: { sections: newSection } },
+            { new: true }
+        ).select('-password');
+
+        res.status(201).json({
+            message: "Section created successfully",
+            section: newSection
+        });
+    } catch (error) {
+        console.error("Add Section Error:", error);
+        res.status(500).json({ message: "Server error adding section" });
+    }
+});
+
+router.delete('/teacher/delete-section/:classCode', protect, async (req, res) => {
+    try {
+        const { classCode } = req.params;
+        const teacherId = req.user._id;
+
+        const updatedTeacher = await Teacher.findByIdAndUpdate(
+            teacherId,
+            { $pull: { sections: { classCode: classCode } } },
+            { new: true }
+        ).select('-password');
+
+        res.json({ updatedTeacher, message: "Section removed" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting section" });
+    }
+});
+
+router.post('/teacher/archive-section/:classCode', protect, async (req, res) => {
+    try {
+        const { classCode } = req.params;
+        const teacherId = req.user._id;
+
+        const teacher = await Teacher.findById(teacherId);
+
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
+
+        if (sectionIndex === -1) {
+            return res.status(403).json({ message: 'Section not found in your classes' });
+        }
+
+        teacher.sections[sectionIndex].isArchived = true;
+        teacher.sections[sectionIndex].archivedAt = new Date();
+
+        await teacher.save();
+
+        const updatedTeacher = await Teacher.findById(teacherId).select('-password');
+        res.json({ updatedTeacher, message: "Section archived successfully" });
+    } catch (error) {
+        console.error("Archive Section Error:", error);
+        res.status(500).json({ message: "Error archiving section" });
+    }
+});
+
+router.post('/teacher/unarchive-section/:classCode', protect, async (req, res) => {
+    try {
+        const { classCode } = req.params;
+        const teacherId = req.user._id;
+
+        const teacher = await Teacher.findById(teacherId);
+
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
+
+        if (sectionIndex === -1) {
+            return res.status(403).json({ message: 'Section not found in your classes' });
+        }
+
+        teacher.sections[sectionIndex].isArchived = false;
+        teacher.sections[sectionIndex].archivedAt = null;
+
+        await teacher.save();
+
+        const updatedTeacher = await Teacher.findById(teacherId).select('-password');
+        res.json({ updatedTeacher, message: "Section restored successfully" });
+    } catch (error) {
+        console.error("Unarchive Section Error:", error);
+        res.status(500).json({ message: "Error restoring section" });
+    }
+});
+
+router.get('/analytics/overall', protect, async (req, res) => {
+    try {
+        if (!req.user.sections || req.user.sections.length === 0) {
+            return res.json([]);
+        }
+
+        const includeArchived = req.query.includeArchived === 'true';
+
+        const activeSections = includeArchived
+            ? req.user.sections
+            : req.user.sections.filter(s => !s.isArchived);
+
+        if (activeSections.length === 0) {
+            return res.json([]);
+        }
+
+        const codes = activeSections.map(s => s.classCode);
+
+        const students = await Student.find({
+            classCode: { $in: codes }
+        }).select('name score classCode levelReached');
+
+        const formattedScores = students.map(s => ({
+            studentName: s.name,
+            score: s.score || 0,
+            classCode: s.classCode,
+            levelReached: s.levelReached || "Era 1"
+        }));
+
+        res.json(formattedScores);
+    } catch (error) {
+        console.error("Analytics Error:", error);
+        res.status(500).json({ message: "Error fetching analytics data" });
+    }
+});
+
+router.post('/students', protect, async (req, res) => {
+    try {
+        const { name, email, password, classCode, score, levelReached } = req.body;
+
+        const teacherSections = req.user.sections.map(s => s.classCode);
+        if (!teacherSections.includes(classCode)) {
+            return res.status(403).json({ message: 'You can only add students to your own sections' });
+        }
+
+        const existingStudent = await Student.findOne({ email });
+        if (existingStudent) {
+            return res.status(400).json({ message: 'Student with this email already exists' });
+        }
+
+        // Validate score range
+        if (score !== undefined && (score < 0 || score > 100)) {
+            return res.status(400).json({ message: 'Score must be between 0 and 100' });
+        }
+
+        const student = await Student.create({
+            name,
+            email,
+            password,
+            classCode,
+            score: score || 0,
+            levelReached: levelReached || "Era 1: Prehistoric"
+        });
+
+        res.status(201).json({
+            _id: student._id,
+            name: student.name,
+            email: student.email,
+            classCode: student.classCode,
+            score: student.score,
+            levelReached: student.levelReached
+        });
+    } catch (error) {
+        console.error("Add Student Error:", error);
+        res.status(500).json({ message: "Error adding student" });
+    }
+});
+
+router.put('/students/:id', protect, async (req, res) => {
+    try {
+        const { name, email, score, levelReached } = req.body;
+        const studentId = req.params.id;
+
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const teacherSections = req.user.sections.map(s => s.classCode);
+        if (!teacherSections.includes(student.classCode)) {
+            return res.status(403).json({ message: 'You can only update students in your sections' });
+        }
+
+        if (name) student.name = name;
+        if (email) {
+            const emailExists = await Student.findOne({ email, _id: { $ne: studentId } });
+            if (emailExists) {
+                return res.status(400).json({ message: 'Email already in use' });
+            }
+            student.email = email;
+        }
+        if (score !== undefined) {
+            const validScore = Math.min(Math.max(score, 0), 100);
+            student.score = validScore;
+        }
+        if (levelReached) student.levelReached = levelReached;
+
+        await student.save();
+
+        res.json({
+            _id: student._id,
+            name: student.name,
+            email: student.email,
+            classCode: student.classCode,
+            score: student.score,
+            levelReached: student.levelReached
+        });
+    } catch (error) {
+        console.error("Update Student Error:", error);
+        res.status(500).json({ message: "Error updating student" });
+    }
+});
+
+router.delete('/students/:id', protect, async (req, res) => {
+    try {
+        const studentId = req.params.id;
+
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        const teacherSections = req.user.sections.map(s => s.classCode);
+        if (!teacherSections.includes(student.classCode)) {
+            return res.status(403).json({ message: 'You can only delete students in your sections' });
+        }
+
+        await Student.findByIdAndDelete(studentId);
+        res.json({ message: 'Student deleted successfully' });
+    } catch (error) {
+        console.error("Delete Student Error:", error);
+        res.status(500).json({ message: "Error deleting student" });
+    }
+});
+
+module.exports = router;
+````
+
+## File: chronoquest-api/src/routes/authRoutes.js
+````javascript
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
+
+router.post('/register', authController.registerUser || authController.register);
+router.post('/login', authController.loginUser || authController.login);
+router.put('/profile', protect, authController.updateTeacherProfile || authController.updateProfile);
+router.post('/feedback', protect, authController.submitFeedback);
+
+module.exports = router;
+````
+
+## File: chronoquest-api/src/utils/generateCode.js
+````javascript
+const generateClassCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const codeLength = 6;
+
+    for (let i = 0; i < codeLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+
+    return result;
+};
+
+module.exports = generateClassCode;
+````
+
+## File: chrono-dashboard/src/pages/Dashboard.js
+````javascript
+import React, { useState, useContext, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import TeacherSidebar from '../components/TeacherSidebar';
+import ProfileSettings from './ProfileSettings';
+import ClassResults from './ClassResults';
+import toast, { Toaster } from 'react-hot-toast';
+import { BarChart3, Trash, Copy, Archive, RotateCcw } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const Dashboard = () => {
+    const [activeTab, setActiveTab] = useState('overview');
+    const { teacher, setTeacher } = useContext(AuthContext);
+    const [selectedSection, setSelectedSection] = useState("");
+    const [newSectionName, setNewSectionName] = useState("");
+    const [summary, setSummary] = useState({ totalStudents: 0, avgScore: 0, totalAssessments: 0 });
+    const [leaderboardData, setLeaderboardData] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [showArchived, setShowArchived] = useState(false);
+
+    const [feedbackTitle, setFeedbackTitle] = useState("");
+    const [feedbackDescription, setFeedbackDescription] = useState("");
+    const [feedbackType, setFeedbackType] = useState("general_feedback");
+    const [feedbackPriority, setFeedbackPriority] = useState("medium");
+    const [feedbackLoading, setFeedbackLoading] = useState(false);
+
+    const fetchTeacherProfile = useCallback(async () => {
+        const token = localStorage.getItem('teacherToken');
+        if (!token) return;
+        try {
+            const { data } = await axios.get(`${API_BASE}/auth/profile?t=${Date.now()}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setTeacher(data);
+        } catch (err) {
+            console.error("Session expired or sync failed");
+        }
+    }, [setTeacher]);
+
+    useEffect(() => {
+        if (teacher?.sections?.length > 0) {
+            const activeSections = teacher.sections.filter(s => !s.isArchived);
+            const sectionExists = teacher.sections.some(s => s.classCode === selectedSection);
+            if (!selectedSection || !sectionExists) {
+                const initialSection = activeSections.length > 0
+                    ? activeSections[0].classCode
+                    : teacher.sections[0].classCode;
+                setSelectedSection(initialSection);
+            }
+        } else {
+            setSelectedSection("");
+        }
+    }, [teacher, selectedSection]);
+
+    const fetchSummary = useCallback(async () => {
+        if (!selectedSection) {
+            setSummary({ totalStudents: 0, avgScore: 0, totalAssessments: 0 });
+            setLeaderboardData([]);
+            return;
+        }
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const headers = { Authorization: `Bearer ${token}` };
+            const [scoresRes, questRes] = await Promise.all([
+                axios.get(`${API_BASE}/analytics/overall`, { headers }),
+                axios.get(`${API_BASE}/questions`, { headers })
+            ]);
+            const filtered = scoresRes.data.filter(s => s.classCode === selectedSection);
+
+            const sortedStudents = filtered
+                .sort((a, b) => (b.score || 0) - (a.score || 0))
+                .slice(0, 15)
+                .map((student, index) => ({
+                    rank: index + 1,
+                    name: student.studentName || 'Unknown',
+                    classCode: student.classCode,
+                    score: student.score || 0
+                }));
+
+            setSummary({
+                totalStudents: filtered.length,
+                avgScore: filtered.length > 0
+                    ? (filtered.reduce((acc, curr) => acc + (curr.score || 0), 0) / filtered.length).toFixed(1)
+                    : 0,
+                totalAssessments: questRes.data.length
+            });
+            setLeaderboardData(sortedStudents);
+        } catch (err) {
+            console.error("Summary fetch error");
+        }
+    }, [selectedSection]);
+
+    useEffect(() => { fetchTeacherProfile(); }, [fetchTeacherProfile]);
+    useEffect(() => { fetchSummary(); }, [fetchSummary]);
+    useEffect(() => {
+        if (teacher) localStorage.setItem('teacherData', JSON.stringify(teacher));
+    }, [teacher]);
+
+    const handleDeleteSection = async (classCode, e) => {
+        e.stopPropagation();
+        if (!window.confirm("Are you sure? This will permanently delete the section and its scores.")) return;
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.delete(`${API_BASE}/teacher/delete-section/${classCode}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Section removed successfully");
+            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
+            else fetchTeacherProfile();
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to delete section");
+        }
+    };
+
+    const handleArchiveSection = async (classCode, e) => {
+        e.stopPropagation();
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.post(`${API_BASE}/teacher/archive-section/${classCode}`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Section archived successfully");
+            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to archive section");
+        }
+    };
+
+    const handleUnarchiveSection = async (classCode, e) => {
+        e.stopPropagation();
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.post(`${API_BASE}/teacher/unarchive-section/${classCode}`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success("Section restored successfully");
+            if (data.updatedTeacher) setTeacher(data.updatedTeacher);
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to restore section");
+        }
+    };
+
+    const handleAddSection = async () => {
+        if (!newSectionName.trim()) return toast.error("Enter section name");
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.post(`${API_BASE}/teacher/add-section`,
+                { sectionName: newSectionName },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setTeacher(data.updatedTeacher);
+            setSelectedSection(data.newSection.classCode);
+            setModalOpen(false);
+            setNewSectionName("");
+            toast.success("Section created");
+        } catch (err) { toast.error("Failed to create section"); }
+    };
+
+    const handleSubmitFeedback = async () => {
+        if (!feedbackTitle.trim() || !feedbackDescription.trim()) {
+            return toast.error("Title and description are required");
+        }
+        setFeedbackLoading(true);
+        try {
+            const token = localStorage.getItem('teacherToken');
+            await axios.post(`${API_BASE}/auth/feedback`, {
+                title: feedbackTitle,
+                description: feedbackDescription,
+                type: feedbackType,
+                priority: feedbackPriority
+            }, { headers: { Authorization: `Bearer ${token}` } });
+            toast.success("Feedback submitted successfully!");
+            setFeedbackTitle("");
+            setFeedbackDescription("");
+            setFeedbackType("general_feedback");
+            setFeedbackPriority("medium");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to submit feedback");
+        } finally {
+            setFeedbackLoading(false);
+        }
+    };
+
+    const activeSections = teacher?.sections?.filter(s => !s.isArchived) || [];
+    const archivedSections = teacher?.sections?.filter(s => s.isArchived) || [];
+
+    return (
+        <div className="page">
+            <Toaster position="top-right" />
+            <TeacherSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+            <main className="main-content">
+
+                {activeTab === 'overview' && (
+                    <div className="content-area">
+                        <header className="page-header">
+                            <h2 className="page-title">Welcome, {teacher?.name || 'Instructor'}</h2>
+                            <button onClick={() => setModalOpen(true)} className="btn-dark">
+                                New Section
+                            </button>
+                        </header>
+
+                        <div className="space-y-4" style={{ marginBottom: '40px' }}>
+                            <div className="section-panel">
+                                <div className="section-panel-header">
+                                    <p className="section-panel-label">Active Classes</p>
+                                    <span className="section-panel-count">({activeSections.length})</span>
+                                </div>
+                                <div className="section-chips">
+                                    {activeSections.length > 0 ? activeSections.map(sec => (
+                                        <div key={sec.classCode} className="section-chip">
+                                            <button
+                                                onClick={() => setSelectedSection(sec.classCode)}
+                                                className={`section-chip-btn${selectedSection === sec.classCode ? ' active' : ''}`}
+                                            >
+                                                {sec.sectionName}
+                                            </button>
+                                            <button onClick={(e) => handleArchiveSection(sec.classCode, e)} title="Archive" className="section-chip-icon-btn">
+                                                <Archive size={14} />
+                                            </button>
+                                            <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
+                                                <Trash size={14} />
+                                            </button>
+                                        </div>
+                                    )) : (
+                                        <p className="no-results">No active sections created yet.</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {archivedSections.length > 0 && (
+                                <div className="section-panel">
+                                    <button onClick={() => setShowArchived(!showArchived)} className="archived-toggle-btn">
+                                        <span className="archived-toggle-label">
+                                            <Archive size={16} /> Archived Classes
+                                        </span>
+                                        <span className="section-panel-count">({archivedSections.length})</span>
+                                        <span className={`archive-chevron${showArchived ? ' open' : ''}`}>▼</span>
+                                    </button>
+                                    {showArchived && (
+                                        <div className="section-chips">
+                                            {archivedSections.map(sec => (
+                                                <div key={sec.classCode} className="section-chip section-chip-archived">
+                                                    <button onClick={() => setSelectedSection(sec.classCode)} className="section-chip-btn">
+                                                        {sec.sectionName}
+                                                    </button>
+                                                    <button onClick={(e) => handleUnarchiveSection(sec.classCode, e)} title="Restore" className="section-chip-icon-btn">
+                                                        <RotateCcw size={14} />
+                                                    </button>
+                                                    <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
+                                                        <Trash size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-10">
+                            <div className="grid-2">
+                                <div>
+                                    <div className="space-y-6">
+                                        <div className="stat-card">
+                                            <p className="stat-card-label">Learners</p>
+                                            <p className="stat-card-value">{summary.totalStudents}</p>
+                                        </div>
+                                        <div className="stat-card">
+                                            <p className="stat-card-label">Average Score</p>
+                                            <p className="stat-card-value">{summary.avgScore}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="card">
+                                    <div className="card-header">
+                                        <h3 className="card-title">Top 15 Learners</h3>
+                                    </div>
+                                    <div className="leaderboard-list">
+                                        {leaderboardData.length > 0 ? (
+                                            leaderboardData.map((student) => (
+                                                <div key={student.classCode + student.name} className="leaderboard-item">
+                                                    <div className="leaderboard-rank">{student.rank}</div>
+                                                    <div className="leaderboard-info">
+                                                        <p className="leaderboard-name">{student.name}</p>
+                                                        <p className="leaderboard-code">{student.classCode}</p>
+                                                    </div>
+                                                    <div className="leaderboard-score">{student.score}</div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="no-results" style={{ padding: '24px' }}>No student data yet</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {selectedSection && (
+                                <div className="access-code-card">
+                                    <p className="access-code-label">Section Access Code</p>
+                                    <div className="access-code-row">
+                                        <p className="access-code-text">{selectedSection}</p>
+                                        <button
+                                            onClick={() => { navigator.clipboard.writeText(selectedSection); toast.success("Copied!"); }}
+                                            className="access-code-copy-btn"
+                                        >
+                                            <Copy size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'results' && (
+                    <ClassResults
+                        sections={activeSections}
+                        selectedSection={selectedSection}
+                        onSectionSelect={setSelectedSection}
+                    />
+                )}
+
+                {activeTab === 'settings' && (
+                    <div className="content-area">
+                        <ProfileSettings />
+                    </div>
+                )}
+
+                {activeTab === 'feedback' && (
+                    <div className="content-area space-y-8">
+                        <div>
+                            <h2 className="page-title">Send Feedback</h2>
+                            <p className="page-subtitle">Help us improve by sharing your thoughts</p>
+                        </div>
+
+                        <div className="card">
+                            <div className="space-y-6">
+                                <div className="form-group">
+                                    <label className="form-label-sm">Title *</label>
+                                    <input
+                                        type="text"
+                                        className="form-input-sm"
+                                        placeholder="Brief title of your feedback"
+                                        value={feedbackTitle}
+                                        onChange={(e) => setFeedbackTitle(e.target.value)}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label-sm">Description *</label>
+                                    <textarea
+                                        className="form-textarea"
+                                        placeholder="Detailed description of your feedback"
+                                        rows="4"
+                                        value={feedbackDescription}
+                                        onChange={(e) => setFeedbackDescription(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid-2">
+                                    <div className="form-group">
+                                        <label className="form-label-sm">Type</label>
+                                        <select className="form-select-lg" value={feedbackType} onChange={(e) => setFeedbackType(e.target.value)}>
+                                            <option value="general_feedback">General Feedback</option>
+                                            <option value="bug_report">Bug Report</option>
+                                            <option value="feature_request">Feature Request</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label className="form-label-sm">Priority</label>
+                                        <select className="form-select-lg" value={feedbackPriority} onChange={(e) => setFeedbackPriority(e.target.value)}>
+                                            <option value="low">Low</option>
+                                            <option value="medium">Medium</option>
+                                            <option value="high">High</option>
+                                            <option value="critical">Critical</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button onClick={handleSubmitFeedback} disabled={feedbackLoading} className="btn-indigo-full">
+                                    {feedbackLoading ? "Submitting..." : "Submit Feedback"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'overview' && !selectedSection && activeSections.length === 0 && (
+                    <div className="content-area" style={{ paddingTop: 0 }}>
+                        <div className="empty-state">
+                            <BarChart3 className="empty-state-icon" size={56} />
+                            <p className="empty-state-text">Create your first section to get started</p>
+                        </div>
+                    </div>
+                )}
+            </main>
+
+            {modalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h3 className="modal-title">New Section</h3>
+                        <p className="modal-subtitle">Give your classroom a unique identifier.</p>
+                        <input
+                            type="text"
+                            className="modal-input"
+                            placeholder="e.g. Grade 10 - Rizal"
+                            value={newSectionName}
+                            onChange={(e) => setNewSectionName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddSection()}
+                        />
+                        <div className="modal-actions">
+                            <button onClick={() => setModalOpen(false)} className="btn-ghost" style={{ flex: 1 }}>Cancel</button>
+                            <button onClick={handleAddSection} className="btn-indigo" style={{ flex: 2 }}>
+                                Create Section
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Dashboard;
+````
+
+## File: chrono-dashboard/src/pages/LoginPage.js
+````javascript
+import React, { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import toast, { Toaster } from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
+
+const LoginPage = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({ email: '', password: '' });
+
+    const { login, teacher } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    // Setup the API URL based on environment (Vercel vs Local)
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validateForm = () => {
+        const newErrors = { email: '', password: '' };
+        let isValid = true;
+
+        if (!email.trim()) {
+            newErrors.email = 'Email is required';
+            isValid = false;
+        } else if (!validateEmail(email.trim())) {
+            newErrors.email = 'Invalid email format';
+            isValid = false;
+        }
+
+        if (!password) {
+            newErrors.password = 'Password is required';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    useEffect(() => {
+        if (teacher) navigate('/dashboard');
+    }, [teacher, navigate]);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setErrors({ email: '', password: '' });
+
+        if (!validateForm()) {
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const payload = {
+                email: email.trim().toLowerCase(),
+                password: password
+            };
+
+            // UPDATED: Now uses the dynamic API_BASE variable
+            const response = await axios.post(`${API_BASE}/auth/login`, payload);
+
+            const data = response.data;
+            if (data.token && (data.teacher || data.name)) {
+                const teacherData = data.teacher || data;
+                login(teacherData, data.token);
+                toast.success("Login Successful!");
+                navigate('/dashboard');
+            }
+        } catch (error) {
+            console.error("Login Error:", error.response?.data);
+            const errorCode = error.response?.data?.errorCode;
+            let errorMessage = "Invalid email or password.";
+
+            if (errorCode === 'EMAIL_NOT_FOUND') {
+                errorMessage = "Email not registered. Please create an account.";
+            } else if (errorCode === 'PASSWORD_INCORRECT') {
+                errorMessage = "Incorrect password. Please try again.";
+            } else if (errorCode === 'INVALID_EMAIL_FORMAT') {
+                errorMessage = "Invalid email format.";
+            } else {
+                errorMessage = error.response?.data?.message || "Login failed. Please try again.";
+            }
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="page-centered">
+            <Toaster position="top-right" />
+
+            <div className="auth-wrapper">
+                <div className="auth-brand">
+                    <h1 className="auth-brand-title">ChronoQuest</h1>
+                    <p className="auth-brand-subtitle">Instructor Portal</p>
+                </div>
+
+                <div className="auth-card">
+                    <h2 className="auth-card-title">Sign In</h2>
+
+                    <form onSubmit={handleLogin} className="form-stack">
+                        <div className="form-group">
+                            <label className="form-label">Email Address</label>
+                            <input
+                                type="email"
+                                value={email}
+                                placeholder="your.email@school.com"
+                                className={`form-input ${errors.email ? 'form-input-error' : ''}`}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    setErrors({ ...errors, email: '' });
+                                }}
+                                required
+                            />
+                            {errors.email && <span className="form-error-text">{errors.email}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Password</label>
+                            <div className="input-password-wrapper">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    placeholder="Enter your password"
+                                    className={`form-input ${errors.password ? 'form-input-error' : ''}`}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setErrors({ ...errors, password: '' });
+                                    }}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="password-toggle"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            {errors.password && <span className="form-error-text">{errors.password}</span>}
+                        </div>
+
+                        <button type="submit" disabled={isLoading} className="btn-primary">
+                            {isLoading ? "Authenticating..." : "Sign In"}
+                        </button>
+                    </form>
+
+                    <div className="auth-footer">
+                        <p className="auth-footer-text">
+                            New instructor?{' '}
+                            <Link to="/register" className="auth-footer-link">Create Account</Link>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="auth-security-note">
+                    <p className="auth-security-text">Secure & Encrypted</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default LoginPage;
+````
+
+## File: chrono-dashboard/src/pages/ProfileSettings.js
+````javascript
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import { Save, Eye, EyeOff, Lock } from 'lucide-react';
+
+const ProfileSettings = () => {
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+    const { teacher, setTeacher } = useContext(AuthContext);
+
+    const [name, setName] = useState(teacher?.name || '');
+    const [email, setEmail] = useState(teacher?.email || '');
+    const [accountLoading, setAccountLoading] = useState(false);
+
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordLoading, setPasswordLoading] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const token = localStorage.getItem('teacherToken');
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        setAccountLoading(true);
+        try {
+            const { data } = await axios.put(`${API_BASE}/auth/profile`,
+                { name, email },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const updatedTeacher = { ...teacher, name: data.name, email: data.email };
+            setTeacher(updatedTeacher);
+            localStorage.setItem('teacherData', JSON.stringify(updatedTeacher));
+            toast.success("Account information updated.");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to update profile.");
+        } finally {
+            setAccountLoading(false);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            toast.error("New passwords do not match.");
+            return;
+        }
+        if (newPassword.length < 6) {
+            toast.error("Password must be at least 6 characters long.");
+            return;
+        }
+        setPasswordLoading(true);
+        try {
+            await axios.put(`${API_BASE}/auth/change-password`,
+                { currentPassword, newPassword },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            toast.success("Password changed successfully.");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to change password.");
+        } finally {
+            setPasswordLoading(false);
+        }
+    };
+
+    return (
+        <div style={{ width: '100%', paddingTop: '48px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
+            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+                <div style={{ marginBottom: '48px' }}>
+                    <h1 className="page-title">Profile Settings</h1>
+                    <p className="page-subtitle">Manage your account information and security preferences.</p>
+                </div>
+
+                <div className="space-y-8">
+                    <div className="card">
+                        <div className="section-header-icon-row">
+                            <div className="profile-section-icon profile-section-icon-default">
+                                <Lock size={20} style={{ color: '#475569' }} />
+                            </div>
+                            <div>
+                                <h2 className="section-title">Account Information</h2>
+                                <p className="section-subtitle">Update your professional identity</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleUpdateProfile} className="space-y-6">
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label className="form-label">Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Email Address</label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="divider" style={{ paddingTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+                                <button type="submit" disabled={accountLoading} className="btn-save">
+                                    <Save size={16} />
+                                    {accountLoading ? "Saving..." : "Save Changes"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="card">
+                        <div className="section-header-icon-row">
+                            <div className="profile-section-icon profile-section-icon-danger">
+                                <Lock size={20} style={{ color: '#dc2626' }} />
+                            </div>
+                            <div>
+                                <h2 className="section-title">Security</h2>
+                                <p className="section-subtitle">Change your password regularly for security</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleChangePassword} className="space-y-6">
+                            <div className="form-group">
+                                <label className="form-label">Current Password</label>
+                                <div className="input-password-wrapper">
+                                    <input
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                    <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-toggle">
+                                        {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label className="form-label">New Password</label>
+                                    <div className="input-password-wrapper">
+                                        <input
+                                            type={showNewPassword ? "text" : "password"}
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            className="form-input"
+                                            required
+                                        />
+                                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="password-toggle">
+                                            {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Confirm Password</label>
+                                    <div className="input-password-wrapper">
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="form-input"
+                                            required
+                                        />
+                                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
+                                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ paddingTop: '24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end' }}>
+                                <button type="submit" disabled={passwordLoading} className="btn-red">
+                                    <Lock size={16} />
+                                    {passwordLoading ? "Updating..." : "Change Password"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="alert-info">
+                        <span style={{ color: '#2563eb' }}>Security Note:</span> All changes are automatically encrypted and securely stored in the ChronoQuest system. Your account security is monitored continuously. Never share your password with anyone, including administrators.
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProfileSettings;
+````
+
+## File: chrono-dashboard/src/pages/RegisterPage.js
+````javascript
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
+
+const RegisterPage = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [errors, setErrors] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+    const navigate = useNavigate();
+
+    // UPDATED: Dynamic API URL based on environment (Vercel vs Local)
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validateForm = () => {
+        const newErrors = { name: '', email: '', password: '', confirmPassword: '' };
+        let isValid = true;
+
+        if (!formData.name.trim()) {
+            newErrors.name = 'Name is required';
+            isValid = false;
+        }
+
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required';
+            isValid = false;
+        } else if (!validateEmail(formData.email.trim())) {
+            newErrors.email = 'Invalid email format';
+            isValid = false;
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+            isValid = false;
+        } else if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+            isValid = false;
+        }
+
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = 'Please confirm your password';
+            isValid = false;
+        } else if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = 'Passwords do not match';
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setErrors({ name: '', email: '', password: '', confirmPassword: '' });
+
+        if (!validateForm()) {
+            setIsLoading(false);
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // UPDATED: Now uses the API_BASE variable instead of a hardcoded string
+            await axios.post(`${API_BASE}/auth/register`, {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            });
+
+            toast.success("Account created successfully! Please login.");
+            setTimeout(() => navigate('/login'), 1500);
+        } catch (error) {
+            console.error("Register Error:", error.response?.data);
+            const errorCode = error.response?.data?.errorCode;
+            let errorMessage = "Registration failed.";
+
+            if (errorCode === 'EMAIL_ALREADY_EXISTS') {
+                errorMessage = "Email already registered. Please login instead.";
+            } else if (errorCode === 'INVALID_EMAIL_FORMAT') {
+                errorMessage = "Invalid email format.";
+            } else if (errorCode === 'PASSWORD_TOO_WEAK') {
+                errorMessage = "Password must be at least 6 characters.";
+            } else {
+                errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+            }
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="page-centered">
+            <Toaster position="top-right" />
+
+            <div className="auth-wrapper">
+                <div className="auth-brand">
+                    <h1 className="auth-brand-title">ChronoQuest</h1>
+                    <p className="auth-brand-subtitle">Instructor Portal</p>
+                </div>
+
+                <div className="auth-card">
+                    <h2 className="auth-card-title">Create Account</h2>
+
+                    <form onSubmit={handleRegister} className="form-stack">
+                        <div className="form-group">
+                            <label className="form-label">Full Name</label>
+                            <input
+                                type="text"
+                                placeholder="Your name"
+                                value={formData.name}
+                                className={`form-input ${errors.name ? 'form-input-error' : ''}`}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, name: e.target.value });
+                                    setErrors({ ...errors, name: '' });
+                                }}
+                                required
+                            />
+                            {errors.name && <span className="form-error-text">{errors.name}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Email Address</label>
+                            <input
+                                type="email"
+                                placeholder="your.email@school.com"
+                                value={formData.email}
+                                className={`form-input ${errors.email ? 'form-input-error' : ''}`}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, email: e.target.value });
+                                    setErrors({ ...errors, email: '' });
+                                }}
+                                required
+                            />
+                            {errors.email && <span className="form-error-text">{errors.email}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Password</label>
+                            <div className="input-password-wrapper">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Create a password (min. 6 characters)"
+                                    value={formData.password}
+                                    className={`form-input ${errors.password ? 'form-input-error' : ''}`}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, password: e.target.value });
+                                        setErrors({ ...errors, password: '' });
+                                    }}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="password-toggle"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            {errors.password && <span className="form-error-text">{errors.password}</span>}
+                        </div>
+
+                        <div className="form-group">
+                            <label className="form-label">Confirm Password</label>
+                            <div className="input-password-wrapper">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Confirm your password"
+                                    value={formData.confirmPassword}
+                                    className={`form-input ${errors.confirmPassword ? 'form-input-error' : ''}`}
+                                    onChange={(e) => {
+                                        setFormData({ ...formData, confirmPassword: e.target.value });
+                                        setErrors({ ...errors, confirmPassword: '' });
+                                    }}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="password-toggle"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            {errors.confirmPassword && <span className="form-error-text">{errors.confirmPassword}</span>}
+                        </div>
+
+                        <button type="submit" disabled={isLoading} className="btn-primary">
+                            {isLoading ? "Creating Account..." : "Create Account"}
+                        </button>
+                    </form>
+
+                    <div className="auth-footer">
+                        <p className="auth-footer-text">
+                            Already have an account?{' '}
+                            <Link to="/login" className="auth-footer-link">Sign In</Link>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="auth-security-note">
+                    <p className="auth-security-text">Secure & Encrypted</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default RegisterPage;
+````
+
 ## File: chronoquest-api/package.json
 ````json
 {
   "name": "chronoquest-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -5680,630 +6452,10 @@ import '@testing-library/jest-dom';
 }
 ````
 
-## File: chronoquest-api/server.js
-````javascript
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const apiRoutes = require('./src/routes/apiRoutes');
-
-dotenv.config();
-const app = express();
-
-app.use(cors({
-    origin: "http://localhost:3001",
-    credentials: true
-}));
-
-app.use(express.json());
-
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
-
-app.get('/api/v1/debug', (req, res) => {
-    res.json({ message: "Server is alive!", dbStatus: mongoose.connection.readyState });
-});
-
-app.use('/api/v1', apiRoutes);
-
-const PORT = 3000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/chronoquest';
-
-mongoose.connect(MONGO_URI)
-    .then(() => {
-        console.log(`✅ MongoDB Connected`);
-        app.listen(PORT, () => {
-            console.log(`🚀 Server: http://localhost:${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('❌ MongoDB Error:', err.message);
-        process.exit(1);
-    });
-````
-
-## File: chronoquest-api/src/config/db.js
-````javascript
-const mongoose = require('mongoose');
-
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`❌ Error: ${error.message}`);
-        process.exit(1);
-    }
-};
-
-module.exports = connectDB;
-````
-
-## File: chronoquest-api/src/controllers/adminController.js
-````javascript
-const Teacher = require('../models/teacherModel');
-const Student = require('../models/studentModel');
-const ActivityLog = require('../models/activityLogModel');
-const Feedback = require('../models/feedbackModel');
-const SystemSettings = require('../models/systemSettingsModel');
-
-// ============================================
-// USER MANAGEMENT
-// ============================================
-
-exports.getAllUsers = async (req, res) => {
-    try {
-        const teachers = await Teacher.find().select('-password');
-        const students = await Student.find().select('-password');
-
-        const formattedTeachers = teachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = students.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            totalUsers: formattedTeachers.length + formattedStudents.length,
-            totalTeachers: formattedTeachers.length,
-            totalStudents: formattedStudents.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error: error.message });
-    }
-};
-
-exports.deactivateUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (userType === 'teacher') {
-            await Teacher.findByIdAndUpdate(userId, { isActive: false });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userRole: req.user.role,
-                action: 'DEACTIVATE_TEACHER',
-                resourceId: userId,
-                status: 'success'
-            });
-        } else if (userType === 'student') {
-            // For students, we might disable their account or just mark as inactive
-            await Student.findByIdAndUpdate(userId, { active: false }, { new: true });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userRole: req.user.role,
-                action: 'DEACTIVATE_STUDENT',
-                resourceId: userId,
-                status: 'success'
-            });
-        }
-
-        res.json({ message: `User deactivated successfully` });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deactivating user', error: error.message });
-    }
-};
-
-exports.deleteUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (userType === 'teacher') {
-            await Teacher.findByIdAndDelete(userId);
-        } else if (userType === 'student') {
-            await Student.findByIdAndDelete(userId);
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userRole: req.user.role,
-            action: 'DELETE_USER',
-            resource: userType,
-            resourceId: userId,
-            status: 'success'
-        });
-
-        res.json({ message: 'User deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting user', error: error.message });
-    }
-};
-
-exports.updateUser = async (req, res) => {
-    try {
-        // Only super admin can update users
-        if (req.user.adminLevel !== 'super_admin') {
-            return res.status(403).json({ message: 'Only super admin can update users' });
-        }
-
-        const { userId, userType } = req.params;
-        const { name, email, role, adminLevel } = req.body;
-
-        if (userType === 'teacher') {
-            // Validate email uniqueness if provided
-            if (email) {
-                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId } });
-                if (existingTeacher) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            // Validate role if provided
-            if (role && !['teacher', 'admin'].includes(role)) {
-                return res.status(400).json({ message: 'Invalid role' });
-            }
-
-            // Validate adminLevel if role is being set to admin
-            if (role === 'admin' && adminLevel) {
-                if (!['super_admin', 'content_admin', 'support_admin'].includes(adminLevel)) {
-                    return res.status(400).json({ message: 'Invalid admin level' });
-                }
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name;
-            if (email) updateData.email = email;
-            if (role) updateData.role = role;
-            if (role === 'admin' && adminLevel) updateData.adminLevel = adminLevel;
-            if (role === 'teacher') updateData.adminLevel = null; // Clear admin level if downgrading
-
-            const updatedTeacher = await Teacher.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            // Log the action
-            await ActivityLog.create({
-                userId: req.user._id,
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'teacher',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
-
-            res.json({
-                message: 'User updated successfully',
-                user: updatedTeacher
-            });
-        } else if (userType === 'student') {
-            // Validate email uniqueness if provided
-            if (email) {
-                const existingStudent = await Student.findOne({ email, _id: { $ne: userId } });
-                if (existingStudent) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name;
-            if (email) updateData.email = email;
-
-            const updatedStudent = await Student.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            // Log the action
-            await ActivityLog.create({
-                userId: req.user._id,
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'student',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
-
-            res.json({
-                message: 'User updated successfully',
-                user: updatedStudent
-            });
-        } else {
-            res.status(400).json({ message: 'Invalid user type' });
-        }
-    } catch (error) {
-        console.error('Update User Error:', error);
-        res.status(500).json({ message: 'Error updating user', error: error.message });
-    }
-};
-
-exports.getUserActivityLogs = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const logs = await ActivityLog.find({ userId })
-            .sort({ createdAt: -1 })
-            .limit(100);
-
-        res.json(logs);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
-    }
-};
-
-exports.getAllActivityLogs = async (req, res) => {
-    try {
-        const { limit = 500, skip = 0 } = req.query;
-        const logs = await ActivityLog.find()
-            .sort({ createdAt: -1 })
-            .limit(parseInt(limit))
-            .skip(parseInt(skip));
-
-        const total = await ActivityLog.countDocuments();
-
-        res.json({ logs, total });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching logs', error: error.message });
-    }
-};
-
-// ============================================
-// SYSTEM ANALYTICS
-// ============================================
-
-exports.getSystemAnalytics = async (req, res) => {
-    try {
-        const totalTeachers = await Teacher.countDocuments({ role: 'teacher', isActive: true });
-        const totalStudents = await Student.countDocuments();
-        const totalSections = await Teacher.aggregate([
-            { $match: { isActive: true } },
-            { $unwind: '$sections' },
-            { $count: 'total' }
-        ]);
-
-        const recentUsers = await Teacher.find()
-            .sort({ createdAt: -1 })
-            .limit(10)
-            .select('name email createdAt');
-
-        const platformStats = {
-            totalTeachers,
-            totalStudents,
-            totalSections: totalSections[0]?.total || 0,
-            totalUsers: totalTeachers + totalStudents,
-            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
-            recentUsers
-        };
-
-        res.json(platformStats);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
-    }
-};
-
-exports.getUsageStats = async (req, res) => {
-    try {
-        const logs = await ActivityLog.aggregate([
-            {
-                $group: {
-                    _id: '$action',
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { count: -1 } }
-        ]);
-
-        const dailyActivity = await ActivityLog.aggregate([
-            {
-                $group: {
-                    _id: {
-                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
-                    },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { _id: -1 } },
-            { $limit: 30 }
-        ]);
-
-        res.json({ actionStats: logs, dailyActivity });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching usage stats', error: error.message });
-    }
-};
-
-// ============================================
-// FEEDBACK & SUPPORT
-// ============================================
-
-exports.getAllFeedback = async (req, res) => {
-    try {
-        const { status, type } = req.query;
-        const filter = {};
-
-        if (status) filter.status = status;
-        if (type) filter.type = type;
-
-        const feedback = await Feedback.find(filter)
-            .populate('submittedBy', 'name email')
-            .populate('response.admin', 'name email')
-            .sort({ createdAt: -1 });
-
-        res.json(feedback);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
-    }
-};
-
-exports.respondToFeedback = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { message, status } = req.body;
-
-        const feedback = await Feedback.findByIdAndUpdate(
-            id,
-            {
-                'response.admin': req.user._id,
-                'response.message': message,
-                'response.respondedAt': new Date(),
-                status: status || 'in_progress'
-            },
-            { new: true }
-        ).populate('submittedBy', 'name email')
-            .populate('response.admin', 'name email');
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userRole: req.user.role,
-            action: 'RESPOND_FEEDBACK',
-            resourceId: id,
-            status: 'success'
-        });
-
-        res.json({ message: 'Feedback responded successfully', feedback });
-    } catch (error) {
-        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
-    }
-};
-
-// ============================================
-// SYSTEM SETTINGS
-// ============================================
-
-exports.getSystemSettings = async (req, res) => {
-    try {
-        const settings = await SystemSettings.find();
-        const settingsObj = {};
-
-        settings.forEach(s => {
-            settingsObj[s.key] = {
-                value: s.value,
-                type: s.type,
-                description: s.description,
-                category: s.category
-            };
-        });
-
-        res.json(settingsObj);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching settings', error: error.message });
-    }
-};
-
-exports.updateSystemSetting = async (req, res) => {
-    try {
-        const { key, value, type = 'string' } = req.body;
-
-        const setting = await SystemSettings.findOneAndUpdate(
-            { key },
-            {
-                key,
-                value,
-                type,
-                updatedBy: req.user._id,
-                updatedAt: new Date()
-            },
-            { upsert: true, new: true }
-        );
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userRole: req.user.role,
-            action: 'UPDATE_SETTING',
-            details: { key, oldValue: setting.value, newValue: value },
-            status: 'success'
-        });
-
-        res.json({ message: 'Setting updated successfully', setting });
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating setting', error: error.message });
-    }
-};
-
-// ============================================
-// SCORE MANAGEMENT & LEADERBOARD
-// ============================================
-
-exports.syncScores = async (req, res) => {
-    try {
-        const Score = require('../models/scoreModel');
-        // Sync ALL students (including score: 0) for initial leaderboard population
-        const students = await Student.find({});
-
-        if (students.length === 0) {
-            return res.json({ message: 'No students to sync', synced: 0 });
-        }
-
-        let syncedCount = 0;
-        const syncErrors = [];
-
-        for (const student of students) {
-            try {
-                // Check if score already exists for this student
-                const existingScore = await Score.findOne({
-                    studentName: student.name,
-                    classCode: student.classCode
-                });
-
-                if (!existingScore) {
-                    // Get teacher data for this student's class
-                    const teacher = await Teacher.findOne({
-                        sections: { $elemMatch: { classCode: student.classCode } }
-                    });
-
-                    if (teacher) {
-                        await Score.create({
-                            studentName: student.name,
-                            classCode: student.classCode,
-                            levelReached: student.levelReached,
-                            score: Math.min(student.score, 100), // Ensure max 100
-                            teacherId: teacher._id
-                        });
-                        syncedCount++;
-                    }
-                }
-            } catch (error) {
-                syncErrors.push(`Failed to sync ${student.name}: ${error.message}`);
-            }
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userRole: req.user.role,
-            action: 'SYNC_SCORES',
-            details: { totalAttempted: students.length, successfulSync: syncedCount },
-            status: syncErrors.length === 0 ? 'success' : 'partial'
-        });
-
-        res.json({
-            message: 'Score sync completed',
-            synced: syncedCount,
-            total: students.length,
-            errors: syncErrors.length > 0 ? syncErrors : null
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error syncing scores', error: error.message });
-    }
-};
-
-exports.getRecentActivityLogs = async (req, res) => {
-    try {
-        const { limit = 50 } = req.query;
-
-        const logs = await ActivityLog.aggregate([
-            { $sort: { createdAt: -1 } },
-            { $limit: parseInt(limit) },
-            {
-                $lookup: {
-                    from: 'teachers',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'userDetails'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'students',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'studentDetails'
-                }
-            },
-            {
-                $project: {
-                    _id: 1,
-                    userId: 1,
-                    action: 1,
-                    resource: 1,
-                    resourceId: 1,
-                    details: 1,
-                    status: 1,
-                    createdAt: 1,
-                    userName: {
-                        $cond: [
-                            { $gt: [{ $size: '$userDetails' }, 0] },
-                            { $arrayElemAt: ['$userDetails.name', 0] },
-                            { $arrayElemAt: ['$studentDetails.name', 0] }
-                        ]
-                    },
-                    userEmail: {
-                        $cond: [
-                            { $gt: [{ $size: '$userDetails' }, 0] },
-                            { $arrayElemAt: ['$userDetails.email', 0] },
-                            { $arrayElemAt: ['$studentDetails.email', 0] }
-                        ]
-                    }
-                }
-            }
-        ]);
-
-        res.json({
-            logs,
-            total: logs.length,
-            timestamp: new Date()
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
-    }
-};
-````
-
-## File: chronoquest-api/src/controllers/analyticsController.js
-````javascript
-const Score = require('../models/scoreModel');
-
-exports.getClassProgress = async (req, res) => {
-    try {
-        // Find all scores where teacherId matches the logged-in teacher
-        const progress = await Score.find({ teacherId: req.user.id })
-            .sort({ createdAt: -1 }); // Latest sync first
-
-        res.status(200).json(progress);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.getStudentPerformance = async (req, res) => {
-    try {
-        const { studentName } = req.params;
-        const performance = await Score.find({
-            teacherId: req.user.id,
-            studentName: studentName
-        });
-
-        res.status(200).json(performance);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-````
-
 ## File: chronoquest-api/src/controllers/authController.js
 ````javascript
 const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
 const Feedback = require('../models/feedbackModel');
 const jwt = require('jsonwebtoken');
 
@@ -6312,31 +6464,47 @@ const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// @desc    Register a new teacher
 exports.registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        const teacherExists = await Teacher.findOne({ email });
-        if (teacherExists) {
-            return res.status(400).json({ message: 'Teacher already exists' });
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                message: 'Invalid email format',
+                errorCode: 'INVALID_EMAIL_FORMAT'
+            });
         }
 
-        const generatedCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const teacherExists = await Teacher.findOne({ email });
+        if (teacherExists) {
+            return res.status(400).json({
+                message: 'Email already registered',
+                errorCode: 'EMAIL_ALREADY_EXISTS'
+            });
+        }
+
+        // Validate password strength
+        if (!password || password.length < 6) {
+            return res.status(400).json({
+                message: 'Password must be at least 6 characters',
+                errorCode: 'PASSWORD_TOO_WEAK'
+            });
+        }
 
         const teacher = await Teacher.create({
             name,
             email,
             password,
-            classCode: generatedCode,
             sections: []
         });
 
         res.status(201).json({
+            message: 'User registered successfully',
             _id: teacher._id,
             name: teacher.name,
             email: teacher.email,
-            classCode: teacher.classCode,
             sections: teacher.sections,
             role: 'teacher',
             token: generateToken(teacher._id, 'teacher')
@@ -6346,52 +6514,76 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// @desc    Authenticate teacher & get token
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const teacher = await Teacher.findOne({ email });
 
-        if (teacher && (await teacher.matchPassword(password))) {
-            res.json({
-                _id: teacher._id,
-                name: teacher.name,
-                email: teacher.email,
-                classCode: teacher.classCode,
-                sections: teacher.sections,
-                role: teacher.role,
-                token: generateToken(teacher._id, teacher.role)
+        // First check in teachers collection
+        let user = await Teacher.findOne({ email });
+        let userType = 'teacher';
+
+        // If not found in teachers, check students collection
+        if (!user) {
+            user = await Student.findOne({ email });
+            userType = 'student';
+        }
+
+        // If user not found in either collection
+        if (!user) {
+            return res.status(401).json({
+                message: 'Email not registered',
+                errorCode: 'EMAIL_NOT_FOUND'
+            });
+        }
+
+        // Verify password
+        const passwordMatches = await user.matchPassword(password);
+        if (!passwordMatches) {
+            return res.status(401).json({
+                message: 'Incorrect password',
+                errorCode: 'PASSWORD_INCORRECT'
+            });
+        }
+
+        // Check if user account is active
+        if (user.isActive === false) {
+            return res.status(401).json({
+                message: 'User account deactivated',
+                errorCode: 'USER_DEACTIVATED'
+            });
+        }
+
+        // Return appropriate response based on user type
+        if (userType === 'teacher') {
+            return res.json({
+                message: 'Login successful',
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                classCode: user.classCode,
+                sections: user.sections,
+                role: user.role,
+                userType: 'teacher',
+                token: generateToken(user._id, user.role)
             });
         } else {
-            res.status(401).json({ message: 'Invalid email or password' });
+            return res.json({
+                message: 'Login successful',
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                classCode: user.classCode,
+                score: user.score,
+                levelReached: user.levelReached,
+                userType: 'student',
+                token: generateToken(user._id, 'student')
+            });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// @desc    Get teacher profile
-exports.getTeacherProfile = async (req, res) => {
-    try {
-        const teacher = await Teacher.findById(req.user._id);
-        if (teacher) {
-            res.json({
-                _id: teacher._id,
-                name: teacher.name,
-                email: teacher.email,
-                classCode: teacher.classCode,
-                sections: teacher.sections,
-                role: teacher.role
-            });
-        } else {
-            res.status(404).json({ message: 'Teacher not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-// @desc    Update teacher profile
 exports.updateTeacherProfile = async (req, res) => {
     try {
         const { name, email } = req.body;
@@ -6413,6 +6605,7 @@ exports.updateTeacherProfile = async (req, res) => {
         await teacher.save();
 
         res.json({
+            message: 'Profile updated successfully',
             _id: teacher._id,
             name: teacher.name,
             email: teacher.email,
@@ -6425,7 +6618,7 @@ exports.updateTeacherProfile = async (req, res) => {
     }
 };
 
-// Replace your deleteSection function with this:
+
 exports.deleteSection = async (req, res) => {
     try {
         const teacher = await Teacher.findById(req.user._id);
@@ -6439,6 +6632,7 @@ exports.deleteSection = async (req, res) => {
 
             // Return the updated teacher object so the frontend can sync
             res.json({
+                message: 'Section deleted successfully',
                 _id: teacher._id,
                 name: teacher.name,
                 email: teacher.email,
@@ -6454,7 +6648,6 @@ exports.deleteSection = async (req, res) => {
     }
 };
 
-// @desc    Submit feedback
 exports.submitFeedback = async (req, res) => {
     try {
         const { title, description, type, priority } = req.body;
@@ -6497,18 +6690,29 @@ const Question = require('../models/questionModel');
 // @access  Private/Admin
 exports.createQuestion = async (req, res) => {
     try {
-        const { title, description, topic, difficultyLevel } = req.body;
+        const { title, description, topic, period, difficultyLevel, options, correctAnswer } = req.body;
 
         // Validation
-        if (!title || !topic) {
-            return res.status(400).json({ message: 'Title and topic are required' });
+        if (!title || !topic || !period || !options || correctAnswer === undefined) {
+            return res.status(400).json({
+                message: 'Title, topic, period, options, and correctAnswer are required'
+            });
+        }
+
+        if (options.length !== 4) {
+            return res.status(400).json({
+                message: 'Exactly 4 options are required'
+            });
         }
 
         const newQuestion = new Question({
             title,
             description,
             topic,
+            period,
             difficultyLevel: difficultyLevel || 'Medium',
+            options,
+            correctAnswer,
             createdBy: req.user._id
         });
 
@@ -6520,7 +6724,7 @@ exports.createQuestion = async (req, res) => {
         });
     } catch (error) {
         console.error('Create Question Error:', error);
-        res.status(500).json({ message: 'Error creating question' });
+        res.status(500).json({ message: 'Error creating question', error: error.message });
     }
 };
 
@@ -6546,6 +6750,7 @@ exports.getAllQuestions = async (req, res) => {
         const total = await Question.countDocuments(filters);
 
         res.json({
+            message: 'Questions retrieved successfully',
             questions,
             pagination: {
                 total,
@@ -6685,35 +6890,6 @@ exports.toggleQuestionStatus = async (req, res) => {
 };
 ````
 
-## File: chronoquest-api/src/controllers/studentController.js
-````javascript
-const Score = require('../models/scoreModel');
-const Teacher = require('../models/teacherModel');
-
-exports.simulateSync = async (req, res) => {
-    try {
-        const { studentName, classCode, levelReached, score } = req.body;
-
-        const teacher = await Teacher.findOne({ classCode });
-        if (!teacher) {
-            return res.status(404).json({ message: 'Invalid Class Code' });
-        }
-
-        const newScore = await Score.create({
-            studentName,
-            classCode,
-            levelReached,
-            score,
-            teacherId: teacher._id
-        });
-
-        res.status(201).json({ message: 'Sync Successful', data: newScore });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-````
-
 ## File: chronoquest-api/src/middleware/adminMiddleware.js
 ````javascript
 const jwt = require('jsonwebtoken');
@@ -6760,161 +6936,10 @@ exports.checkPermission = (requiredPermission) => {
             return res.status(403).json({ message: "Admin access required" });
         }
 
-        if (req.user.permissions && !req.user.permissions.includes(requiredPermission)) {
-            return res.status(403).json({
-                message: `Permission denied. Required: ${requiredPermission}`,
-                userPermissions: req.user.permissions
-            });
-        }
-
+        // All admins have full permissions
         next();
     };
 };
-````
-
-## File: chronoquest-api/src/middleware/authMiddleware.js
-````javascript
-const jwt = require('jsonwebtoken');
-const Teacher = require('../models/teacherModel');
-
-exports.protect = async (req, res, next) => {
-    let token;
-
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        req.user = await Teacher.findById(decoded.id).select('-password');
-
-        if (!req.user) {
-            return res.status(401).json({ message: 'User not found' });
-        }
-
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
-    }
-};
-
-// Admin-only middleware
-exports.adminOnly = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
-        next();
-    } else {
-        res.status(403).json({ message: 'Access denied: Admin privileges required' });
-    }
-};
-````
-
-## File: chronoquest-api/src/models/activityLogModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const activityLogSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-        required: true
-    },
-    userRole: {
-        type: String,
-        enum: ['teacher', 'student', 'admin'],
-        required: true
-    },
-    action: {
-        type: String,
-        required: true  // e.g., "LOGIN", "CREATE_SECTION", "DELETE_STUDENT"
-    },
-    resource: {
-        type: String  // e.g., "Section", "Student", "Question"
-    },
-    resourceId: {
-        type: mongoose.Schema.Types.ObjectId
-    },
-    details: {
-        type: Object,
-        default: {}  // Store additional context
-    },
-    ipAddress: String,
-    status: {
-        type: String,
-        enum: ['success', 'failure'],
-        default: 'success'
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        index: true
-    }
-}, { timestamps: false });
-
-module.exports = mongoose.model('ActivityLog', activityLogSchema);
-````
-
-## File: chronoquest-api/src/models/feedbackModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const feedbackSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    type: {
-        type: String,
-        enum: ['bug_report', 'feature_request', 'general_feedback'],
-        required: true
-    },
-    submittedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    priority: {
-        type: String,
-        enum: ['low', 'medium', 'high', 'critical'],
-        default: 'medium'
-    },
-    status: {
-        type: String,
-        enum: ['open', 'in_progress', 'resolved', 'closed'],
-        default: 'open'
-    },
-    attachments: [String],  // URLs to attached files/screenshots
-    response: {
-        admin: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Teacher'
-        },
-        message: String,
-        respondedAt: Date
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-module.exports = mongoose.model('Feedback', feedbackSchema);
 ````
 
 ## File: chronoquest-api/src/models/questionModel.js
@@ -6943,7 +6968,7 @@ const questionSchema = new mongoose.Schema(
             trim: true,
             maxlength: 1000
         },
-        // Backward compatibility field
+
         topic: {
             type: String,
             trim: true,
@@ -6963,7 +6988,7 @@ const questionSchema = new mongoose.Schema(
             },
             required: true
         },
-        // Correct answer index (0-3)
+
         correctAnswer: {
             type: Number,
             enum: [0, 1, 2, 3],
@@ -6992,10 +7017,9 @@ const questionSchema = new mongoose.Schema(
     }
 );
 
-// Sync topic → period for backward compat
-questionSchema.pre('save', function (next) {
+
+questionSchema.pre('save', function () {
     if (this.period) this.topic = this.period;
-    next();
 });
 
 questionSchema.index({ createdBy: 1, period: 1 });
@@ -7004,28 +7028,10 @@ questionSchema.index({ createdBy: 1, isActive: 1 });
 module.exports = mongoose.model('Question', questionSchema);
 ````
 
-## File: chronoquest-api/src/models/scoreModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const scoreSchema = new mongoose.Schema({
-    studentName: { type: String, required: true },
-    classCode: { type: String, required: true },
-    levelReached: { type: String, required: true },
-    score: { type: Number, required: true },
-    teacherId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-        required: true
-    }
-}, { timestamps: true });
-
-module.exports = mongoose.model('Score', scoreSchema);
-````
-
 ## File: chronoquest-api/src/models/studentModel.js
 ````javascript
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const studentSchema = new mongoose.Schema({
     name: {
@@ -7052,55 +7058,34 @@ const studentSchema = new mongoose.Schema({
     },
     levelReached: {
         type: String,
-        default: "Era 1: Prehistoric"
+        default: "Era 1: Pre-Colonial"
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true });
 
-// Pre-save hook to clamp score to 100
-studentSchema.pre('save', function (next) {
+
+studentSchema.pre('save', async function () {
+    // Hash password if modified
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+
+
     if (this.score > 100) {
         this.score = 100;
     }
-    next();
 });
+
+
+studentSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model('Student', studentSchema);
-````
-
-## File: chronoquest-api/src/models/systemSettingsModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const systemSettingsSchema = new mongoose.Schema({
-    key: {
-        type: String,
-        required: true,
-        unique: true
-        // e.g., "max_sections_per_teacher", "max_students_per_section"
-    },
-    value: mongoose.Schema.Types.Mixed,  // Can be string, number, boolean, etc.
-    type: {
-        type: String,
-        enum: ['string', 'number', 'boolean', 'json'],
-        default: 'string'
-    },
-    description: String,
-    category: {
-        type: String,
-        enum: ['general', 'security', 'performance', 'email', 'features'],
-        default: 'general'
-    },
-    updatedBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher'
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
-module.exports = mongoose.model('SystemSettings', systemSettingsSchema);
 ````
 
 ## File: chronoquest-api/src/models/teacherModel.js
@@ -7108,7 +7093,6 @@ module.exports = mongoose.model('SystemSettings', systemSettingsSchema);
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-// 1. Define the Section Structure
 const sectionSchema = new mongoose.Schema({
     sectionName: {
         type: String,
@@ -7132,7 +7116,6 @@ const sectionSchema = new mongoose.Schema({
     }
 });
 
-// 2. Define the Teacher Structure
 const teacherSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -7150,24 +7133,21 @@ const teacherSchema = new mongoose.Schema({
     classCode: {
         type: String,
         unique: true,
-        required: true
+        sparse: true,
+        default: null
     },
     role: {
         type: String,
         enum: ['teacher', 'admin'],
         default: 'teacher'
     },
-    // Allows one teacher to have multiple sections
+
     sections: [sectionSchema],
-    // Admin-specific fields
-    adminLevel: {
-        type: String,
-        enum: ['super_admin', 'content_admin', 'support_admin'],
-        default: null
-    },
+
     permissions: [{
         type: String
-        // e.g., 'manage_users', 'manage_content', 'view_analytics', 'manage_feedback'
+
+
     }],
     isActive: {
         type: Boolean,
@@ -7202,354 +7182,27 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { protect, adminOnly, checkPermission } = require('../middleware/adminMiddleware');
 
-// All admin routes require authentication and admin role
+
 router.use(protect);
 router.use(adminOnly);
 
-// ============================================
-// USER MANAGEMENT ROUTES
-// ============================================
-
 router.get('/users', adminController.getAllUsers);
 router.post('/users/deactivate', adminController.deactivateUser);
+router.post('/users/delete', adminController.deleteUser);
 router.patch('/users/:userId/:userType', adminController.updateUser);
-router.delete('/users/:userId', adminController.deleteUser);
 router.get('/users/:userId/logs', adminController.getUserActivityLogs);
 router.get('/activity-logs', adminController.getAllActivityLogs);
 router.get('/activity-logs-detailed', adminController.getRecentActivityLogs);
-
-// ============================================
-// SYSTEM ANALYTICS ROUTES
-// ============================================
 
 router.post('/sync-scores', adminController.syncScores);
 router.get('/analytics', adminController.getSystemAnalytics);
 router.get('/usage-stats', adminController.getUsageStats);
 
-// ============================================
-// FEEDBACK & SUPPORT
-// ============================================
-
 router.get('/feedback', adminController.getAllFeedback);
 router.post('/feedback/:id/respond', checkPermission('manage_feedback'), adminController.respondToFeedback);
 
-// ============================================
-// SYSTEM SETTINGS
-// ============================================
-
 router.get('/settings', adminController.getSystemSettings);
 router.post('/settings', checkPermission('manage_settings'), adminController.updateSystemSetting);
-
-module.exports = router;
-````
-
-## File: chronoquest-api/src/routes/apiRoutes.js
-````javascript
-const express = require('express');
-const router = express.Router();
-
-// 1. IMPORT MODELS
-const Teacher = require('../models/teacherModel');
-const Student = require('../models/studentModel');
-
-// 2. IMPORT MIDDLEWARE & UTILS
-const { protect } = require('../middleware/authMiddleware');
-const generateClassCode = require('../utils/generateCode');
-
-// 3. IMPORT SUB-ROUTES (Ensure these files exist in the same folder!)
-const authRoutes = require('./authRoutes');
-const adminRoutes = require('./adminRoutes');
-const questionRoutes = require('./questionRoutes');
-
-// --- DIAGNOSTIC ROUTE ---
-router.get('/test', (req, res) => res.json({ message: "API is working on Port 5000!" }));
-
-// --- 4. AUTHENTICATION ROUTES ---
-router.use('/auth', authRoutes);
-
-// --- 4.5. ADMIN ROUTES ---
-router.use('/admin', adminRoutes);
-
-// --- 4.6. QUESTION ROUTES ---
-router.use('/questions', questionRoutes);
-
-// --- 5. SECTION MANAGEMENT ---
-
-// @route   POST /api/v1/teacher/add-section
-router.post('/teacher/add-section', protect, async (req, res) => {
-    const { sectionName } = req.body;
-
-    if (!sectionName) {
-        return res.status(400).json({ message: "Section name is required" });
-    }
-
-    try {
-        const teacherId = req.user._id;
-        const newClassCode = generateClassCode();
-
-        const newSection = {
-            sectionName,
-            classCode: newClassCode
-        };
-
-        const updatedTeacher = await Teacher.findByIdAndUpdate(
-            teacherId,
-            { $push: { sections: newSection } },
-            { new: true }
-        ).select('-password');
-
-        res.status(201).json({
-            updatedTeacher,
-            newSection
-        });
-    } catch (error) {
-        console.error("Add Section Error:", error);
-        res.status(500).json({ message: "Server error adding section" });
-    }
-});
-
-// @route   DELETE /api/v1/teacher/delete-section/:classCode
-router.delete('/teacher/delete-section/:classCode', protect, async (req, res) => {
-    try {
-        const { classCode } = req.params;
-        const teacherId = req.user._id;
-
-        const updatedTeacher = await Teacher.findByIdAndUpdate(
-            teacherId,
-            { $pull: { sections: { classCode: classCode } } },
-            { new: true }
-        ).select('-password');
-
-        res.json({ updatedTeacher, message: "Section removed" });
-    } catch (error) {
-        res.status(500).json({ message: "Error deleting section" });
-    }
-});
-
-// @route   POST /api/v1/teacher/archive-section/:classCode
-router.post('/teacher/archive-section/:classCode', protect, async (req, res) => {
-    try {
-        const { classCode } = req.params;
-        const teacherId = req.user._id;
-
-        const teacher = await Teacher.findById(teacherId);
-
-        if (!teacher) {
-            return res.status(404).json({ message: 'Teacher not found' });
-        }
-
-        const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
-
-        if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
-        }
-
-        teacher.sections[sectionIndex].isArchived = true;
-        teacher.sections[sectionIndex].archivedAt = new Date();
-
-        await teacher.save();
-
-        const updatedTeacher = await Teacher.findById(teacherId).select('-password');
-        res.json({ updatedTeacher, message: "Section archived successfully" });
-    } catch (error) {
-        console.error("Archive Section Error:", error);
-        res.status(500).json({ message: "Error archiving section" });
-    }
-});
-
-// @route   POST /api/v1/teacher/unarchive-section/:classCode
-router.post('/teacher/unarchive-section/:classCode', protect, async (req, res) => {
-    try {
-        const { classCode } = req.params;
-        const teacherId = req.user._id;
-
-        const teacher = await Teacher.findById(teacherId);
-
-        if (!teacher) {
-            return res.status(404).json({ message: 'Teacher not found' });
-        }
-
-        const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
-
-        if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
-        }
-
-        teacher.sections[sectionIndex].isArchived = false;
-        teacher.sections[sectionIndex].archivedAt = null;
-
-        await teacher.save();
-
-        const updatedTeacher = await Teacher.findById(teacherId).select('-password');
-        res.json({ updatedTeacher, message: "Section restored successfully" });
-    } catch (error) {
-        console.error("Unarchive Section Error:", error);
-        res.status(500).json({ message: "Error restoring section" });
-    }
-});
-
-// --- 6. ANALYTICS ROUTES ---
-
-// @route   GET /api/v1/analytics/overall
-router.get('/analytics/overall', protect, async (req, res) => {
-    try {
-        if (!req.user.sections || req.user.sections.length === 0) {
-            return res.json([]);
-        }
-
-        const includeArchived = req.query.includeArchived === 'true';
-
-        const activeSections = includeArchived
-            ? req.user.sections
-            : req.user.sections.filter(s => !s.isArchived);
-
-        if (activeSections.length === 0) {
-            return res.json([]);
-        }
-
-        const codes = activeSections.map(s => s.classCode);
-
-        const students = await Student.find({
-            classCode: { $in: codes }
-        }).select('name score classCode levelReached');
-
-        const formattedScores = students.map(s => ({
-            studentName: s.name,
-            score: s.score || 0,
-            classCode: s.classCode,
-            levelReached: s.levelReached || "Era 1"
-        }));
-
-        res.json(formattedScores);
-    } catch (error) {
-        console.error("Analytics Error:", error);
-        res.status(500).json({ message: "Error fetching analytics data" });
-    }
-});
-
-// --- 6.5. STUDENT MANAGEMENT ROUTES ---
-
-// @route   POST /api/v1/students
-router.post('/students', protect, async (req, res) => {
-    try {
-        const { name, email, password, classCode, score, levelReached } = req.body;
-
-        const teacherSections = req.user.sections.map(s => s.classCode);
-        if (!teacherSections.includes(classCode)) {
-            return res.status(403).json({ message: 'You can only add students to your own sections' });
-        }
-
-        const existingStudent = await Student.findOne({ email });
-        if (existingStudent) {
-            return res.status(400).json({ message: 'Student with this email already exists' });
-        }
-
-        const student = await Student.create({
-            name,
-            email,
-            password,
-            classCode,
-            score: score || 0,
-            levelReached: levelReached || "Era 1: Prehistoric"
-        });
-
-        res.status(201).json({
-            _id: student._id,
-            name: student.name,
-            email: student.email,
-            classCode: student.classCode,
-            score: student.score,
-            levelReached: student.levelReached
-        });
-    } catch (error) {
-        console.error("Add Student Error:", error);
-        res.status(500).json({ message: "Error adding student" });
-    }
-});
-
-// @route   PUT /api/v1/students/:id
-router.put('/students/:id', protect, async (req, res) => {
-    try {
-        const { name, email, score, levelReached } = req.body;
-        const studentId = req.params.id;
-
-        const student = await Student.findById(studentId);
-        if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
-        }
-
-        const teacherSections = req.user.sections.map(s => s.classCode);
-        if (!teacherSections.includes(student.classCode)) {
-            return res.status(403).json({ message: 'You can only update students in your sections' });
-        }
-
-        if (name) student.name = name;
-        if (email) {
-            const emailExists = await Student.findOne({ email, _id: { $ne: studentId } });
-            if (emailExists) {
-                return res.status(400).json({ message: 'Email already in use' });
-            }
-            student.email = email;
-        }
-        if (score !== undefined) {
-            const validScore = Math.min(Math.max(score, 0), 100);
-            student.score = validScore;
-        }
-        if (levelReached) student.levelReached = levelReached;
-
-        await student.save();
-
-        res.json({
-            _id: student._id,
-            name: student.name,
-            email: student.email,
-            classCode: student.classCode,
-            score: student.score,
-            levelReached: student.levelReached
-        });
-    } catch (error) {
-        console.error("Update Student Error:", error);
-        res.status(500).json({ message: "Error updating student" });
-    }
-});
-
-// @route   DELETE /api/v1/students/:id
-router.delete('/students/:id', protect, async (req, res) => {
-    try {
-        const studentId = req.params.id;
-
-        const student = await Student.findById(studentId);
-        if (!student) {
-            return res.status(404).json({ message: 'Student not found' });
-        }
-
-        const teacherSections = req.user.sections.map(s => s.classCode);
-        if (!teacherSections.includes(student.classCode)) {
-            return res.status(403).json({ message: 'You can only delete students in your sections' });
-        }
-
-        await Student.findByIdAndDelete(studentId);
-        res.json({ message: 'Student deleted successfully' });
-    } catch (error) {
-        console.error("Delete Student Error:", error);
-        res.status(500).json({ message: "Error deleting student" });
-    }
-});
-
-module.exports = router;
-````
-
-## File: chronoquest-api/src/routes/authRoutes.js
-````javascript
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
-
-router.post('/register', authController.registerUser || authController.register);
-router.post('/login', authController.loginUser || authController.login);
-router.put('/profile', protect, authController.updateTeacherProfile || authController.updateProfile);
-router.post('/feedback', protect, authController.submitFeedback);
 
 module.exports = router;
 ````
@@ -7569,67 +7222,1020 @@ const {
 } = require('../controllers/questionController');
 
 
-router.post('/', protect, adminOnly, createQuestion);
-
-
-router.get('/', protect, adminOnly, getAllQuestions);
-
-
-router.get('/teacher/:teacherId', protect, adminOnly, getQuestionsByTeacher);
-
-
+router.post('/', protect, createQuestion);
+router.get('/', protect, getAllQuestions);
+router.get('/teacher/:teacherId', protect, getQuestionsByTeacher);
 router.patch('/:questionId', protect, updateQuestion);
-
-
 router.delete('/:questionId', protect, deleteQuestion);
-
-
 router.post('/:questionId/toggle', protect, toggleQuestionStatus);
 
 module.exports = router;
 ````
 
-## File: chronoquest-api/src/utils/generateCode.js
-````javascript
-const generateClassCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    const codeLength = 6;
-
-    for (let i = 0; i < codeLength; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters.charAt(randomIndex);
-    }
-
-    return result;
-};
-
-module.exports = generateClassCode;
+## File: chronoquest-api/vercel.json
+````json
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "server.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "server.js"
+        }
+    ]
+}
 ````
 
-## File: SYSTEM_DOCUMENTATION.md
+## File: chrono-dashboard/src/pages/AdminPanel.js
+````javascript
+import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import AdminSidebar from '../components/AdminSidebar';
+import QuestionManagement from './QuestionManagement';
+import UsersList from '../components/admin/UsersList';
+import FeedbackSection from '../components/admin/FeedbackSection';
+import toast, { Toaster } from 'react-hot-toast';
+import { Users, BookOpen, Lock } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const StatCard = ({ title, value, icon }) => (
+    <div className="stat-card">
+        <p className="stat-card-label">{title}</p>
+        <div className="stat-card-icon-row">
+            <div className="text-slate-900">{icon}</div>
+            <p className="stat-card-value">{value}</p>
+        </div>
+    </div>
+);
+
+const AdminPanel = () => {
+    const { teacher, logout } = useContext(AuthContext);
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [loading, setLoading] = useState(false);
+
+    const [users, setUsers] = useState({ teachers: [], students: [] });
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [editingUserType, setEditingUserType] = useState(null);
+    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
+
+    const [analytics, setAnalytics] = useState(null);
+    const [activityLogs, setActivityLogs] = useState([]);
+    const [feedback, setFeedback] = useState([]);
+    const [feedbackSearch, setFeedbackSearch] = useState('');
+    const [expandedFeedback, setExpandedFeedback] = useState(null);
+
+    const [settingsForm, setSettingsForm] = useState({
+        max_learning_groups_per_instructor: '',
+        max_learners_per_group: ''
+    });
+    const [settingsSaving, setSettingsSaving] = useState(false);
+
+    const token = localStorage.getItem('teacherToken');
+    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
+
+    useEffect(() => {
+        if (teacher && teacher.role !== 'admin') {
+            toast.error('Admin access required');
+            logout();
+        }
+    }, [teacher, logout]);
+
+    const fetchAllUsers = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
+            setUsers(data);
+            toast.success('Users loaded');
+        } catch (error) {
+            toast.error('Failed to load users');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleDeactivateUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to deactivate this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
+                toast.success('User deactivated');
+                fetchAllUsers();
+            } catch (error) {
+                toast.error('Failed to deactivate user');
+            }
+        }
+    };
+
+    const handleDeleteUser = async (userId, userType) => {
+        if (window.confirm('Confirm deletion? This action cannot be undone!')) {
+            try {
+                await axios.delete(`${API_BASE}/admin/users/${userId}`, { headers, data: { userId, userType } });
+                toast.success('User deleted');
+                fetchAllUsers();
+            } catch (error) {
+                toast.error('Failed to delete user');
+            }
+        }
+    };
+
+    const handleEditUser = (user, userType) => {
+        setEditingUser(user);
+        setEditingUserType(userType);
+        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
+        setEditModalOpen(true);
+    };
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
+            toast.success('User updated successfully');
+            setEditModalOpen(false);
+            fetchAllUsers();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update user');
+        }
+    };
+
+    const fetchAnalytics = useCallback(async () => {
+        setLoading(true);
+        try {
+            const [analyticsRes, activityRes] = await Promise.all([
+                axios.get(`${API_BASE}/admin/analytics`, { headers }),
+                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
+            ]);
+            setAnalytics(analyticsRes.data);
+            setActivityLogs(activityRes.data.logs || []);
+        } catch (error) {
+            toast.error('Failed to load analytics');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const fetchFeedback = useCallback(async () => {
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
+            setFeedback(data);
+        } catch (error) {
+            toast.error('Failed to load feedback');
+        }
+    }, [headers]);
+
+    const fetchSettings = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
+            setSettingsForm(prev => ({
+                ...prev,
+                max_learning_groups_per_instructor: data.max_learning_groups_per_instructor?.value || 5,
+                max_learners_per_group: data.max_learners_per_group?.value || 50
+            }));
+        } catch (error) {
+            toast.error('Failed to load settings');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleSaveSettings = async () => {
+        setSettingsSaving(true);
+        try {
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learning_groups_per_instructor',
+                value: parseInt(settingsForm.max_learning_groups_per_instructor),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learners_per_group',
+                value: parseInt(settingsForm.max_learners_per_group),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            toast.success('Settings saved successfully');
+            fetchSettings();
+        } catch (error) {
+            toast.error('Failed to save settings');
+        }
+        setSettingsSaving(false);
+    };
+
+    useEffect(() => {
+        if (activeTab === 'users') fetchAllUsers();
+        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
+        else if (activeTab === 'feedback') fetchFeedback();
+        else if (activeTab === 'settings') fetchSettings();
+    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
+
+    // Search filters — computed outside sub-components so they react to state changes
+    const filteredTeachers = users.teachers?.filter(t =>
+        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.email.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredStudents = users.students?.filter(s =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredFeedback = feedback.filter(fb => {
+        if (!feedbackSearch) return true;
+        const q = feedbackSearch.toLowerCase();
+        return (
+            fb.title?.toLowerCase().includes(q) ||
+            fb.description?.toLowerCase().includes(q) ||
+            fb.submittedBy?.email?.toLowerCase().includes(q) ||
+            fb.submittedBy?.name?.toLowerCase().includes(q) ||
+            fb.type?.toLowerCase().includes(q) ||
+            fb.status?.toLowerCase().includes(q)
+        );
+    });
+
+
+
+    const AnalyticsDashboard = () => {
+        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
+        return (
+            <div className="space-y-10">
+                <div>
+                    <h2 className="page-title">Learning Analytics</h2>
+                    <p className="page-subtitle">System-wide overview and statistics</p>
+                </div>
+                <div className="grid-4">
+                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={24} />} />
+                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={24} />} />
+                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={24} />} />
+                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={24} />} />
+                </div>
+
+                {activityLogs.length > 0 && (
+                    <div className="card">
+                        <div style={{ marginBottom: '24px' }}>
+                            <h3 className="section-title">Recent Activity</h3>
+                            <p className="section-subtitle">Last 50 system activities</p>
+                        </div>
+                        <div style={{ overflowX: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
+                                            <th key={h} style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.875rem' }}>{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {activityLogs.map(log => (
+                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
+                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
+                                                <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '4px 0 0 0' }}>{log.userEmail}</p>
+                                            </td>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
+                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '4px 8px', borderRadius: '4px', fontWeight: 600 }}>
+                                                    {log.action?.replace(/_/g, ' ')}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                                {new Date(log.createdAt).toLocaleString()}
+                                            </td>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
+                                                <span style={{
+                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
+                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
+                                                    padding: '4px 8px', borderRadius: '4px', fontWeight: 600
+                                                }}>
+                                                    {log.status?.toUpperCase()}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                {log.details ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+
+
+    const SettingsSection = () => (
+        <div className="space-y-8">
+            <h2 className="page-title">System Settings</h2>
+            <div className="card">
+                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
+                </h3>
+                {loading ? (
+                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
+                ) : (
+                    <div className="space-y-6">
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
+                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learning_groups_per_instructor}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learners Per Learning Group</p>
+                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learners_per_group}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
+                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
+                                {settingsSaving ? 'Saving...' : 'Save Settings'}
+                            </button>
+                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="page">
+            <Toaster position="top-right" />
+            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+            <main className="main-padded">
+                <header className="page-header">
+                    <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
+                </header>
+
+                {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700 }}>Loading...</div>}
+                {activeTab === 'dashboard' && <AnalyticsDashboard />}
+                {activeTab === 'users' && (
+                    <UsersList
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        users={users}
+                        filteredTeachers={filteredTeachers}
+                        filteredStudents={filteredStudents}
+                        handleEditUser={handleEditUser}
+                        handleDeactivateUser={handleDeactivateUser}
+                        handleDeleteUser={handleDeleteUser}
+                    />
+                )}
+                {activeTab === 'questions' && <QuestionManagement />}
+                {activeTab === 'feedback' && (
+                    <FeedbackSection
+                        feedbackSearch={feedbackSearch}
+                        setFeedbackSearch={setFeedbackSearch}
+                        filteredFeedback={filteredFeedback}
+                        feedback={feedback}
+                        expandedFeedback={expandedFeedback}
+                        setExpandedFeedback={setExpandedFeedback}
+                    />
+                )}
+                {activeTab === 'settings' && <SettingsSection />}
+            </main>
+
+            {editModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-md">
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
+                        <form onSubmit={handleUpdateUser} className="space-y-6">
+                            <div className="form-group">
+                                <label className="form-label-sm">Name</label>
+                                <input
+                                    type="text"
+                                    value={editFormData.name}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="User name"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label-sm">Email</label>
+                                <input
+                                    type="email"
+                                    value={editFormData.email}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="user@example.com"
+                                />
+                            </div>
+                            {editingUserType === 'teacher' && (
+                                <>
+                                    <div className="form-group">
+                                        <label className="form-label-sm">Role</label>
+                                        <select
+                                            value={editFormData.role}
+                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
+                                            className="form-select"
+                                        >
+                                            <option value="teacher">Teacher</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </div>
+                                </>
+                            )}
+                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
+                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
+                                <button type="submit" className="btn-indigo">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default AdminPanel;
+````
+
+## File: chronoquest-api/src/controllers/adminController.js
+````javascript
+const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+const ActivityLog = require('../models/activityLogModel');
+const Feedback = require('../models/feedbackModel');
+const SystemSettings = require('../models/systemSettingsModel');
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const teachers = await Teacher.find().select('-password');
+        const students = await Student.find().select('-password');
+
+        const formattedTeachers = teachers.map(t => ({
+            ...t.toObject(),
+            userType: 'teacher',
+            totalSections: t.sections?.length || 0
+        }));
+
+        const formattedStudents = students.map(s => ({
+            ...s.toObject(),
+            userType: 'student'
+        }));
+
+        res.json({
+            message: 'Users retrieved successfully',
+            teachers: formattedTeachers,
+            students: formattedStudents,
+            totalUsers: formattedTeachers.length + formattedStudents.length,
+            totalTeachers: formattedTeachers.length,
+            totalStudents: formattedStudents.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+exports.deactivateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (userType === 'teacher') {
+            await Teacher.findByIdAndUpdate(userId, { isActive: false });
+            await ActivityLog.create({
+                userId: req.user._id,
+                userRole: req.user.role,
+                action: 'DEACTIVATE_TEACHER',
+                resourceId: userId,
+                status: 'success'
+            });
+        } else if (userType === 'student') {
+            await Student.findByIdAndUpdate(userId, { isActive: false });
+            await ActivityLog.create({
+                userId: req.user._id,
+                userRole: req.user.role,
+                action: 'DEACTIVATE_STUDENT',
+                resourceId: userId,
+                status: 'success'
+            });
+        }
+
+        res.json({ message: `User deactivated successfully` });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deactivating user', error: error.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        // Validate userType
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({
+                message: 'Invalid userType. Use "teacher" or "student". Note: admins are teachers with role="admin"',
+                errorCode: 'INVALID_USER_TYPE'
+            });
+        }
+
+        let deletedUser;
+
+        if (userType === 'teacher') {
+            // Check if this is the last admin
+            const adminCount = await Teacher.countDocuments({ role: 'admin' });
+            const userToDelete = await Teacher.findById(userId);
+
+            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
+                return res.status(400).json({ message: 'Cannot delete the last admin account' });
+            }
+
+            deletedUser = await Teacher.findByIdAndDelete(userId);
+        } else if (userType === 'student') {
+            deletedUser = await Student.findByIdAndDelete(userId);
+        }
+
+        // Check if user was actually found and deleted
+        if (!deletedUser) {
+            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userRole: req.user.role,
+            action: 'DELETE_USER',
+            resource: userType,
+            resourceId: userId,
+            status: 'success'
+        });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.params;
+        const { name, email, role } = req.body;
+
+        if (userType === 'teacher') {
+            // Validate email uniqueness if provided
+            if (email) {
+                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId } });
+                if (existingTeacher) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            // Validate role if provided
+            if (role && !['teacher', 'admin'].includes(role)) {
+                return res.status(400).json({ message: 'Invalid role' });
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (email) updateData.email = email;
+            if (role) updateData.role = role;
+
+            const updatedTeacher = await Teacher.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            // Log the action
+            await ActivityLog.create({
+                userId: req.user._id,
+                userRole: req.user.role,
+                action: 'UPDATE_USER',
+                resource: 'teacher',
+                resourceId: userId,
+                details: { changedFields: Object.keys(updateData) },
+                status: 'success'
+            });
+
+            res.json({
+                message: 'User updated successfully',
+                user: updatedTeacher
+            });
+        } else if (userType === 'student') {
+            // Validate email uniqueness if provided
+            if (email) {
+                const existingStudent = await Student.findOne({ email, _id: { $ne: userId } });
+                if (existingStudent) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name;
+            if (email) updateData.email = email;
+
+            const updatedStudent = await Student.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            // Log the action
+            await ActivityLog.create({
+                userId: req.user._id,
+                userRole: req.user.role,
+                action: 'UPDATE_USER',
+                resource: 'student',
+                resourceId: userId,
+                details: { changedFields: Object.keys(updateData) },
+                status: 'success'
+            });
+
+            res.json({
+                message: 'User updated successfully',
+                user: updatedStudent
+            });
+        } else {
+            res.status(400).json({ message: 'Invalid user type' });
+        }
+    } catch (error) {
+        console.error('Update User Error:', error);
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+};
+
+exports.getUserActivityLogs = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const logs = await ActivityLog.find({ userId })
+            .sort({ createdAt: -1 })
+            .limit(100);
+
+        res.json({
+            message: 'User activity logs retrieved successfully',
+            logs
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
+    }
+};
+
+exports.getAllActivityLogs = async (req, res) => {
+    try {
+        const { limit = 500, skip = 0 } = req.query;
+        const logs = await ActivityLog.find()
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .skip(parseInt(skip));
+
+        const total = await ActivityLog.countDocuments();
+
+        res.json({
+            message: 'All activity logs retrieved successfully',
+            logs,
+            total
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching logs', error: error.message });
+    }
+};
+
+exports.getSystemAnalytics = async (req, res) => {
+    try {
+        const totalTeachers = await Teacher.countDocuments();
+        const totalStudents = await Student.countDocuments();
+        const totalSections = await Teacher.aggregate([
+            { $unwind: '$sections' },
+            { $count: 'total' }
+        ]);
+
+        const recentUsers = await Teacher.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select('name email createdAt');
+
+        const platformStats = {
+            totalTeachers,
+            totalStudents,
+            totalSections: totalSections[0]?.total || 0,
+            totalUsers: totalTeachers + totalStudents,
+            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
+            recentUsers
+        };
+
+        res.json({
+            message: 'System analytics retrieved successfully',
+            ...platformStats
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
+    }
+};
+
+exports.getUsageStats = async (req, res) => {
+    try {
+        const logs = await ActivityLog.aggregate([
+            {
+                $group: {
+                    _id: '$action',
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { count: -1 } }
+        ]);
+
+        const dailyActivity = await ActivityLog.aggregate([
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: -1 } },
+            { $limit: 30 }
+        ]);
+
+        res.json({
+            message: 'Usage stats retrieved successfully',
+            actionStats: logs,
+            dailyActivity
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching usage stats', error: error.message });
+    }
+};
+
+exports.getAllFeedback = async (req, res) => {
+    try {
+        const { status, type } = req.query;
+        const filter = {};
+
+        if (status) filter.status = status;
+        if (type) filter.type = type;
+
+        const feedback = await Feedback.find(filter)
+            .populate('submittedBy', 'name email')
+            .populate('response.admin', 'name email')
+            .sort({ createdAt: -1 });
+
+        res.json({
+            message: 'Feedback retrieved successfully',
+            feedback
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
+    }
+};
+
+exports.respondToFeedback = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { message, status } = req.body;
+
+        const feedback = await Feedback.findByIdAndUpdate(
+            id,
+            {
+                'response.admin': req.user._id,
+                'response.message': message,
+                'response.respondedAt': new Date(),
+                status: status || 'in_progress'
+            },
+            { new: true }
+        ).populate('submittedBy', 'name email')
+            .populate('response.admin', 'name email');
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userRole: req.user.role,
+            action: 'RESPOND_FEEDBACK',
+            resourceId: id,
+            status: 'success'
+        });
+
+        res.json({ message: 'Feedback responded successfully', feedback });
+    } catch (error) {
+        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
+    }
+};
+
+exports.getSystemSettings = async (req, res) => {
+    try {
+        const settings = await SystemSettings.find();
+        const settingsObj = {};
+
+        settings.forEach(s => {
+            settingsObj[s.key] = {
+                value: s.value,
+                type: s.type,
+                description: s.description,
+                category: s.category
+            };
+        });
+
+        res.json(settingsObj);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching settings', error: error.message });
+    }
+};
+
+exports.updateSystemSetting = async (req, res) => {
+    try {
+        const { key, value, type = 'string' } = req.body;
+
+        const setting = await SystemSettings.findOneAndUpdate(
+            { key },
+            {
+                key,
+                value,
+                type,
+                updatedBy: req.user._id,
+                updatedAt: new Date()
+            },
+            { upsert: true, new: true }
+        );
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userRole: req.user.role,
+            action: 'UPDATE_SETTING',
+            details: { key, oldValue: setting.value, newValue: value },
+            status: 'success'
+        });
+
+        res.json({ message: 'Setting updated successfully', setting });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating setting', error: error.message });
+    }
+};
+
+exports.syncScores = async (req, res) => {
+    try {
+        const Score = require('../models/scoreModel');
+        // Sync ALL students (including score: 0) for initial leaderboard population
+        const students = await Student.find({});
+
+        if (students.length === 0) {
+            return res.json({ message: 'No students to sync', synced: 0 });
+        }
+
+        let syncedCount = 0;
+        const syncErrors = [];
+
+        for (const student of students) {
+            try {
+                // Check if score already exists for this student
+                const existingScore = await Score.findOne({
+                    studentName: student.name,
+                    classCode: student.classCode
+                });
+
+                if (!existingScore) {
+                    // Get teacher data for this student's class
+                    const teacher = await Teacher.findOne({
+                        sections: { $elemMatch: { classCode: student.classCode } }
+                    });
+
+                    if (teacher) {
+                        await Score.create({
+                            studentName: student.name,
+                            classCode: student.classCode,
+                            levelReached: student.levelReached,
+                            score: Math.min(student.score, 100), // Ensure max 100
+                            teacherId: teacher._id
+                        });
+                        syncedCount++;
+                    }
+                }
+            } catch (error) {
+                syncErrors.push(`Failed to sync ${student.name}: ${error.message}`);
+            }
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userRole: req.user.role,
+            action: 'SYNC_SCORES',
+            details: { totalAttempted: students.length, successfulSync: syncedCount },
+            status: syncErrors.length === 0 ? 'success' : 'partial'
+        });
+
+        res.json({
+            message: 'Score sync completed',
+            synced: syncedCount,
+            total: students.length,
+            errors: syncErrors.length > 0 ? syncErrors : null
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error syncing scores', error: error.message });
+    }
+};
+
+exports.getRecentActivityLogs = async (req, res) => {
+    try {
+        const { limit = 50 } = req.query;
+
+        const logs = await ActivityLog.aggregate([
+            { $sort: { createdAt: -1 } },
+            { $limit: parseInt(limit) },
+            {
+                $lookup: {
+                    from: 'teachers',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'students',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'studentDetails'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    userId: 1,
+                    action: 1,
+                    resource: 1,
+                    resourceId: 1,
+                    details: 1,
+                    status: 1,
+                    createdAt: 1,
+                    userName: {
+                        $cond: [
+                            { $gt: [{ $size: '$userDetails' }, 0] },
+                            { $arrayElemAt: ['$userDetails.name', 0] },
+                            { $arrayElemAt: ['$studentDetails.name', 0] }
+                        ]
+                    },
+                    userEmail: {
+                        $cond: [
+                            { $gt: [{ $size: '$userDetails' }, 0] },
+                            { $arrayElemAt: ['$userDetails.email', 0] },
+                            { $arrayElemAt: ['$studentDetails.email', 0] }
+                        ]
+                    }
+                }
+            }
+        ]);
+
+        res.json({
+            logs,
+            total: logs.length,
+            timestamp: new Date()
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
+    }
+};
+````
+
+## File: SYSTEM_DOCUMENTATION_v2.md
 ````markdown
-# ChronoQuest System Documentation
+# ChronoQuest System Documentation — Version 2.1
+**Last Updated:** April 12, 2026  
+**Version:** 2.1.0 (Comprehensive API endpoint documentation with request/response examples, auth flow details, and complete feature inventory)
+
+---
 
 ## 📋 Table of Contents
+
 1. [System Overview](#system-overview)
 2. [Terminology & Key Concepts](#terminology--key-concepts)
-3. [Architecture](#architecture)
+3. [Architecture & Tech Stack](#architecture--tech-stack)
 4. [Current Implementation Status](#current-implementation-status)
-5. [Features](#features)
-6. [Tech Stack](#tech-stack)
-7. [Project Structure](#project-structure)
-8. [Key Features & Functionality](#key-features--functionality)
-9. [Database Models](#database-models)
-10. [API Endpoints](#api-endpoints)
-11. [Complete API Reference](#complete-api-reference)
-12. [Authentication & Security](#authentication--security)
-13. [Database Management](#database-management)
-14. [Database Schema Details](#database-schema-details)
-15. [Implementation Roadmap](#implementation-roadmap)
-16. [Known Limitations](#known-limitations--blockers)
-17. [Getting Started](#getting-started)
-18. [Project Setup Guide](#project-setup-guide)
+5. [Features Overview](#features-overview)
+6. [Admin Access Control](#admin-access-control)
+7. [Environment Configuration](#environment-configuration)
+8. [Authentication Flow](#authentication-flow)
+9. [Request Lifecycle](#request-lifecycle)
+10. [Deployment Guide](#deployment-guide)
+11. [Project Structure](#project-structure)
+12. [Database Models](#database-models)
+13. [API Endpoints & Reference](#api-endpoints--reference)
+14. [API Request/Response Examples](#api-requestresponse-examples)
+15. [Recent Updates (April 2026)](#recent-updates-april-2026)
+16. [Getting Started](#getting-started)
+17. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -7637,2087 +8243,1892 @@ module.exports = generateClassCode;
 
 ### Project Identity: ChronoQuest
 
-**Full Title**: ChronoQuest: Development of a Mobile Game-Based Learning Application for Teaching Philippine History among Elementary Students in Boac, Marinduque.
+**Full Title:** *ChronoQuest: Development of a Mobile Game-Based Learning Application for Teaching Philippine History among Elementary Students in Boac, Marinduque.*
 
-**Mission**: ChronoQuest is a dual-platform educational system designed to engage elementary learners in Philippine history through gamification and data-driven learning analytics. The system bridges play and study through localized historical content and real-time instructor feedback.
+**Mission:** ChronoQuest is a dual-platform educational system designed to engage elementary learners in Philippine history through gamification and data-driven learning analytics. The system bridges play and study through localized historical content and real-time instructor feedback.
 
-**Target Context**:
-- **Geographic Focus**: Boac, Marinduque, Philippines (including schools in Buliasnin, Bunganay, and Caganhao)
-- **Subject**: Philippine History with emphasis on local Marinduque heritage
-- **Audience**: Elementary school learners (students)
-- **Instructors**: Teachers and educational administrators
+**Target Context:**
+- **Geographic Focus:** Boac, Marinduque, Philippines
+- **Subject:** Philippine History with local heritage emphasis
+- **Audience:** Elementary school learners (students)
+- **Instructors:** Teachers and educational administrators
+
+### Core Components
+
+**ChronoQuest** consists of two main applications:
+- **chrono-dashboard**: React-based Instructor Portal (Port 3001)
+- **chronoquest-api**: Node.js/Express Backend API (Port 3000)
 
 ### Current Phase
-This release provides the **Instructor Portal** (Web Dashboard) and foundational backend infrastructure.
-- **Phase 1** ✅ Core infrastructure + instructor dashboard + admin panel (current)
-- **Phase 2** Content management system (planning)
-- **Phase 3** Mobile game frontend (future)
-
-### System Description
-
-**ChronoQuest** is an educational platform designed for instructors to manage learner progress and learning analytics. Teachers can create multiple learning groups/classes, assign unique class codes to learners, and track their performance across different historical eras.
-
-The system features a premium minimalist design aesthetic with a clean, spacious interface and controlled color accents, optimized for educators who may not be technology experts.
-
-The system consists of two main applications:
-- **chrono-dashboard**: React-based Instructor Portal for teachers and administrators (Port 3001)
-- **chronoquest-api**: Node.js/Express backend API (Port 3000)
+- **Phase 1** ✅ Core infrastructure + instructor dashboard + admin panel (CURRENT)
+- **Phase 2** Content management system (Planning)
+- **Phase 3** Mobile game frontend (Future)
 
 ### Historical Framework: The Eras
 
 ChronoQuest organizes Philippine history into five strategic learning eras:
-1. **Pre-Colonial Period**: Early Filipino culture, indigenous systems, and Boac's origins
-2. **Spanish Colonization**: Christianization, the Galleon Trade, and colonial impact on the island
-3. **Revolutionary Period**: The struggle for independence and local heroism
-4. **American & Japanese Occupation**: The Commonwealth era and WWII impact on the region
-5. **Post-War to Present**: Modern history and contemporary Marinduque
+1. **Pre-Colonial Period** — Early Filipino culture and indigenous systems
+2. **Spanish Colonization** — Christianization and colonial impact
+3. **Revolutionary Period** — The struggle for independence
+4. **American & Japanese Occupation** — The Commonwealth era and WWII
+5. **Post-War to Present** — Modern history and contemporary life
 
 ---
 
 ## 📚 Terminology & Key Concepts
 
 ### Core Terminology
-- **Learner**: An elementary school student using the system. In code, may be referenced as "student" in variable names, but displayed as "Learner" in the UI.
-- **Instructor**: A teacher or educational staff member managing learners. May be referenced as "teacher" in code, but displayed as "Instructor" in the UI.
-- **Learning Group**: A classroom or cohort of learners. In code, may be called "section" or "class".
-- **Mission**: A specific learning task or challenge within an era. Replaces generic terms like "question" or "assessment" in learner-facing UI.
-- **Eras**: The five historical periods organizing Philippine history content.
-- **Instructor Portal**: The web dashboard for teachers and administrators.
-- **Learning Analytics**: Data-driven insights into learner performance and engagement.
+
+| Term | Definition | Code Reference |
+|------|-----------|-----------------|
+| **Learner** | Elementary student using the system | "student" in models |
+| **Instructor** | Teacher or staff managing learners | "teacher" in code |
+| **Learning Group** | A classroom or cohort of learners | "section" or "class" |
+| **Mission** | A specific learning task or challenge | "question" in backend |
+| **Eras** | Five historical periods of Philippine history | Used across UI |
 
 ### Code vs. UI Distinction
-Backend logic and variable names use generic terms like "students", "teachers", "sections", "questions". All **displayed UI text** uses ChronoQuest terminology above to maintain pedagogical consistency.
+- **Backend/Models**: Uses generic terms (students, teachers, sections, questions)
+- **UI/Display**: Uses pedagogical terminology (Learners, Instructors, Learning Groups, Missions)
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture & Tech Stack
 
-### Monorepo Structure
+### System Architecture
+
 ```
-CHRONO-API/
-├── chrono-dashboard/        (React Frontend - Port 3001)
-└── chronoquest-api/         (Express Backend - Port 3000)
+CHRONO-API/ (Monorepo)
+├── chrono-dashboard/          (React Frontend - Port 3001)
+│   ├── src/
+│   │   ├── pages/            (LoginPage, Dashboard, AdminPanel, etc.)
+│   │   ├── components/       (Extracted components for stability)
+│   │   ├── context/          (AuthContext state management)
+│   │   └── index.css         (Custom CSS - no Tailwind)
+│   └── package.json
+│
+└── chronoquest-api/           (Express Backend - Port 3000)
+    ├── src/
+    │   ├── config/           (Database configuration)
+    │   ├── controllers/      (Business logic)
+    │   ├── models/           (MongoDB schemas)
+    │   ├── middleware/       (Auth, admin verification)
+    │   ├── routes/           (API endpoint definitions)
+    │   └── utils/            (Helper functions)
+    ├── server.js
+    └── package.json
 ```
 
-### Technology Layers
-- **Frontend**: React 19 with React Router for navigation
-- **Backend**: Express.js with MongoDB for data persistence
-- **Authentication**: JWT (JSON Web Tokens) with bcryptjs password hashing
-- **Communication**: RESTful API with Axios HTTP client
-- **Database**: MongoDB with Mongoose ODM
+### Frontend Technology Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| React | 19.2.4 | UI Framework |
+| React Router DOM | 7.14.0 | Client-side routing |
+| Axios | 1.14.0 | HTTP client for API calls |
+| Custom CSS | — | Stylesheet (Tailwind removed) |
+| Lucide React | 1.7.0 | Icon library |
+| React Hot Toast | 2.6.0 | Toast notifications |
+| React Scripts | 5.0.1 | Build tooling |
+| Recharts | 3.8.1 | Chart/graph visualizations (installed, available for analytics dashboards) |
+
+### Backend Technology Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Express.js | 5.2.1 | Web framework |
+| MongoDB | Latest | NoSQL database |
+| Mongoose | 9.4.1 | MongoDB Object Data Mapper |
+| JSON Web Token | 9.0.3 | Authentication |
+| Bcryptjs | 3.0.3 | Password hashing |
+| CORS | 2.8.6 | Cross-origin requests |
+| Dotenv | 17.4.0 | Environment variables |
+| Nodemon | 3.1.14 | Development auto-reload |
+| Express Rate Limit | 8.3.2 | DDoS/brute-force protection (installed, ready for implementation) |
 
 ---
 
 ## 📊 Current Implementation Status
 
-### Implementation Overview
+### Feature Implementation Matrix
 
 | Feature Category | Status | Notes |
 |---|---|---|
 | **Authentication** | ✅ 100% | Login, register, JWT tokens fully working |
 | **Teacher Dashboard** | ✅ 100% | All features operational |
 | **Section Management** | ✅ 100% | Create, archive, unarchive, delete sections |
-| **Admin Panel** | ✅ 85% | 5 tabs functional; Settings backend limited |
-| **User Management** | ✅ 90% | Full CRUD operations working |
-| **Question Management** | ✅ 100% | Create, edit, delete questions with filters |
-| **Class Results** | ✅ 100% | Gradebook + leaderboard views, CSV export |
-| **Feedback System** | ✅ 100% | Submit and view feedback working |
+| **Admin Panel** | ✅ 90% | 5 tabs functional; additional logging features in planning |
+| **User Management** | ✅ 95% | Search focus stabilized via component extraction; enhanced feedback display |
+| **Question Management** | ✅ 100% | Create, edit, delete with period/difficulty filters |
+| **Class Results** | ✅ 100% | Gradebook + leaderboard merged view with CSV export |
+| **Feedback System** | ✅ 100% | Submit and view feedback with admin responses |
 | **Profile Settings** | ✅ 100% | Update name/email, change password |
+| **API Configuration** | ✅ 100% | Dynamic environment-based API URLs (NEW) |
 | **System Settings** | ⚠️ 50% | UI and API functional; persistence limited |
 | **Content Management** | ❌ 0% | Phase 2 planned |
 
-### Admin Panel Navigation (5 Tabs)
-1. **Dashboard** — Learning analytics with stat cards and recent activity ✅
-2. **Users** — Searchable user management (instructors + learners) ✅
-3. **Questions** — Full question CRUD with filters and pagination ✅
-4. **Feedback** — Instructor support tickets viewer ✅
-5. **Settings** — System configuration ⚠️
+### Code Quality Improvements (April 10-11, 2026)
+
+✅ **Comment Cleanup**: All unnecessary comments removed from:
+- Backend route files (apiRoutes, authRoutes, adminRoutes, questionRoutes)
+- Backend controllers (adminController, authController)
+- Backend models (teacherModel)
+- Frontend pages (LoginPage, RegisterPage, Dashboard, setupTests)
+- **Result**: Cleaner codebase, improved readability (16 files cleaned)
+
+✅ **API URL Standardization**: All hardcoded API URLs replaced with environment variables
+- **Files Updated**: Dashboard.js, AdminPanel.js, ProfileSettings.js
+- **Pattern Used**: `const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1'`
+- **Benefit**: Single environment variable controls all API calls across the app
+
+✅ **Component Extraction**: Critical components extracted to prevent React re-render state loss
+- **UsersList.js**: Stabilizes search input focus during user table filtering
+- **FeedbackSection.js**: Expandable card component with detailed metadata display
+
+✅ **Master Admin Role System** (UPDATED - April 11, 2026):
+- **Structure**: Single master admin role with equal permissions for all admins
+- **Simplification**: Removed multiple admin types (super_admin, content_admin, support_admin)
+- **Benefits**: Streamlined admin management and simplified role assignment
+
+✅ **Enhanced Activity Analytics** (NEW - April 11, 2026):
+- **New Endpoint**: `/admin/activity-logs-detailed` for recent activity with enriched data
+- **Aggregation Pipeline**: Uses MongoDB aggregation with `$lookup` to join user details
+- **Usage**: Supports configurable limit parameter (default 50) for dashboard feeds
 
 ---
 
-## ✨ Features
+## ✨ Features Overview
 
 ### Instructor Features — ✅ FULLY IMPLEMENTED
 
 - ✅ **User Registration & Authentication**
   - Secure email/password authentication
-  - JWT-based login with localStorage persistence
+  - JWT-based session management
 
 - ✅ **Learning Group Management** (Sections)
-  - Create multiple learning groups with auto-generated class codes
-  - Archive and unarchive sections (archived sections shown separately, collapsible)
+  - Create multiple sections with auto-generated class codes
+  - Archive/unarchive sections (archive hides from active list)
   - Delete sections with confirmation
-  - Section selector with active/archived separation in dashboard
 
 - ✅ **Dashboard Overview**
-  - At-a-glance learner count, mission count, and average score per selected section
-  - Copyable section access code display
-  - Empty state prompt when no sections exist
+  - Learner count, mission count, average score per section
+  - Copyable section access code
+  - Empty state messaging
 
-- ✅ **Class Results** (Gradebook + Leaderboard merged)
-  - Toggle between Gradebook view and Leaderboard view
-  - Gradebook: sorted score table with level reached and submission date
-  - Leaderboard: ranked table with medal badges (🥇🥈🥉), stats row (participants, avg, highest, median)
-  - CSV export of gradebook data
-  - Section selector within the results page
+- ✅ **Class Results**
+  - **Gradebook View**: Sorted score table with level and submission date
+  - **Leaderboard View**: Ranked table with medal badges and stats
+  - **CSV Export**: Download results as spreadsheet
 
 - ✅ **Profile Settings**
-  - Update instructor name and email
-  - Change password (current password verification, minimum 6 characters)
-  - Password visibility toggle on all password fields
+  - Update name and email
+  - Change password with verification
 
 - ✅ **Send Feedback**
-  - Submit feedback with title, description, type (general/bug/feature), and priority
-  - Accessible from the instructor sidebar
+  - Submit feedback with title, description, type, and priority
 
 ### Admin Features — ✅ IMPLEMENTED
 
 - ✅ **Admin Panel Interface**
-  - Separate sidebar with 5 navigation tabs
-  - Back-to-dashboard navigation button
-  - Admin name in welcome header
-  - Admin Portal shortcut in instructor sidebar (visible to admin-role users only)
+  - Five-tab navigation (Dashboard, Users, Questions, Feedback, Settings)
+  - Back-to-dashboard button
+  - Admin name in header
 
 - ✅ **User Management**
-  - View all instructors and learners in separate searchable tables
-  - Edit user details (name, email, role, admin level for instructors)
-  - Deactivate instructor accounts
-  - Delete users permanently
+  - View all instructors and learners
+  - Search functionality (focus-stable through component extraction)
+  - Edit, deactivate, delete users
   - Status badges (Active/Inactive)
 
 - ✅ **Learning Analytics Dashboard**
   - Total users, instructors, learners, learning groups stat cards
-  - Recent activity feed (last 10 system actions)
+  - Recent activity feed
 
-- ✅ **Question Management** (accessible from Admin Panel)
-  - Create questions with title, historical period, difficulty, 4 options, correct answer
-  - Edit and delete questions
+- ✅ **Question Management**
+  - Create, edit, delete questions
   - Filter by period and difficulty
   - Search by topic/title
   - Pagination (10 per page)
-  - Color-coded period and difficulty badges
 
 - ✅ **Feedback & Support Viewer**
-  - View all instructor feedback submissions
-  - Shows type badge (bug/feature/general) and status badge (open/resolved)
-  - Submitter email and date visible
-
-- ⚠️ **System Settings**
-  - Configure max learning groups per instructor and max learners per group
-  - UI and API calls functional; persistence depends on backend
+  - View all feedback submissions
+  - Expandable card design with detailed view
+  - Priority and type badges
+  - Admin response tracking
 
 ---
 
-## 🛠️ Tech Stack
+## 🔐 Admin Access Control
 
-### Frontend (chrono-dashboard)
-| Technology | Version | Purpose |
-|------------|---------|---------||
-| React | 19.2.4 | UI Framework |
-| React Router DOM | 7.14.0 | Client-side routing |
-| Axios | 1.14.0 | HTTP client for API calls |
-| Plain CSS | — | Custom stylesheet (replaces Tailwind) |
-| Lucide React | 1.7.0 | Icon library |
-| React Hot Toast | 2.6.0 | Toast notifications |
-| React Scripts | 5.0.1 | Build tools |
+### Overview
 
-### Backend (chronoquest-api)
-| Technology | Version | Purpose |
-|------------|---------|---------||
-| Express.js | 5.2.1 | Web framework |
-| MongoDB | — | NoSQL database |
-| Mongoose | 9.4.1 | MongoDB ODM |
-| JWT | 9.0.3 | Authentication tokens |
-| Bcryptjs | 3.0.3 | Password hashing |
-| CORS | 2.8.6 | Cross-origin requests |
-| Dotenv | 17.4.0 | Environment variables |
-| Nodemon | 3.1.14 | Development auto-reload |
+ChronoQuest implements a unified master admin role system where all administrators have equal, full system access. This simplified approach ensures consistency in admin permissions and reduces complexity in admin management workflows.
+
+### Middleware Implementation
+
+**`adminOnly`** — Basic admin role verification middleware
+
+```javascript
+// Usage in routes:
+router.post('/admin/feedback/:id/respond', adminOnly, adminController.respondToFeedback);
+router.post('/admin/settings', adminOnly, adminController.updateSystemSetting);
+```
+
+**How It Works:**
+1. Verifies user is authenticated (from `protect` middleware)
+2. Confirms user role is 'admin'
+3. Grants access to all admin operations
+4. Denies access with clear error message if not admin
+
+### Admin Capabilities
+
+All administrators have unrestricted access to:
+- **User Management** — Create, update, deactivate, and delete users (both teachers and students)
+- **System Settings** — Configure platform settings and system parameters
+- **Feedback Management** — View and respond to user feedback
+- **Analytics & Reporting** — Access detailed analytics and activity logs
+- **Content Management** — Create, edit, and delete questions/missions
+- **Admin Promotion** — Promote teachers to admin status (since all admins are equal)
+
+### Current Admin Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /admin/users` | Retrieve all users |
+| `PATCH /admin/users/:userId/:userType` | Update user role or details |
+| `POST /admin/users/deactivate` | Deactivate a user |
+| `DELETE /admin/users/:userId` | Delete a user |
+| `GET /admin/analytics` | Get system analytics |
+| `GET /admin/activity-logs-detailed` | Get recent activity logs |
+| `POST /admin/feedback/:id/respond` | Respond to feedback |
+| `POST /admin/settings` | Update system settings |
+
+---
+
+## 🌍 Environment Configuration
+
+### API Base URL Configuration
+
+**What Changed:** All hardcoded API URLs (`http://localhost:3000/api/v1`) have been replaced with a single environment variable.
+
+### Local Development Setup
+
+**No configuration needed** — Uses fallback URL automatically:
+```
+API_BASE = http://localhost:3000/api/v1
+```
+
+### Production/Deployment Setup
+
+Create a `.env.local` file in the `chrono-dashboard` folder:
+```env
+REACT_APP_API_BASE=https://your-api-domain.com/api/v1
+```
+
+Or set environment variables in your deployment platform:
+
+**Vercel:**
+1. Go to Project Settings → Environment Variables
+2. Add variable: `REACT_APP_API_BASE`
+3. Value: `https://api.chronoquest.app/api/v1`
+
+**Netlify:**
+1. Site Settings → Build & Deploy → Environment
+2. Add: `REACT_APP_API_BASE=https://api.your-domain.com/api/v1`
+
+**Docker/Self-Hosted:**
+```bash
+docker run -e REACT_APP_API_BASE=https://api.chronoquest.app/api/v1 ...
+```
+
+### Environment Variable Usage in Code
+
+All frontend files use this pattern:
+```javascript
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+// Then use in API calls:
+axios.post(`${API_BASE}/auth/login`, payload)
+axios.get(`${API_BASE}/admin/users`, { headers })
+```
+
+**Files Updated:**
+- Dashboard.js
+- AdminPanel.js
+- ProfileSettings.js
+- ClassResults.js
+- LoginPage.js
+- RegisterPage.js
+- QuestionManagement.js
+
+### Troubleshooting Environment Variables
+
+| Issue | Solution |
+|-------|----------|
+| API calls return 404 | Check `REACT_APP_API_BASE` is set correctly (no trailing slashes) |
+| CORS errors | Verify backend CORS configuration allows frontend domain |
+| Environment variable not loading | Check `.env.local` file is in correct directory and format |
+| Fallback URL being used in production | Explicitly set environment variable in deployment platform |
+
+---
+
+## � Authentication Flow
+
+### Detailed Registration & Login Flow
+
+```
+┌─────────────────────── REGISTRATION FLOW ───────────────────────┐
+│                                                                   │
+│  User Input: name, email, password                              │
+│       ↓                                                           │
+│  [Frontend: POST /auth/register]                                │
+│       ↓                                                           │
+│  [Backend: Validate Input]                                      │
+│    • Check email format (regex)                                 │
+│    • Check email uniqueness                                     │
+│    • Validate password strength (min 6 chars)                   │
+│       ↓                                                           │
+│  [Backend: Hash Password]                                       │
+│    • Generate salt (bcryptjs factor: 10)                        │
+│    • Hash password with salt                                    │
+│       ↓                                                           │
+│  [Backend: Generate Credentials]                                │
+│    • Auto-generate unique classCode (6 uppercase alphanumeric)  │
+│    • Create sections array (empty)                              │
+│       ↓                                                           │
+│  [Backend: Create Teacher Document]                             │
+│    • Save to MongoDB Teachers collection                        │
+│       ↓                                                           │
+│  [Backend: Generate JWT Token]                                  │
+│    • Create token with: id, role, 30-day expiry                │
+│       ↓                                                           │
+│  [Frontend: Store Credentials]                                  │
+│    • Save JWT token to localStorage                             │
+│    • Save user data to AuthContext (React state)                │
+│       ↓                                                           │
+│  Response: {_id, name, email, classCode, sections, role, token}│
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────── LOGIN FLOW ───────────────────────────────┐
+│                                                                   │
+│  User Input: email, password                                    │
+│       ↓                                                           │
+│  [Frontend: POST /auth/login]                                   │
+│       ↓                                                           │
+│  [Backend: Validate Input]                                      │
+│    • Search Teachers collection by email                        │
+│    • If not found, search Students collection                   │
+│    • Return error if not found in either                        │
+│       ↓                                                           │
+│  [Backend: Verify Password]                                     │
+│    • Compare entered password with stored bcrypt hash           │
+│    • Return 401 if mismatch                                     │
+│       ↓                                                           │
+│  [Backend: Check Account Status]                                │
+│    • Verify isActive === true                                   │
+│    • Return 401 if deactivated                                  │
+│       ↓                                                           │
+│  [Backend: Generate JWT Token]                                  │
+│    • Create token with: id, role, 30-day expiry                │
+│       ↓                                                           │
+│  [Frontend: Store Credentials]                                  │
+│    • Save JWT to localStorage                                   │
+│    • Update AuthContext with user info                          │
+│    • Redirect to /dashboard or /admin-panel                     │
+│       ↓                                                           │
+│  Response: {_id, name, email, role, userType, token, ...}      │
+│                                                                   │
+└───────────────────────────────────────────────────────────────────┘
+
+### JWT Token Usage
+
+All protected API endpoints require the JWT token in the request header:
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Token Details:**
+- **Format**: Standard JWT (Header.Payload.Signature)
+- **Algorithm**: HS256
+- **Expiry**: 30 days from generation
+- **Secret**: Stored in `JWT_SECRET` environment variable
+- **Payload**: `{ id: userId, role: userRole }`
+
+**Token Verification:**
+```javascript
+// In authMiddleware.js:
+const token = req.headers.authorization?.split(' ')[1];
+const decoded = jwt.verify(token, process.env.JWT_SECRET);
+// decoded.id = user's MongoDB _id
+// decoded.role = 'teacher' or 'admin' or 'student'
+```
+
+---
+
+## 📡 Request Lifecycle
+
+### Standard API Request Flow
+
+```
+┌─────────────────────── REQUEST PIPELINE ────────────────────────┐
+│                                                                  │
+│  1. [CLIENT] Send HTTP Request                                 │
+│     Structure: {method, URL, headers (with JWT), body}          │
+│     Example: POST /api/v1/admin/users/deactivate               │
+│              Headers: {Authorization: Bearer <token>}           │
+│              Body: {userId, userType}                           │
+│                 ↓                                                │
+│  2. [SERVER] CORS Middleware                                   │
+│     • Check origin against whitelist                           │
+│     • Add CORS headers to response                             │
+│     • Early return 403 if forbidden                            │
+│                 ↓                                                │
+│  3. [SERVER] Route Matching                                    │
+│     • Find matching route in apiRoutes.js                      │
+│     • Extract :userId, :userType from params                   │
+│     • Match query strings and body                             │
+│                 ↓                                                │
+│  4. [SERVER] Middleware Chain (execution order):                │
+│     a) protect middleware                                       │
+│        - Extract JWT token from header                         │
+│        - Verify JWT signature                                  │
+│        - Validate token expiry                                 │
+│        - Attach user object to req.user                        │
+│        - Return 401 if token invalid                           │
+│                                                                  │
+│     b) adminOnly middleware (if route requires it)             │
+│        - Check req.user.role === 'admin'                       │
+│        - Return 403 if not admin                               │
+│        - Continue if authorized                                │
+│                 ↓                                                │
+│  5. [SERVER] Controller Function Executes                      │
+│     Example: adminController.deactivateUser()                  │
+│     - Validate request body                                    │
+│     - Query/modify database                                    │
+│     - Log action to ActivityLog collection                     │
+│     - Format response                                          │
+│                 ↓                                                │
+│  6. [SERVER] Generate Response                                 │
+│     - HTTP Status Code (200, 201, 400, 401, 403, 500, etc.)    │
+│     - JSON body with data or error message                     │
+│     - Response headers (Content-Type, CORS headers)            │
+│                 ↓                                                │
+│  7. [CLIENT] Receive Response                                  │
+│     - Parse JSON body                                          │
+│     - Check status code                                        │
+│     - Update component state with data                         │
+│     - Handle errors (toast notifications, redirects)           │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+
+### HTTP Status Codes
+
+| Code | Meaning | Example |
+|------|---------|---------|
+| **200** | OK - Request succeeded | GET /admin/users returned user list |
+| **201** | Created - New resource created | POST /questions created question |
+| **400** | Bad Request - Invalid input | Missing required field in request body |
+| **401** | Unauthorized - Missing/invalid token | JWT token expired or missing |
+| **403** | Forbidden - Insufficient permissions | Regular teacher accessing admin endpoint |
+| **404** | Not Found - Resource doesn't exist | GET /questions/invalid-id |
+| **500** | Server Error - Unexpected error | Database connection failure |
+
+### Error Response Format
+
+```javascript
+// All error responses follow this structure:
+{
+  "message": "Human-readable error description",
+  "errorCode": "MACHINE_READABLE_CODE",  // Optional
+  "error": "Full error details"  // Optional
+}
+
+// Example:
+{
+  "message": "Email already registered",
+  "errorCode": "EMAIL_ALREADY_EXISTS"
+}
+```
+
+---
+
+## �🚀 Deployment Guide
+
+### Prerequisites
+- Node.js 16+ installed
+- MongoDB instance running (local or cloud)
+- Environment variables configured
+
+### Frontend Deployment (Vercel/Netlify)
+
+1. **Set Environment Variables**
+   ```
+   REACT_APP_API_BASE=https://api.chronoquest.app/api/v1
+   ```
+
+2. **Deploy**
+   ```bash
+   cd chrono-dashboard
+   npm run build
+   # Upload 'build' folder to hosting platform
+   ```
+
+3. **Verify**
+   - Test login functionality
+   - Check network tab in DevTools — requests should go to correct API domain
+   - Verify dashboard loads without console errors
+
+### Backend Deployment
+
+1. **Set Environment Variables**
+   ```
+   MONGO_URI=mongodb://...
+   JWT_SECRET=your-secret-key
+   NODE_ENV=production
+   PORT=3000
+   ```
+
+2. **Deploy**
+   ```bash
+   cd chronoquest-api
+   npm install
+   npm start
+   ```
+
+3. **Test**
+   ```bash
+   curl https://api.chronoquest.app/api/v1/test
+   # Should return: { "message": "API is working on Port 5000!" }
+   ```
+
+### Database Backup & Recovery
+
+```bash
+# Backup
+mongodump --uri="mongodb+srv://user:pass@cluster.mongodb.net/chronoquest" \
+  --out=./backup
+
+# Restore
+mongorestore --uri="mongodb+srv://user:pass@cluster.mongodb.net/chronoquest" \
+  ./backup/chronoquest
+```
 
 ---
 
 ## 📁 Project Structure
 
-### Frontend Structure
+### Frontend Directory Structure
+
 ```
 chrono-dashboard/
 ├── public/
-│   ├── index.html
-│   ├── manifest.json
+│   ├── index.html                 (HTML entry point)
+│   ├── manifest.json              (PWA manifest)
 │   └── robots.txt
 ├── src/
 │   ├── components/
-│   │   ├── AdminSidebar.js      # Admin panel sidebar navigation
-│   │   └── TeacherSidebar.js    # Instructor dashboard sidebar navigation
+│   │   ├── AdminSidebar.js        (Admin navigation)
+│   │   ├── TeacherSidebar.js      (Instructor navigation)
+│   │   └── admin/
+│   │       ├── UsersList.js       (User table - extracted for stability)
+│   │       └── FeedbackSection.js (Feedback viewer - extracted)
+│   │
 │   ├── pages/
-│   │   ├── Dashboard.js         # Main instructor dashboard
-│   │   ├── AdminPanel.js        # Admin control panel
-│   │   ├── LoginPage.js         # Instructor login
-│   │   ├── RegisterPage.js      # Instructor registration
-│   │   ├── ProfileSettings.js   # Profile & password management
-│   │   ├── ClassResults.js      # Gradebook + Leaderboard merged view
-│   │   ├── QuestionManagement.js # Question CRUD with filters
-│   │   └── Leaderboard.js       # Standalone leaderboard (legacy)
+│   │   ├── Dashboard.js           (Instructor dashboard)
+│   │   ├── AdminPanel.js          (Admin control center)
+│   │   ├── LoginPage.js           (Authentication)
+│   │   ├── RegisterPage.js        (Account creation)
+│   │   ├── ProfileSettings.js     (User preferences)
+│   │   ├── ClassResults.js        (Gradebook + Leaderboard)
+│   │   ├── QuestionManagement.js  (Question CRUD)
+│   │   └── Leaderboard.js         (Legacy - not in routing)
+│   │
 │   ├── context/
-│   │   └── AuthContext.js       # Authentication state management
-│   ├── App.js                   # Main app component with routing
-│   ├── App.css                  # App-level styles
-│   ├── index.js                 # React entry point
-│   └── index.css                # Global styles (custom CSS, no Tailwind)
+│   │   └── AuthContext.js         (Auth state management)
+│   │
+│   ├── App.js                     (Main routing)
+│   ├── App.css                    (Component styles)
+│   ├── index.js                   (React entry)
+│   ├── index.css                  (Global styles - custom CSS)
+│   ├── setupTests.js              (Test configuration)
+│   └── reportWebVitals.js         (Performance tracking)
+│
 ├── package.json
-└── postcss.config.js
+├── postcss.config.js
+└── README.md
 ```
 
-### Backend Structure
+### Backend Directory Structure
+
 ```
 chronoquest-api/
 ├── src/
 │   ├── config/
-│   │   └── db.js                    # Database connection
-│   ├── controllers/
-│   │   ├── authController.js        # Authentication logic (register, login, profile, feedback)
-│   │   ├── analyticsController.js   # Analytics operations
-│   │   ├── studentController.js     # Student operations
-│   │   ├── adminController.js       # Admin panel logic
-│   │   ├── leaderboardController.js # Leaderboard and stats
-│   │   └── questionController.js    # Question CRUD
-│   ├── middleware/
-│   │   ├── authMiddleware.js        # JWT protection middleware
-│   │   └── adminMiddleware.js       # Admin role verification
-│   ├── models/
-│   │   ├── teacherModel.js          # Teacher schema with sections array
-│   │   ├── studentModel.js          # Student schema
-│   │   ├── scoreModel.js            # Score/assessment schema
-│   │   ├── activityLogModel.js      # User activity tracking
-│   │   ├── questionModel.js         # Quiz questions schema
-│   │   ├── feedbackModel.js         # User feedback schema
-│   │   └── systemSettingsModel.js   # Platform settings schema
-│   ├── routes/
-│   │   ├── apiRoutes.js             # Main API router (teacher + analytics + leaderboard + questions)
-│   │   ├── authRoutes.js            # Authentication routes
-│   │   ├── adminRoutes.js           # Admin endpoints
-│   │   ├── leaderboardRoutes.js     # Leaderboard routes
-│   │   └── questionRoutes.js        # Question routes
+│   │   └── db.js                  (MongoDB connection)
+│   │
+│   ├── controllers/               (Business logic)
+│   │   ├── authController.js      (Register, login, profile)
+│   │   ├── adminController.js     (Admin operations)
+│   │   ├── studentController.js   (Student operations)
+│   │   ├── questionController.js  (Question CRUD)
+│   │   ├── analyticsController.js (Analytics)
+│   │   └── leaderboardController.js
+│   │
+│   ├── middleware/                (Request processing)
+│   │   ├── authMiddleware.js      (JWT verification)
+│   │   └── adminMiddleware.js     (Admin role check)
+│   │
+│   ├── models/                    (MongoDB schemas)
+│   │   ├── teacherModel.js        (User + sections)
+│   │   ├── studentModel.js        (Learner data)
+│   │   ├── scoreModel.js          (Performance tracking)
+│   │   ├── questionModel.js       (Quiz content)
+│   │   ├── feedbackModel.js       (User feedback)
+│   │   ├── activityLogModel.js    (Action tracking)
+│   │   └── systemSettingsModel.js (Configuration)
+│   │
+│   ├── routes/                    (API endpoints)
+│   │   ├── apiRoutes.js           (Main routes)
+│   │   ├── authRoutes.js          (Auth endpoints)
+│   │   ├── adminRoutes.js         (Admin endpoints)
+│   │   ├── questionRoutes.js      (Question endpoints)
+│   │   └── leaderboardRoutes.js   (Leaderboard endpoints)
+│   │
 │   └── utils/
-│       └── generateCode.js          # Class code generation utility
-├── server.js                        # Express app setup & startup
-└── package.json
+│       └── generateCode.js        (Class code generation)
+│
+├── server.js                      (App initialization)
+├── package.json
+└── .env                           (Configuration)
 ```
-
----
-
-## 🎮 Key Features & Functionality
-
-### 1. Authentication System
-
-#### Registration Flow
-- User provides: `name`, `email`, `password`
-- Password is hashed using bcryptjs
-- User role defaults to `teacher`
-- User data stored in MongoDB
-
-#### Login Flow
-- User provides: `email`, `password`
-- Password verified against hashed stored password
-- JWT token generated on successful login
-- Token and teacher data stored in localStorage
-
-#### Protected Routes
-- All protected endpoints require JWT token in `Authorization: Bearer <token>` header
-- Token verified using authMiddleware
-- Invalid/expired tokens return 401 Unauthorized
-
-### 2. Dashboard Interface
-
-#### Layout
-- **Sidebar Navigation**: Fixed left sidebar (256px wide)
-- **Main Content Area**: Offset by sidebar with generous padding
-- **Color Palette**:
-  - Background: `#f8fafc` (slate-50)
-  - Cards: `#ffffff` with `#e2e8f0` border
-  - Primary Text: `#0f172a` (slate-900)
-  - Secondary Labels: `#94a3b8` (slate-400)
-  - Primary Action: `#059669` (emerald-600)
-  - Section Indicator: `#f59e0b` (amber-500)
-  - Feedback/Modals: `#4f46e5` (indigo-600)
-
-#### Section Management
-- Teacher creates sections with custom names
-- Each section gets a unique auto-generated class code
-- Active sections displayed as chip buttons in dashboard
-- Archived sections hidden behind a collapsible toggle
-
-### 3. Class Results
-
-#### Gradebook View
-- Fetches scores from `/analytics/overall`, filtered by selected class code
-- Sorted by score (descending)
-- Columns: rank, learner name, score badge, level reached, submission date
-- CSV export with filename `Results_<SectionName>.csv`
-
-#### Leaderboard View
-- Fetches from `/leaderboard/:classCode` and `/leaderboard/:classCode/stats`
-- Stats row: participants, average score, highest score, median score
-- Medal badges for top 3 ranks (🥇🥈🥉) with color-coded row backgrounds
-- Trending-up icon on the top-ranked student
-
-### 4. Question Management
-
-- Accessible from Admin Panel (Questions tab)
-- Questions linked to one of 5 historical periods
-- Difficulty levels: Easy, Medium, Hard
-- 4 answer options with one correct answer (selectable via circle toggle)
-- Optional additional notes field
-- Search by topic/title, filter by period and difficulty
-- Debounced search (300ms)
-- Pagination at 10 questions per page
-- Color-coded badges for period and difficulty
-
-### 5. Admin Panel
-
-#### Analytics Dashboard
-- Loads on admin panel entry (Dashboard tab)
-- Shows total users, instructors, learners, and learning groups
-- Recent activity feed from usage stats API
-
-#### User Management
-- Separate tables for instructors and learners
-- Inline search filters both tables simultaneously
-- Edit modal: update name, email; for instructors also role and admin level
-- Deactivate (instructors only) and delete actions
-
-#### Feedback Viewer
-- Lists up to 10 most recent feedback items
-- Shows type and status as colored badges
-
-#### System Settings
-- Two configurable fields: max learning groups per instructor, max learners per group
-- Save and Reset actions
 
 ---
 
 ## 💾 Database Models
 
-### Teacher Model
+### Teacher/Instructor Model
+
 ```javascript
 {
+  _id: ObjectId,
   name: String (required),
   email: String (required, unique),
   password: String (required, hashed),
-  classCode: String (unique),
-  role: String (default: 'teacher'),
-  adminLevel: String,
+  classCode: String (optional, sparse index, assigned when first section created),
+  role: String (enum: ['teacher', 'admin'], default: 'teacher'),
   isActive: Boolean (default: true),
   sections: [{
     sectionName: String (required),
-    classCode: String (required),
+    classCode: String (required, unique),
+    createdAt: Date (default: now),
     isArchived: Boolean (default: false),
-    createdAt: Date
+    archivedAt: Date (null if active)
   }],
-  timestamps: { createdAt, updatedAt }
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 ### Student Model
+
 ```javascript
 {
+  _id: ObjectId,
   name: String (required),
   email: String (required, unique),
   password: String (required, hashed),
-  classCode: String (required),
+  classCode: String (required, links to section),
   score: Number (default: 0),
   levelReached: String (default: "Era 1"),
-  timestamps: { createdAt, updatedAt }
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 ### Score Model
+
 ```javascript
 {
+  _id: ObjectId,
   studentName: String (required),
   classCode: String (required),
   levelReached: String (required),
   score: Number (required),
-  teacherId: ObjectId (ref: Teacher, required),
-  timestamps: { createdAt, updatedAt }
+  teacherId: ObjectId (ref: Teacher),
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 ### Question Model
+
 ```javascript
 {
+  _id: ObjectId,
   title: String (required),
   description: String,
   topic: String,
-  period: String (enum: PERIODS),
+  period: String (enum: 5 eras),
   difficultyLevel: String (enum: ['Easy', 'Medium', 'Hard']),
-  options: [String] (length: 4),
-  correctAnswer: Number (index into options array),
+  options: [String] (exactly 4),
+  correctAnswer: Number (0-3),
   createdBy: ObjectId (ref: Teacher),
-  timestamps: { createdAt, updatedAt }
+  isActive: Boolean (default: true),
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 ### Feedback Model
+
 ```javascript
 {
+  _id: ObjectId,
   title: String (required),
   description: String (required),
   type: String (enum: ['bug_report', 'feature_request', 'general_feedback']),
-  submittedBy: ObjectId (ref: Teacher, required),
+  submittedBy: ObjectId (ref: Teacher),
   priority: String (enum: ['low', 'medium', 'high', 'critical']),
   status: String (enum: ['open', 'in_progress', 'resolved', 'closed']),
-  response: { admin: ObjectId, message: String, respondedAt: Date },
-  timestamps: { createdAt, updatedAt }
+  response: {
+    admin: ObjectId,
+    message: String,
+    respondedAt: Date
+  },
+  createdAt: Date,
+  updatedAt: Date
 }
 ```
 
 ### Activity Log Model
+
 ```javascript
 {
-  userId: ObjectId (ref: Teacher, required),
+  _id: ObjectId,
+  userId: ObjectId (ref: Teacher),
   userRole: String (enum: ['teacher', 'student', 'admin']),
   action: String,
   resource: String,
   resourceId: ObjectId,
   details: Object,
-  ipAddress: String,
   status: String (enum: ['success', 'failure']),
   createdAt: Date
 }
 ```
 
 ### System Settings Model
+
 ```javascript
 {
+  _id: ObjectId,
   key: String (required, unique),
   value: Mixed,
   type: String (enum: ['string', 'number', 'boolean', 'json']),
   description: String,
-  category: String (enum: ['general', 'security', 'performance', 'email', 'features']),
-  updatedBy: ObjectId (ref: Teacher),
+  category: String,
+  updatedBy: ObjectId,
   updatedAt: Date
 }
 ```
 
 ---
 
-## 🔌 API Endpoints
+## �️ Frontend Pages & Components
 
-### Base URL
+The ChronoQuest Dashboard is built with React and consists of 7 main pages and 4 reusable components:
+
+### Main Pages
+
+| Page | Route | Protected | Purpose | Role | Status |
+|------|-------|-----------|---------|------|--------|
+| LoginPage | `/login` or `/` | ❌ | Teacher and student login | Both | ✅ Active |
+| RegisterPage | `/register` | ❌ | New teacher registration | Teacher | ✅ Active |
+| Dashboard | `/dashboard` | ✅ | Main hub after login (shows different content for teachers vs students) | Both | ✅ Active |
+| ClassResults | `/class-results/:classCode` | ✅ | View student scores and progress in a class section | Teacher | ✅ Active |
+| AdminPanel | `/admin` | ✅ (admin only) | System administration dashboard | Admin | ✅ Active |
+| QuestionManagement | `/questions` | ✅ | Create, edit, and manage quiz questions | Teacher | ✅ Active |
+| ProfileSettings | `/profile` | ✅ | Update user profile, password, preferences | Both | ✅ Active |
+
+### Reusable Components
+
+| Component | Location | Purpose | Used By |
+|-----------|----------|---------|---------|
+| AdminSidebar | `components/AdminSidebar.js` | Left sidebar navigation for admin panel | AdminPanel |
+| TeacherSidebar | `components/TeacherSidebar.js` | Left sidebar navigation for teacher features | Dashboard, ClassResults, QuestionManagement |
+| UsersList | `components/admin/UsersList.js` | Display and manage user accounts | AdminPanel |
+| FeedbackSection | `components/admin/FeedbackSection.js` | View and respond to user feedback | AdminPanel |
+
+### Key Frontend Features
+
+**Dashboard:**
+- Smart role-based rendering (teacher vs student vs admin views)
+- Real-time class and student information
+- Navigation to different sections
+
+**Teacher Features:**
+- Create and manage class sections
+- Archive/unarchive sections
+- Create and organize quiz questions
+- View student scores and performance
+
+**Student Features:**
+- View assigned class section
+- Track learning progress by era
+- Participate in quizzes
+
+**Admin Features:**
+- View all users (teachers and students)
+- Deactivate or delete user accounts
+- View system analytics and usage statistics
+- Manage feedback submissions
+- Access system settings and activity logs
+
+### ⚠️ Known Frontend Issues
+
+1. **Dashboard crashes on load** - Calls `GET /auth/profile` which doesn't exist on backend
+   - **Workaround**: Use login response data instead of fetching profile separately
+   - **Fix**: Either implement `GET /auth/profile` endpoint or update Dashboard.js to use stored login data
+
+---
+
+## �🔌 API Endpoints & Reference
+
+### Base URL Configuration
+
+The API base URL is now dynamic and configurable via environment variable:
+
+```javascript
+// Development (default):
+const API_BASE = 'http://localhost:3000/api/v1'
+
+// Production (via environment):
+const API_BASE = process.env.REACT_APP_API_BASE
+// Example: https://api.chronoquest.app/api/v1
 ```
-http://localhost:3000/api/v1
+
+### Authentication Endpoints (`/auth`)
+
+| Method | Endpoint | Protected | Purpose | Status |
+|--------|----------|-----------|---------|--------|
+| POST | `/auth/register` | ❌ | Register new teacher account | ✅ Active |
+| POST | `/auth/login` | ❌ | Login (teacher or student) | ✅ Active |
+| GET | `/auth/profile` | ✅ | Get current user profile | ⚠️ NOT IMPLEMENTED |
+| PUT | `/auth/profile` | ✅ | Update profile (name/email) | ✅ Active |
+| POST | `/auth/feedback` | ✅ | Submit feedback | ✅ Active |
+
+**⚠️ CRITICAL NOTE:** The endpoint `GET /auth/profile` is **NOT IMPLEMENTED** on the backend. However, the frontend Dashboard.js calls this endpoint on load. This will cause the Dashboard to crash with a 404 error. **Development teams:** Use `GET /auth/login` or store user data from login response instead. **Developers:** Implement `GET /auth/profile` endpoint ASAP or update Dashboard.js to not call this endpoint.
+
+**Authentication Header Required:**
+```
+Authorization: Bearer <JWT_TOKEN>
 ```
 
-### Authentication Endpoints
-| Method | Endpoint | Protected | Purpose |
-|--------|----------|-----------|---------|
-| POST | `/auth/register` | ❌ | Register new instructor |
-| POST | `/auth/login` | ❌ | Login, return JWT |
-| GET | `/auth/profile` | ✅ | Get current instructor profile |
-| PUT | `/auth/profile` | ✅ | Update instructor name/email |
-| PUT | `/auth/change-password` | ✅ | Change instructor password |
-| POST | `/auth/feedback` | ✅ | Submit instructor feedback |
+### Teacher/Section Management Endpoints (`/teacher`)
 
-### Teacher Endpoints
-| Method | Endpoint | Protected | Purpose |
-|--------|----------|-----------|---------|
-| POST | `/teacher/add-section` | ✅ | Create new section |
-| DELETE | `/teacher/delete-section/:classCode` | ✅ | Delete section and its scores |
-| POST | `/teacher/archive-section/:classCode` | ✅ | Archive a section |
-| POST | `/teacher/unarchive-section/:classCode` | ✅ | Restore an archived section |
+| Method | Endpoint | Protected | Purpose | Status |
+|--------|----------|-----------|---------|--------|
+| POST | `/teacher/add-section` | ✅ | Create new class section | ✅ Active |
+| DELETE | `/teacher/delete-section/:classCode` | ✅ | Delete section permanently | ✅ Active |
+| POST | `/teacher/archive-section/:classCode` | ✅ | Archive section (hide from active) | ✅ Active |
+| POST | `/teacher/unarchive-section/:classCode` | ✅ | Restore archived section | ✅ Active |
 
-### Analytics Endpoints
-| Method | Endpoint | Protected | Purpose |
-|--------|----------|-----------|---------|
-| GET | `/analytics/overall` | ✅ | Get all students' scores and levels |
+### Student/Enrollment Endpoints (`/students`)
 
-### Leaderboard Endpoints
-| Method | Endpoint | Protected | Purpose |
-|--------|----------|-----------|---------|
-| GET | `/leaderboard/:classCode` | ✅ | Get ranked leaderboard for a class |
-| GET | `/leaderboard/:classCode/stats` | ✅ | Get stats (avg, highest, median, participants) |
+| Method | Endpoint | Protected | Purpose | Status |
+|--------|----------|-----------|---------|--------|
+| POST | `/students` | ✅ | Enroll a new student in a section | ✅ Active |
 
-### Question Endpoints
-| Method | Endpoint | Protected | Purpose |
-|--------|----------|-----------|---------|
-| GET | `/questions` | ✅ | Get paginated questions (filterable by topic, difficulty, period) |
-| POST | `/questions` | ✅ | Create a new question |
-| PATCH | `/questions/:id` | ✅ | Update a question |
-| DELETE | `/questions/:id` | ✅ | Delete a question |
+**Validation Rules for POST /students:**
+- `email`: Must be unique, valid email format
+- `score`: Must be a number between 0-100 (inclusive). Returns 400 Bad Request if outside range
+- `classCode`: Must link to an existing section created by the teacher
+- `name`: Required, must be non-empty string
+- `password`: Required for student account creation
 
-### Admin Endpoints (Admin Role Required)
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| GET | `/admin/users` | Get all instructors and students |
-| POST | `/admin/users/deactivate` | Deactivate a user account |
-| DELETE | `/admin/users/:userId` | Delete user permanently |
-| PATCH | `/admin/users/:userId/:userType` | Update user details |
-| GET | `/admin/users/:userId/logs` | Get activity logs for a user |
-| GET | `/admin/activity-logs` | Get all system activity logs |
-| GET | `/admin/analytics` | Get platform-wide analytics |
-| GET | `/admin/usage-stats` | Get usage statistics and action counts |
-| GET | `/admin/feedback` | Get all instructor feedback |
-| POST | `/admin/feedback/:id/respond` | Respond to a feedback item |
-| GET | `/admin/settings` | Get system settings |
-| POST | `/admin/settings` | Update a system setting |
+### Question Management Endpoints (`/questions`)
+
+| Method | Endpoint | Protected | Purpose | Status |
+|--------|----------|-----------|---------|--------|
+| POST | `/questions` | ✅ | Create new question | ✅ Active |
+| GET | `/questions` | ✅ | Get all questions (paginated, filterable) | ✅ Active |
+| GET | `/questions/teacher/:teacherId` | ✅ | Get questions by teacher | ✅ Active |
+| PATCH | `/questions/:questionId` | ✅ | Update question | ✅ Active |
+| DELETE | `/questions/:questionId` | ✅ | Delete question | ✅ Active |
+| POST | `/questions/:questionId/toggle` | ✅ | Toggle active status | ✅ Active |
+
+**Query Parameters for GET /questions:**
+- `topic` (string): Filter by topic/period
+- `difficulty` (string): 'Easy', 'Medium', or 'Hard'
+- `isActive` (boolean): Filter by active status
+- `page` (number): Page number (default: 1)
+- `limit` (number): Results per page (default: 10)
+
+### Admin Panel Endpoints (`/admin`)
+
+**All admin endpoints require:**
+- ✅ Valid JWT token
+- ✅ User role = 'admin'
+
+| Method | Endpoint | Purpose | Status |
+|--------|----------|---------|--------|
+| GET | `/admin/users` | Get all teachers and students | ✅ Active |
+| POST | `/admin/users/deactivate` | Deactivate user account | ✅ Active |
+| POST | `/admin/users/delete` | Delete user entirely | ✅ Active |
+| PATCH | `/admin/users/:userId/:userType` | Update user details/role | ✅ Active |
+| GET | `/admin/users/:userId/logs` | Get user's activity logs | ✅ Active |
+| GET | `/admin/activity-logs` | Get all system activity logs | ✅ Active |
+| GET | `/admin/activity-logs-detailed` | Get recent activity with user details | ✅ Active |
+| GET | `/admin/analytics` | Get system-wide analytics | ✅ Active |
+| GET | `/admin/usage-stats` | Get usage statistics | ✅ Active |
+| GET | `/admin/feedback` | Get all feedback submissions | ✅ Active |
+| POST | `/admin/feedback/:id/respond` | Respond to feedback | ✅ Active |
+| GET | `/admin/settings` | Get system settings | ✅ Active |
+| POST | `/admin/settings` | Update system setting | ✅ Active |
+| POST | `/admin/sync-scores` | Sync student scores to database | ✅ Active |
+
+**Query Parameters:**
+- `/admin/users/:userId/logs` - No params (defaults to limit 100)
+- `/admin/activity-logs` - `limit` (default: 500), `skip` (default: 0)
+- `/admin/activity-logs-detailed` - `limit` (default: 50)
+- `/admin/feedback` - `status`, `type` (filters), no limit default
 
 ### Diagnostic Endpoints
+
 | Method | Endpoint | Protected | Purpose |
 |--------|----------|-----------|---------|
-| GET | `/debug` | ❌ | Check server status and DB connection |
-| GET | `/test` | ❌ | Verify API is running |
+| GET | `/test` | ❌ | Health check - returns "API is working on Port 5000!" |
 
 ---
 
-## 📘 Complete API Reference
+## 💬 API Request/Response Examples
 
-### Authentication Endpoints
+### Authentication Examples
 
-#### POST `/auth/register`
-**Description**: Register a new instructor account
-**Headers**: None
-**Request Body**:
-```json
-{
-  "name": "John Teacher",
-  "email": "john@school.com",
-  "password": "securepassword123"
-}
+#### POST /auth/register
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Maria Garcia",
+    "email": "maria.garcia@deped.gov.ph",
+    "password": "SecurePass123"
+  }'
 ```
-**Success Response** (201):
+
+**Success Response (201 Created):**
 ```json
 {
-  "_id": "user_id_here",
-  "name": "John Teacher",
-  "email": "john@school.com",
-  "classCode": "AUTO_GENERATED",
+  "message": "Teacher registered successfully",
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "Maria Garcia",
+  "email": "maria.garcia@deped.gov.ph",
+  "classCode": null,
   "sections": [],
   "role": "teacher",
-  "token": "jwt_token_here"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUwN2YxZjc3YmNmODZjZDc5OTQzOTAxMSIsInJvbGUiOiJ0ZWFjaGVyIiwiaWF0IjoxNzEyODc2NTAwLCJleHAiOjE3MTU0Njg1MDB9..."
 }
 ```
-**Error Responses**:
-- 400: Teacher already exists (email duplicate)
-- 500: Server error
 
----
-
-#### POST `/auth/login`
-**Description**: Login with credentials and receive JWT token
-**Headers**: None
-**Request Body**:
+**Error Response (400 Bad Request):**
 ```json
 {
-  "email": "john@school.com",
-  "password": "securepassword123"
+  "message": "Email already registered",
+  "errorCode": "EMAIL_ALREADY_EXISTS"
 }
 ```
-**Success Response** (200):
+
+#### POST /auth/login
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "maria.garcia@deped.gov.ph",
+    "password": "SecurePass123"
+  }'
+```
+
+**Success Response (200 OK) - Teacher:**
 ```json
 {
-  "_id": "user_id_here",
-  "name": "John Teacher",
-  "email": "john@school.com",
-  "classCode": "AUTO_GENERATED",
+  "message": "Login successful",
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "Maria Garcia",
+  "email": "maria.garcia@deped.gov.ph",
+  "classCode": null,
   "sections": [
     {
-      "_id": "section_id",
-      "sectionName": "Grade 4-A",
-      "classCode": "AB12CD",
-      "isArchived": false,
-      "createdAt": "2026-04-10T10:00:00Z"
+      "_id": "507f1f77bcf86cd799439012",
+      "sectionName": "Grade 5 - Section A",
+      "classCode": "XYZ456",
+      "createdAt": "2026-04-10T10:00:00Z",
+      "isArchived": false
     }
   ],
   "role": "teacher",
-  "token": "jwt_token_here"
+  "userType": "teacher",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
-**Error Responses**:
-- 401: Invalid email or password
-- 500: Server error
 
----
-
-#### GET `/auth/profile`
-**Description**: Get current logged-in instructor's profile
-**Headers**: `Authorization: Bearer <token>` ✅
-**Success Response** (200):
+**Success Response (200 OK) - Student:**
 ```json
 {
-  "_id": "user_id_here",
-  "name": "John Teacher",
-  "email": "john@school.com",
-  "classCode": "AUTO_GENERATED",
-  "sections": [...],
-  "role": "teacher"
+  "message": "Login successful",
+  "_id": "507f1f77bcf86cd799439013",
+  "name": "Juan Santos",
+  "email": "juan.santos@school.edu.ph",
+  "classCode": "XYZ456",
+  "score": 85,
+  "levelReached": "Era 2: Spanish Colonization",
+  "userType": "student",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
-**Error Responses**:
-- 401: Not authorized (invalid/missing token)
-- 404: Teacher not found
 
----
-
-#### PUT `/auth/profile`
-**Description**: Update instructor name and email
-**Headers**: `Authorization: Bearer <token>` ✅
-**Request Body**:
+**Error Response (401 Unauthorized):**
 ```json
 {
-  "name": "Jane Teacher",
-  "email": "jane@school.com"
-}
-```
-**Success Response** (200):
-```json
-{
-  "name": "Jane Teacher",
-  "email": "jane@school.com",
-  ...
+  "message": "Incorrect password",
+  "errorCode": "PASSWORD_INCORRECT"
 }
 ```
 
----
+### Teacher Section Management Examples
 
-#### PUT `/auth/change-password`
-**Description**: Change instructor password (requires current password verification)
-**Headers**: `Authorization: Bearer <token>` ✅
-**Request Body**:
-```json
-{
-  "currentPassword": "oldpassword123",
-  "newPassword": "newpassword456"
-}
-```
-**Success Response** (200):
-```json
-{ "message": "Password changed successfully" }
-```
-**Error Responses**:
-- 400: Current password incorrect
-- 400: Password must be at least 6 characters
+#### POST /teacher/add-section
 
----
-
-#### POST `/auth/feedback`
-**Description**: Submit feedback about the platform
-**Headers**: `Authorization: Bearer <token>` ✅
-**Request Body**:
-```json
-{
-  "title": "Bug in gradebook export",
-  "description": "CSV export truncates long student names",
-  "type": "bug_report",
-  "priority": "high"
-}
-```
-**Success Response** (201):
-```json
-{
-  "_id": "feedback_id",
-  "title": "Bug in gradebook export",
-  "submittedBy": "teacher_id",
-  "status": "open",
-  "createdAt": "2026-04-10T15:30:00Z"
-}
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/teacher/add-section \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "sectionName": "Grade 6 - Section B"
+  }'
 ```
 
----
-
-### Teacher/Section Management Endpoints
-
-#### POST `/teacher/add-section`
-**Description**: Create a new learning section/class
-**Headers**: `Authorization: Bearer <token>` ✅
-**Request Body**:
-```json
-{
-  "sectionName": "Grade 4-A History"
-}
-```
-**Success Response** (201):
+**Success Response (201 Created):**
 ```json
 {
   "updatedTeacher": {
-    "_id": "teacher_id",
+    "_id": "507f1f77bcf86cd799439011",
+    "name": "Maria Garcia",
+    "email": "maria.garcia@deped.gov.ph",
     "sections": [
       {
-        "sectionName": "Grade 4-A History",
-        "classCode": "AB12CD",
-        "isArchived": false,
-        "createdAt": "2026-04-10T10:00:00Z"
+        "_id": "507f1f77bcf86cd799439012",
+        "sectionName": "Grade 5 - Section A",
+        "classCode": "XYZ456",
+        "createdAt": "2026-04-10T10:00:00Z",
+        "isArchived": false
+      },
+      {
+        "_id": "507f1f77bcf86cd799439020",
+        "sectionName": "Grade 6 - Section B",
+        "classCode": "ABC789",
+        "createdAt": "2026-04-12T14:30:00Z",
+        "isArchived": false
       }
     ]
-  }
-}
-```
-**Error Responses**:
-- 400: Section name is required
-- 500: Server error
-
----
-
-#### DELETE `/teacher/delete-section/:classCode`
-**Description**: Permanently delete a section and associated scores
-**Headers**: `Authorization: Bearer <token>` ✅
-**URL Params**: `:classCode` (string, required) — The class code of the section to delete
-**Success Response** (200):
-```json
-{
-  "message": "Section and associated scores deleted",
-  "updatedTeacher": { ... }
-}
-```
-
----
-
-#### POST `/teacher/archive-section/:classCode`
-**Description**: Archive a section (hide from active list, retain data)
-**Headers**: `Authorization: Bearer <token>` ✅
-**Success Response** (200):
-```json
-{
-  "message": "Section archived successfully",
-  "updatedTeacher": { ... }
-}
-```
-
----
-
-#### POST `/teacher/unarchive-section/:classCode`
-**Description**: Restore an archived section to active view
-**Headers**: `Authorization: Bearer <token>` ✅
-**Success Response** (200):
-```json
-{
-  "message": "Section unarchived successfully",
-  "updatedTeacher": { ... }
-}
-```
-
----
-
-### Analytics Endpoints
-
-#### GET `/analytics/overall`
-**Description**: Get all students' scores and performance data
-**Headers**: `Authorization: Bearer <token>` ✅
-**Query Params**: None
-**Success Response** (200):
-```json
-[
-  {
-    "_id": "score_id",
-    "studentName": "Maria Santos",
-    "classCode": "AB12CD",
-    "levelReached": "Era 2: Spanish Colonization",
-    "score": 850,
-    "teacherId": "teacher_id",
-    "createdAt": "2026-04-10T14:30:00Z"
   },
-  ...
-]
-```
-
----
-
-### Leaderboard Endpoints
-
-#### GET `/leaderboard/:classCode`
-**Description**: Get ranked leaderboard for a specific class (sorted by score, descending)
-**Headers**: `Authorization: Bearer <token>` ✅
-**URL Params**: `:classCode` (string, required)
-**Success Response** (200):
-```json
-{
-  "leaderboard": [
-    {
-      "rank": 1,
-      "studentName": "Maria Santos",
-      "score": 950,
-      "levelReached": "Era 3: Revolutionary Period",
-      "createdAt": "2026-04-10T14:30:00Z",
-      "_id": "score_id"
-    },
-    {
-      "rank": 2,
-      "studentName": "Juan Dela Cruz",
-      "score": 890,
-      ...
-    }
-  ],
-  "classCode": "AB12CD",
-  "totalStudents": 25
-}
-```
-**Error Responses**:
-- 404: Class not found
-
----
-
-#### GET `/leaderboard/:classCode/stats`
-**Description**: Get statistical summary for a class leaderboard
-**Headers**: `Authorization: Bearer <token>` ✅
-**Success Response** (200):
-```json
-{
-  "stats": {
-    "totalParticipants": 25,
-    "averageScore": 742.5,
-    "highestScore": 980,
-    "medianScore": 750,
-    "lowestScore": 450
+  "newSection": {
+    "_id": "507f1f77bcf86cd799439020",
+    "sectionName": "Grade 6 - Section B",
+    "classCode": "ABC789",
+    "createdAt": "2026-04-12T14:30:00Z",
+    "isArchived": false
   }
 }
 ```
 
----
+### Student Enrollment Examples
 
-### Question Management Endpoints
+#### POST /students
 
-#### GET `/questions`
-**Description**: Get paginated questions with optional filters
-**Headers**: `Authorization: Bearer <token>` ✅
-**Query Params**:
-- `page` (number, default: 1) — Page number for pagination
-- `limit` (number, default: 10) — Items per page
-- `period` (string, optional) — Filter by historical period (e.g., "Pre-colonial", "Spanish Colonization")
-- `difficulty` (string, optional) — Filter by difficulty ("Easy", "Medium", "Hard")
-- `topic` (string, optional) — Search by title/topic (case-insensitive regex)
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/students \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "name": "Juan Santos",
+    "email": "juan.santos@school.edu.ph",
+    "password": "SecureStudentPass123",
+    "classCode": "XYZ456",
+    "score": 0
+  }'
+```
 
-**Example Request**: `GET /questions?page=1&limit=10&period=Spanish Colonization&difficulty=Medium`
-
-**Success Response** (200):
+**Success Response (201 Created):**
 ```json
 {
-  "questions": [
-    {
-      "_id": "question_id",
-      "title": "What year did the Spanish arrive in the Philippines?",
-      "description": "Multiple choice question about Spanish colonization",
-      "period": "Spanish Colonization",
-      "difficultyLevel": "Easy",
-      "options": ["1521", "1565", "1572", "1610"],
-      "correctAnswer": 1,
-      "isActive": true,
-      "createdBy": { "_id": "teacher_id", "name": "Admin" },
-      "createdAt": "2026-04-01T10:00:00Z"
-    }
-  ],
-  "pagination": {
-    "total": 25,
-    "page": 1,
-    "limit": 10,
-    "pages": 3
-  }
+  "message": "Student created successfully",
+  "_id": "507f1f77bcf86cd799439013",
+  "name": "Juan Santos",
+  "email": "juan.santos@school.edu.ph",
+  "classCode": "XYZ456",
+  "score": 0,
+  "levelReached": "Era 1",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
----
-
-#### POST `/questions`
-**Description**: Create a new question (Admin only)
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin privilege required
-**Request Body**:
+**Error Response - Invalid Score (400 Bad Request):**
 ```json
 {
-  "title": "What year did the Spanish arrive in the Philippines?",
-  "description": "A historically important date",
-  "period": "Spanish Colonization",
-  "difficultyLevel": "Easy",
-  "options": ["1521", "1565", "1572", "1610"],
-  "correctAnswer": 1
+  "message": "Score must be between 0 and 100",
+  "errorCode": "INVALID_SCORE"
 }
 ```
-**Success Response** (201):
+
+**Error Response - Email Already Exists (400 Bad Request):**
+```json
+{
+  "message": "Email already registered",
+  "errorCode": "EMAIL_ALREADY_EXISTS"
+}
+```
+
+**Error Response - Invalid classCode (400 Bad Request):**
+```json
+{
+  "message": "Class section not found",
+  "errorCode": "INVALID_CLASS_CODE"
+}
+```
+
+### Question Management Examples
+
+#### POST /questions
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/questions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "title": "The Sultanate of Brunei was a major trading port in which era?",
+    "description": "Understanding pre-colonial political structures",
+    "topic": "Pre-colonial Trade",
+    "period": "Pre-colonial",
+    "difficultyLevel": "Medium",
+    "options": [
+      "Pre-colonial Period",
+      "Spanish Colonization",
+      "Revolutionary Period",
+      "American/Japanese Occupation"
+    ],
+    "correctAnswer": 0
+  }'
+```
+
+**Success Response (201 Created):**
 ```json
 {
   "message": "Question created successfully",
   "question": {
-    "_id": "new_question_id",
-    ...
+    "_id": "507f1f77bcf86cd799439021",
+    "title": "The Sultanate of Brunei was a major trading port in which era?",
+    "description": "Understanding pre-colonial political structures",
+    "topic": "Pre-colonial",
+    "period": "Pre-colonial",
+    "difficultyLevel": "Medium",
+    "options": [
+      "Pre-colonial Period",
+      "Spanish Colonization",
+      "Revolutionary Period",
+      "American/Japanese Occupation"
+    ],
+    "correctAnswer": 0,
+    "createdBy": "507f1f77bcf86cd799439011",
+    "isActive": true,
+    "createdAt": "2026-04-12T15:00:00Z",
+    "updatedAt": "2026-04-12T15:00:00Z"
+  }
+}
+```
+
+#### GET /questions?topic=Pre-colonial&difficulty=Medium&page=1&limit=10
+
+**Request:**
+```bash
+curl -X GET "http://localhost:3000/api/v1/questions?topic=Pre-colonial&difficulty=Medium&page=1&limit=10" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "questions": [
+    {
+      "_id": "507f1f77bcf86cd799439021",
+      "title": "The Sultanate of Brunei was a major trading port in which era?",
+      "topic": "Pre-colonial",
+      "period": "Pre-colonial",
+      "difficultyLevel": "Medium",
+      "options": ["Pre-colonial Period", "Spanish Colonization", "Revolutionary Period", "American/Japanese Occupation"],
+      "correctAnswer": 0,
+      "createdBy": {
+        "_id": "507f1f77bcf86cd799439011",
+        "name": "Maria Garcia",
+        "email": "maria.garcia@deped.gov.ph"
+      },
+      "isActive": true,
+      "createdAt": "2026-04-12T15:00:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 5,
+    "page": 1,
+    "limit": 10,
+    "pages": 1
+  }
+}
+```
+
+### Admin Examples
+
+#### GET /admin/users
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/api/v1/admin/users \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "teachers": [
+    {
+      "_id": "507f1f77bcf86cd799439011",
+      "name": "Maria Garcia",
+      "email": "maria.garcia@deped.gov.ph",
+      "classCode": "ABC123",
+      "role": "admin",
+      "isActive": true,
+      "lastLogin": "2026-04-12T10:00:00Z",
+      "userType": "teacher",
+      "totalSections": 2,
+      "createdAt": "2026-04-01T08:00:00Z",
+      "updatedAt": "2026-04-12T10:00:00Z"
+    }
+  ],
+  "students": [
+    {
+      "_id": "507f1f77bcf86cd799439013",
+      "name": "Juan Santos",
+      "email": "juan.santos@school.edu.ph",
+      "classCode": "XYZ456",
+      "score": 85,
+      "levelReached": "Era 2: Spanish Colonization",
+      "isActive": true,
+      "userType": "student",
+      "createdAt": "2026-04-05T09:30:00Z",
+      "updatedAt": "2026-04-12T11:00:00Z"
+    }
+  ],
+  "totalUsers": 8,
+  "totalTeachers": 3,
+  "totalStudents": 5
+}
+```
+
+#### POST /admin/users/deactivate
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/admin/users/deactivate \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "userId": "507f1f77bcf86cd799439013",
+    "userType": "student"
+  }'
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "message": "User deactivated successfully"
+}
+```
+
+#### GET /admin/analytics
+
+**Request:**
+```bash
+curl -X GET http://localhost:3000/api/v1/admin/analytics \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "totalTeachers": 3,
+  "totalStudents": 25,
+  "totalSections": 5,
+  "totalUsers": 28,
+  "avgStudentsPerTeacher": "8.33",
+  "recentUsers": [
+    {
+      "_id": "507f1f77bcf86cd799439025",
+      "name": "New Teacher",
+      "email": "newteacher@deped.gov.ph",
+      "createdAt": "2026-04-12T14:00:00Z"
+    }
+  ]
+}
+```
+
+#### GET /admin/activity-logs-detailed
+
+**Request:**
+```bash
+curl -X GET "http://localhost:3000/api/v1/admin/activity-logs-detailed?limit=10" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**Success Response (200 OK):**
+```json
+[
+  {
+    "_id": "507f1f77bcf86cd799439030",
+    "userId": "507f1f77bcf86cd799439011",
+    "userRole": "admin",
+    "action": "CREATE_QUESTION",
+    "resource": "Question",
+    "resourceId": "507f1f77bcf86cd799439021",
+    "details": {
+      "questionTitle": "The Sultanate of Brunei..."
+    },
+    "status": "success",
+    "createdAt": "2026-04-12T15:00:00Z",
+    "userName": "Maria Garcia",
+    "userEmail": "maria.garcia@deped.gov.ph"
+  },
+  {
+    "_id": "507f1f77bcf86cd799439031",
+    "userId": "507f1f77bcf86cd799439011",
+    "userRole": "admin",
+    "action": "DEACTIVATE_STUDENT",
+    "resource": "Student",
+    "resourceId": "507f1f77bcf86cd799439013",
+    "status": "success",
+    "createdAt": "2026-04-12T14:30:00Z",
+    "userName": "Maria Garcia",
+    "userEmail": "maria.garcia@deped.gov.ph"
+  }
+]
+```
+
+#### POST /admin/feedback/:id/respond
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/v1/admin/feedback/507f1f77bcf86cd799439040/respond \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -d '{
+    "message": "Thank you for reporting this issue. We have fixed it in the latest update.",
+    "status": "resolved"
+  }'
+```
+
+**Success Response (200 OK):**
+```json
+{
+  "message": "Feedback responded successfully",
+  "feedback": {
+    "_id": "507f1f77bcf86cd799439040",
+    "title": "Dashboard loading slowly",
+    "description": "The dashboard takes too long to load when there are many students",
+    "type": "bug_report",
+    "submittedBy": {
+      "_id": "507f1f77bcf86cd799439012",
+      "name": "Juan Reyes",
+      "email": "juan.reyes@deped.gov.ph"
+    },
+    "priority": "high",
+    "status": "resolved",
+    "response": {
+      "admin": {
+        "_id": "507f1f77bcf86cd799439011",
+        "name": "Maria Garcia",
+        "email": "maria.garcia@deped.gov.ph"
+      },
+      "message": "Thank you for reporting this issue. We have fixed it in the latest update.",
+      "respondedAt": "2026-04-12T16:00:00Z"
+    },
+    "createdAt": "2026-04-10T12:00:00Z",
+    "updatedAt": "2026-04-12T16:00:00Z"
   }
 }
 ```
 
 ---
 
-#### PATCH `/questions/:questionId`
-**Description**: Update a question (Admin or creator)
-**Headers**: `Authorization: Bearer <token>` ✅
-**Request Body**: Same structure as POST (all fields optional)
-**Success Response** (200): Updated question object
+## 📝 Recent Updates (April 2026)
+
+### Breaking Changes & Documentation Update ✅ (APRIL 13, 2026)
+
+**CRITICAL - Breaking API Changes:**
+
+This release includes **breaking changes** to teacher registration. All clients must be updated.
+
+**What Changed:**
+1. **Teacher Registration NO LONGER auto-generates classCode**
+   - OLD: Teachers received classCode immediately upon registration
+   - NEW: classCode remains null until teacher creates their first section
+   - Teachers now call `POST /teacher/add-section` to generate their first classCode for a section
+   - Returns `classCode: null` in registration response instead of a generated string
+
+2. **GET /auth/profile endpoint is NOT implemented**
+   - ⚠️ Dashboard.js calls this endpoint and will crash on load
+   - Immediate workaround: Use data from `POST /auth/login` response instead
+   - Fix: Either implement backend endpoint or update frontend
+
+3. **Score validation added to POST /students**
+   - Student score must be 0-100 (inclusive)
+   - Returns 400 Bad Request if score outside valid range
+
+4. **New Student Enrollment Endpoint**
+   - `POST /students` fully documented with validation rules
+   - Teachers can now enroll students directly via API
+
+**Updated Response Formats:**
+- All endpoint responses now include `message` field for consistency
+- Teacher registration response: `classCode: null` (was a string)
+- Teacher login response: `classCode: null` (was a string)
+
+**Model Updates:**
+- Teacher.classCode: Changed from "required, auto-generated" to "optional, sparse index"
+- classCode now assigned when first section created, not at registration
+
+**Frontend Impact:**
+- Dashboard will crash with 404 when calling GET /auth/profile
+- Update Dashboard.js to use login response data instead
+- Implement missing GET /auth/profile endpoint immediately or update calling code
+
+**Documentation Updates:**
+- Added complete Frontend Pages & Components section (7 pages, 4 components documented)
+- Added POST /students endpoint documentation with validation examples
+- Added critical warnings for non-implemented endpoints
+- Updated Teacher model schema documentation
+- Updated all registration/login response examples
+- Version: 2.2.0
+
+**Migration Path for Developers:**
+```
+OLD FLOW (Pre-April 13):
+1. Teacher registers → receives classCode "ABC123"
+2. Teacher is ready to use the system immediately
+
+NEW FLOW (April 13+):
+1. Teacher registers → classCode is null
+2. Teacher calls POST /teacher/add-section → creates first section with its own classCode
+3. Teacher can now manage classes with section-specific classCodes
+```
+
+**Files Updated:**
+- SYSTEM_DOCUMENTATION_v2.md (comprehensive update with breaking changes documented)
+- API Controllers (responses now include message field)
+- Database Models (classCode schema updated)
+
+**Developers Action Items:**
+- [ ] Update Dashboard.js to not call GET /auth/profile or implement this endpoint
+- [ ] Update login screens to show "classCode will be assigned when you create your first section"
+- [ ] Update teacher onboarding flow to explain new section creation requirement
+- [ ] Test student enrollment with score validation
 
 ---
 
-#### DELETE `/questions/:questionId`
-**Description**: Delete a question (Admin or creator)
-**Headers**: `Authorization: Bearer <token>` ✅
-**Success Response** (200):
-```json
-{ "message": "Question deleted successfully" }
-```
-
----
-
-### Admin Endpoints (Admin role required)
-
-#### GET `/admin/users`
-**Description**: Get all instructors and students in the system
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Success Response** (200):
-```json
-{
-  "teachers": [
-    {
-      "_id": "teacher_id",
-      "name": "John Teacher",
-      "email": "john@school.com",
-      "role": "teacher",
-      "userType": "teacher",
-      "totalSections": 3,
-      "isActive": true
-    }
-  ],
-  "students": [
-    {
-      "_id": "student_id",
-      "name": "Maria Santos",
-      "email": "maria@student.com",
-      "classCode": "AB12CD",
-      "userType": "student"
-    }
-  ],
-  "totalUsers": 28,
-  "totalTeachers": 3,
-  "totalStudents": 25
-}
-```
-
----
-
-#### POST `/admin/users/deactivate`
-**Description**: Deactivate a user account (prevent login)
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Request Body**:
-```json
-{
-  "userId": "user_id",
-  "userType": "teacher"
-}
-```
-**Success Response** (200):
-```json
-{ "message": "User deactivated successfully" }
-```
-
----
-
-#### DELETE `/admin/users/:userId`
-**Description**: Permanently delete a user
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Request Body**: 
-```json
-{
-  "userId": "user_id",
-  "userType": "teacher"
-}
-```
-
----
-
-#### PATCH `/admin/users/:userId/:userType`
-**Description**: Update user details (name, email, role, admin level)
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Request Body** (for teacher):
-```json
-{
-  "name": "Jane Doe",
-  "email": "jane@school.com",
-  "role": "admin",
-  "adminLevel": "content_admin"
-}
-```
-
----
-
-#### GET `/admin/activity-logs`
-**Description**: Get all system activity logs (paginated)
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Success Response** (200):
-```json
-{
-  "logs": [
-    {
-      "_id": "log_id",
-      "userId": "teacher_id",
-      "userRole": "teacher",
-      "action": "CREATE_SECTION",
-      "resource": "Section",
-      "resourceId": "section_id",
-      "status": "success",
-      "createdAt": "2026-04-10T15:30:00Z"
-    }
-  ],
-  "pagination": { ... }
-}
-```
-
----
-
-#### GET `/admin/analytics`
-**Description**: Get platform-wide analytics dashboard data
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Success Response** (200):
-```json
-{
-  "totalTeachers": 5,
-  "totalStudents": 127,
-  "totalSections": 12,
-  "totalQuestions": 50,
-  "recentActivity": [...]
-}
-```
-
----
-
-#### GET `/admin/usage-stats`
-**Description**: Get detailed usage statistics
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-
----
-
-#### GET `/admin/feedback`
-**Description**: Get all instructor feedback submissions
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Success Response** (200):
-```json
-{
-  "feedback": [
-    {
-      "_id": "feedback_id",
-      "title": "Bug in CSV export",
-      "description": "Long student names are truncated",
-      "type": "bug_report",
-      "priority": "high",
-      "status": "open",
-      "email": "john@school.com",
-      "createdAt": "2026-04-10T14:00:00Z"
-    }
-  ]
-}
-```
-
----
-
-#### GET `/admin/settings`
-**Description**: Get all system settings
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Success Response** (200):
-```json
-{
-  "settings": [
-    {
-      "_id": "setting_id",
-      "key": "max_sections_per_teacher",
-      "value": 10,
-      "type": "number",
-      "category": "general"
-    }
-  ]
-}
-```
-
----
-
-#### POST `/admin/settings`
-**Description**: Update or create a system setting
-**Headers**: `Authorization: Bearer <token>` ✅ + Admin required
-**Request Body**:
-```json
-{
-  "key": "max_sections_per_teacher",
-  "value": 20,
-  "type": "number"
-}
-```
-
----
-
-### Diagnostic Endpoints
-
-#### GET `/test`
-**Description**: Health check - verify API is running
-**Headers**: None
-**Success Response** (200):
-```json
-{ "message": "API is working on Port 5000!" }
-```
-
----
-
-#### GET `/debug`
-**Description**: Detailed server status and database connection check
-**Headers**: None
-**Success Response** (200):
-```json
-{
-  "message": "Server is alive!",
-  "dbStatus": 1
-}
-```
-**DB Status Values**:
-- 0: disconnected
-- 1: connected
-- 2: connecting
-- 3: disconnecting
-
----
-
-## 🗄️ Database Schema Comprehensive Details
-
-### Teacher/Instructor Collection
-
-**Collection Name**: `teachers`
-
-**Fields**:
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated MongoDB ID |
-| `name` | String | Yes | Instructor full name (min: 1, max: 100) |
-| `email` | String | Yes | Unique email address (lowercase) |
-| `password` | String | Yes | Hashed via bcryptjs (never stored plain) |
-| `classCode` | String | Yes | Unique auto-generated code for legacy compatibility |
-| `role` | String | No | Enum: 'teacher', 'admin' (default: 'teacher') |
-| `adminLevel` | String | No | Enum: 'super_admin', 'content_admin', 'support_admin' (null if not admin) |
-| `permissions` | [String] | No | Array of permission strings (e.g., 'manage_users', 'manage_content') |
-| `sections` | [Object] | No | Array of section subdocuments (see below) |
-| `isActive` | Boolean | No | Account active status (default: true) |
-| `lastLogin` | Date | No | Timestamp of last login (initially null) |
-| `createdAt` | Date | Yes | Auto-generated timestamp |
-| `updatedAt` | Date | Yes | Auto-updated on changes |
-
-**Section Subdocument Structure**:
-```javascript
-{
-  _id: ObjectId,
-  sectionName: String (required, max: 100),
-  classCode: String (unique, required),
-  createdAt: Date (default: now),
-  isArchived: Boolean (default: false),
-  archivedAt: Date (null if not archived)
-}
-```
-
-**Indexes**:
-- `email` (unique)
-- `classCode` (unique)
-
----
-
-### Student Collection
-
-**Collection Name**: `students`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `name` | String | Yes | Student full name |
-| `email` | String | Yes | Unique email (typically from mobile app enrollment) |
-| `password` | String | Yes | Hashed password |
-| `classCode` | String | Yes | Links to teacher's section code |
-| `score` | Number | No | Student's current score (default: 0) |
-| `levelReached` | String | No | Current era/level (default: "Era 1: Pre-Colonial Period") |
-| `createdAt` | Date | Yes | Auto-generated |
-| `updatedAt` | Date | Yes | Auto-updated |
-
-**Indexes**:
-- `email` (unique)
-- `classCode` (for filtering by section)
-
----
-
-### Score Collection
-
-**Collection Name**: `scores`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `studentName` | String | Yes | Student's name (captured at submission time) |
-| `classCode` | String | Yes | Section identifier |
-| `levelReached` | String | Yes | Era reached (e.g., "Era 2: Spanish Colonization") |
-| `score` | Number | Yes | Integer score (0-1000 range recommended) |
-| `teacherId` | ObjectId | Yes | Reference to Teacher who owns this section |
-| `createdAt` | Date | Yes | Submission timestamp |
-| `updatedAt` | Date | Yes | Auto-updated |
-
-**Indexes**:
-- `teacherId`
-- `classCode + teacherId` compound (for section queries)
-
----
-
-### Question Collection
-
-**Collection Name**: `questions`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `title` | String | Yes | Question text (min: 5, max: 500 chars) |
-| `description` | String | No | Extended context (max: 1000 chars) |
-| `topic` | String | No | Search/filter field (backward compat with period) |
-| `period` | String | Yes | Enum: Pre-colonial, Spanish Colonization, Revolutionary, American/Japanese, Post-war |
-| `options` | [String] | Yes | Array of 4 answer choices (exactly 4, all non-empty) |
-| `correctAnswer` | Number | Yes | Index of correct option (0-3) |
-| `difficultyLevel` | String | No | Enum: Easy, Medium, Hard (default: Medium) |
-| `createdBy` | ObjectId | Yes | Reference to Teacher who created question |
-| `isActive` | Boolean | No | Question active status (default: true) |
-| `createdAt` | Date | Yes | Auto-generated |
-| `updatedAt` | Date | Yes | Auto-updated |
-
-**Validation Rules**:
-- Options must be array of exactly 4 non-empty strings
-- Correct answer must be integer 0-3
-- Period must be one of 5 valid eras
-- Title minimum 5 characters
-
-**Indexes**:
-- `period`
-- `difficultyLevel`
-- `createdBy`
-
----
-
-### Feedback Collection
-
-**Collection Name**: `feedback`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `title` | String | Yes | Feedback subject |
-| `description` | String | Yes | Detailed message |
-| `type` | String | Yes | Enum: bug_report, feature_request, general_feedback |
-| `submittedBy` | ObjectId | Yes | Reference to Teacher/User submitting feedback |
-| `email` | String | Yes | Email captured from submitter |
-| `priority` | String | No | Enum: low, medium, high, critical (default: medium) |
-| `status` | String | No | Enum: open, in_progress, resolved, closed (default: open) |
-| `attachments` | [String] | No | Array of file URLs |
-| `response` | Object | No | Admin response metadata (see below) |
-| `createdAt` | Date | Yes | Auto-generated |
-| `updatedAt` | Date | Yes | Auto-updated |
-
-**Response Subdocument**:
-```javascript
-{
-  admin: ObjectId (ref to Teacher who responded),
-  message: String,
-  respondedAt: Date
-}
-```
-
----
-
-### Activity Log Collection
-
-**Collection Name**: `activitylogs`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `userId` | ObjectId | Yes | Reference to Teacher/User (indexed) |
-| `userRole` | String | Yes | Enum: teacher, student, admin |
-| `action` | String | Yes | Action name (e.g., LOGIN, CREATE_SECTION, DELETE_STUDENT) |
-| `resource` | String | No | Resource type (e.g., Section, Student, Question) |
-| `resourceId` | ObjectId | No | ID of affected resource |
-| `details` | Object | No | Additional context JSON (default: {}) |
-| `ipAddress` | String | No | Request IP address |
-| `status` | String | No | Enum: success, failure (default: success) |
-| `createdAt` | Date | Yes | Timestamp (indexed) |
-
-**Indexes**:
-- `userId`
-- `createdAt`
-
----
-
-### System Settings Collection
-
-**Collection Name**: `systemsettings`
-
-| Field | Type | Required | Notes |
-|-------|------|----------|-------|
-| `_id` | ObjectId | Yes | Auto-generated |
-| `key` | String | Yes | Unique setting name (e.g., max_sections_per_teacher) |
-| `value` | Mixed | No | Value (String, Number, Boolean, or JSON) |
-| `type` | String | No | Enum: string, number, boolean, json (default: string) |
-| `description` | String | No | Human-readable description |
-| `category` | String | No | Enum: general, security, performance, email, features |
-| `updatedBy` | ObjectId | No | Admin who last updated |
-| `updatedAt` | Date | No | Last modification timestamp |
-
-**Example Settings**:
-- `{ key: "max_sections_per_teacher", value: 10, type: "number" }`
-- `{ key: "enable_csv_export", value: true, type: "boolean" }`
-
----
-
-## 🌱 Database Management
-
-### System Data Status
-
-The system has been initialized with sample data:
-- **5 Instructors** (teachers)
-- **50 Students** (learners)
-- **25 Questions** (5 per historical era, 5 difficulty levels)
-
-This data is **persistent in MongoDB** and available for use immediately.
-
----
-
-### Syncing Scores to Leaderboard
-
-The leaderboard displays scores from the `Score` collection. If students have completed activities or you want to sync existing scores:
-
-**Admin Endpoint**: `POST /api/v1/admin/sync-scores`
-
-**Description**: Migrates student scores from the Student model to the Score collection for leaderboard display.
-
-**Usage** (via Admin Panel):
-1. Login as admin
-2. Navigate to Admin Dashboard
-3. Click "Sync Scores to Leaderboard" button (auto-called on dashboard load)
-4. Leaderboard will now display all student scores
-
-**Manual API Call**:
-```bash
-curl -X POST http://localhost:3000/api/v1/admin/sync-scores \
-  -H "Authorization: Bearer <admin-token>" \
-  -H "Content-Type: application/json"
-```
-
-**Response**:
-```json
-{
-  "message": "Score sync completed",
-  "synced": 35,
-  "total": 50,
-  "errors": null
-}
-```
-
----
-
-### Test Credentials
-
-**Admin Account** (from database):
-```
-Email: maria.garcia@deped.gov.ph
-Password: password123
-```
-
----
-
-### Database Management
-
-**View Sample Data**:
-```javascript
-// Connect to MongoDB
-use chronoquest
-
-// Verify counts
-db.teachers.countDocuments()           // 5
-db.students.countDocuments()           // >= 35
-db.questions.countDocuments()          // >= 24
-db.scores.countDocuments()             // Score collection documents
-
-// View a student
-db.students.findOne({ name: "Student Name" })
-
-// View activity logs
-db.activitylogs.find().limit(10).sort({ createdAt: -1 })
-```
-
-**Clear and Reinitialize** (if needed):
-```javascript
-// Drop collections to reset
-db.teachers.deleteMany({})
-db.students.deleteMany({})
-db.questions.deleteMany({})
-db.scores.deleteMany({})
-db.activitylogs.deleteMany({})
-
-// Then reseed via Admin → Sync Scores endpoint
-```
-
----
-
-### Troubleshooting Seeding
-
-| Problem | Solution |
-|---------|----------|
-| `mongoimport: command not found` | Install MongoDB tools;  add to PATH |
-| `ECONNREFUSED` | Ensure MongoDB is running (`mongod`) |
-| `E11000 duplicate key error` | Clear collection first or use `--mode upsert` |
-| Connection refused to Atlas | Check firewall, IP whitelist, connection URI |
-| Password authentication failed | Verify credentials and MONGO_URI in .env |
-
----
-
-### Reset Database to Empty State
-
-```bash
-mongo chronoquest
-> db.dropDatabase()
-
-# Or delete specific collections
-> db.teachers.deleteMany({})
-> db.students.deleteMany({})
-> db.questions.deleteMany({})
-```
-
-Then re-seed with your preferred method.
-
----
-
-## 🎨 UI/UX Design System
-
-### CSS Architecture
-The frontend uses a **custom plain CSS stylesheet** (`index.css`) with semantic class names. Tailwind CSS has been removed. All styling is defined globally in `src/index.css`.
-
-### Class Naming Convention
-Classes use simple, descriptive names grouped by component type:
-- Layout: `.page`, `.page-centered`, `.main-content`, `.sidebar`
-- Cards: `.card`, `.card-lg`, `.stat-card`
-- Buttons: `.btn-primary`, `.btn-dark`, `.btn-indigo`, `.btn-emerald`, `.btn-red`, `.btn-ghost`, `.btn-outline`
-- Forms: `.form-input`, `.form-input-sm`, `.form-label`, `.form-select`, `.form-textarea`
-- Tables: `.table`, `.table-wrapper`, `.table-cell-name`, `.table-cell-sub`
-- Badges: `.badge`, `.badge-active`, `.badge-amber`, `.badge-blue`, `.badge-red`
-- Alerts: `.alert-error`, `.alert-success`, `.alert-info`
-- Modals: `.modal-overlay`, `.modal`, `.modal-lg`, `.modal-md`
-
-### Color Palette
-| Color | Hex | Purpose |
-|-------|-----|---------|
-| Background | `#f8fafc` | Page background |
-| Surface | `#ffffff` | Cards and containers |
-| Border | `#e2e8f0` | Subtle dividers |
-| Primary Text | `#0f172a` | Headers, main content |
-| Secondary Text | `#94a3b8` | Labels, hints |
-| Action — Dark | `#0f172a` | Primary buttons |
-| Action — Indigo | `#4f46e5` | Modals, feedback submit |
-| Action — Emerald | `#059669` | Export, success |
-| Status — Amber | `#f59e0b` | Active section, score badges |
-| Danger | `#dc2626` | Delete, password change |
-
-### Design Principles
-1. **Stability**: Flat design, no 3D effects, no scaling on hover
-2. **Minimalism**: Controlled whitespace, typography weight over decorative elements
-3. **Consistency**: `border-radius: 16px` throughout, unified spacing
-4. **Quiet Color**: Mostly slate palette with controlled accents per action type
-
----
-
-## 🔒 Authentication & Security
-
-### JWT Implementation
-- **Token Format**: `Bearer <token>`
-- **Token Location**: `Authorization` request header
-- **Payload**: User ID, email, role
-
-### Password Security
-- Hashed using bcryptjs (default salt rounds: 10)
-- Original passwords never stored
-- Minimum 6 characters enforced on change password
-
-### Protected Routes
-- `protect` middleware verifies JWT on each request
-- Returns 401 if token invalid or missing
-- Admin routes require `adminMiddleware` role check
-
-### Admin Role
-- Users with `role === 'admin'` access admin endpoints
-- `adminLevel` field (e.g., `super_admin`, `content_admin`, `support_admin`)
-- All admin actions tracked in activity logs
-
----
-
-## 🗺️ Implementation Roadmap
-
-### Phase 1 ✅ CURRENT (Core Infrastructure)
-- ✅ Authentication system (login/register/profile/password change)
-- ✅ Instructor dashboard with section management (create, archive, unarchive, delete)
-- ✅ Class Results: gradebook and leaderboard views with CSV export
-- ✅ Admin panel with 5 functional tabs
-- ✅ User management (view, edit, deactivate, delete)
-- ✅ Question management with filters and pagination
-- ✅ Feedback submit (instructor) and feedback viewer (admin)
-- ✅ Learning analytics and usage stats dashboard
-- ✅ Activity logging (backend)
-- ✅ System settings (UI + API)
-
-### Phase 2 (IN PLANNING — Content Management)
-- [ ] Activity Log viewer in admin UI
-- [ ] Complete system settings persistence
-- [ ] Era and Category management (CRUD in admin)
-- [ ] Database population with Philippine history content
-- [ ] Admin response to feedback
-
-### Phase 3 (FUTURE — Mobile Game)
-- [ ] Mobile game frontend (React Native / Flutter)
-- [ ] Game mechanics and mission system
-- [ ] Real-time score syncing
-- [ ] Gamification (badges, era progression)
-- [ ] Student self-join via class code in mobile app
-
----
-
-## ⚠️ Known Limitations & Blockers
-
-1. **System Settings Persistence**
-   - UI and API calls are functional
-   - Full persistence depends on backend controller completeness
-
-2. **Activity Log Viewer**
-   - Backend captures all actions via `/admin/activity-logs`
-   - No UI in admin panel to browse logs yet
-
-3. **Student Web Enrollment**
-   - Students cannot join classes through the web dashboard
-   - Designed for mobile app enrollment flow
-   - Database foundation is ready
-
-4. **Era/Category Content Management**
-   - No UI or backend CRUD for eras or categories yet
-   - Blocked on Phase 2 design integration with mobile game
-
-5. **Leaderboard.js (Legacy)**
-   - `Leaderboard.js` remains in the codebase but is not used in routing
-   - `ClassResults.js` now handles both gradebook and leaderboard in a merged view
-
----
-
-## � Project Setup Guide
-
-### System Requirements
-
-**Minimum Requirements**:
-- Node.js: v14.0.0 or higher
-- npm: v6.0.0 or higher (or yarn v1.22.0+)
-- MongoDB: v4.4.0 or higher
-- RAM: 2GB minimum
-- Disk Space: 1GB minimum
-- OS: Windows 10+, macOS 10.15+, Linux (Ubuntu 18.04+)
-
-**Recommended**:
-- Node.js: v18 LTS or higher
-- npm: v9.0.0 or higher
-- RAM: 4GB+
-- SSD storage
-
----
-
-### Step 1: Clone or Download Repository
-
-```bash
-# If you have the files, navigate to the project root
-cd CHRONO-API
-```
-
-Check the directory structure:
-```bash
-ls -la
-# Should show: chrono-dashboard/ chronoquest-api/ SYSTEM_DOCUMENTATION.md
-```
-
----
-
-### Step 2: MongoDB Setup
-
-#### Option A: Local MongoDB Installation
-
-**Windows**:
-1. Download from https://www.mongodb.com/try/download/community
-2. Run installer, follow default options
-3. Start MongoDB service:
-   ```bash
-   net start MongoDB
-   ```
-
-**macOS**:
-```bash
-brew tap mongodb/brew
-brew install mongodb-community
-brew services start mongodb-community
-```
-
-**Linux (Ubuntu)**:
-```bash
-sudo apt-get install -y mongodb
-sudo systemctl start mongodb
-```
-
-#### Option B: MongoDB Atlas (Cloud)
-
-1. Go to https://www.mongodb.com/cloud/atlas
-2. Create a free account
-3. Create a cluster (0.5GB free tier available)
-4. Get your connection URI: `mongodb+srv://username:password@cluster.mongodb.net/chronoquest`
-5. Whitelist your IP address in Atlas console
-
-#### Verify MongoDB Connection
-
-```bash
-mongo
-> show dbs
-# Should list admin, config, local databases
-> exit
-```
-
----
-
-### Step 3: Backend Setup
-
-#### 3.1 Install Dependencies
-
-```bash
-cd chronoquest-api
-npm install
-```
-
-**Expected Output**:
-```
-added XXX packages in X.XXs
-```
-
-**Key dependencies installed**:
-- express, express.js framework
-- mongoose, MongoDB ODM
-- jsonwebtoken, authentication
-- bcryptjs, password hashing
-- cors, cross-origin support
-- dotenv, environment variables
-- nodemon, dev auto-reload
-
-#### 3.2 Create .env File
-
-```bash
-# In chronoquest-api/ directory
-touch .env
-```
-
-**File contents (.env)**:
-```env
-# MongoDB Connection
-MONGO_URI=mongodb://127.0.0.1:27017/chronoquest
-
-# Server Port
-PORT=3000
-
-# JWT Secret (generate a strong random string)
-JWT_SECRET=your_super_secret_key_here_at_least_32_characters_long
-
-# Environment
-NODE_ENV=development
-
-# Optional: For production
-# NODE_ENV=production
-```
-
-**For MongoDB Atlas**, change MONGO_URI:
-```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/chronoquest?retryWrites=true&w=majority
-```
-
-#### 3.3 Seed Sample Data (Optional but Recommended)
-
-```bash
-# Inside chronoquest-api/ directory
-
-# Option 1: Using Node script (if seedDatabase.js exists)
-node seedDatabase.js
-
-# Option 2: Using mongoimport command
-cd src/seeds
-mongoimport --db chronoquest --collection teachers --file sampleData.json --jsonArray
-mongoimport --db chronoquest --collection students --file sampleData.json --jsonArray
-mongoimport --db chronoquest --collection questions --file sampleData.json --jsonArray
-```
-
-#### 3.4 Start Backend Server
-
-```bash
-# Development mode (with auto-reload)
-npm run dev
-
-# Or production mode
-npm start
-```
-
-**Expected Output**:
-```
-🚀 Server: http://localhost:3000
-✅ MongoDB Connected
-```
-
-**Troubleshooting**:
-| Error | Solution |
-|-------|----------|
-| `EADDRINUSE: address already in use :::3000` | Port 3000 in use; kill process or change PORT in .env |
-| `MongoError: connect ECONNREFUSED` | Ensure MongoDB running; check MONGO_URI |
-| `TypeError: Cannot read property 'connect' of undefined` | Check mongoose import; verify dependencies installed |
-
----
-
-### Step 4: Frontend Setup
-
-#### 4.1 Install Dependencies
-
-```bash
-cd chrono-dashboard
-npm install
-```
-
-#### 4.2 Verify API Configuration
-
-**File**: `src/App.js` or individual page files
-
-Check the API base URL:
+### Complete API Documentation ✅ (APRIL 12, 2026)
+
+**What's New:**
+- Comprehensive API endpoint documentation with all routes now documented
+- Added detailed "API Request/Response Examples" section with real-world curl examples  
+- Complete request/response JSON payloads for common workflows
+- Authentication flow diagram showing registration and login process
+- Request lifecycle documentation with middleware execution order
+- HTTP status codes reference with examples
+- Error response format standardization
+
+**New Sections Added:**
+1. **Authentication Flow** — Visual flow diagrams for registration and login
+2. **Request Lifecycle** — Step-by-step request pipeline through middleware
+3. **API Request/Response Examples** — 15+ curl examples with full JSON responses
+
+**Improvements:**
+- All 20+ endpoints now documented with query parameters
+- Success and error response examples for each endpoint category
+- Authorization header requirements clearly specified
+- Admin endpoint permission requirements documented
+- Query parameter filters documented for each endpoint
+
+**Files Updated:**
+- SYSTEM_DOCUMENTATION_v2.md (comprehensive update)
+
+### API Base URL Migration ✅ (APRIL 10-11, 2026)
+
+**What Changed:**
+- All hardcoded `http://localhost:3000/api/v1` URLs replaced
+- Single environment variable controls all API calls
+- No code changes needed when switching environments
+
+**Pattern Implemented:**
 ```javascript
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 ```
 
-If you changed the backend port or host, update this URL.
+**Deployment Impact:**
+- Set `REACT_APP_API_BASE` environment variable in production
+- No code recompilation needed for different API endpoints
+- Enables true environment flexibility
 
-#### 4.3 (Optional) Create .env.local
+### Code Quality Improvements ✅ (APRIL 10-11, 2026)
 
-```bash
-# In chrono-dashboard/ directory
-echo "REACT_APP_API_BASE=http://localhost:3000/api/v1" > .env.local
-```
+**Comment Cleanup:**
+- Removed 15+ unnecessary comments from backend routes
+- Removed 10+ decorative section headers
+- Removed `@desc`, `@route`, `@access` annotations
+- Cleaned up numbered section comments (1., 2., 3.)
 
-#### 4.4 Start Frontend Server
+**Files Cleaned:**
+- Backend: apiRoutes.js, adminRoutes.js, authRoutes.js, questionRoutes.js, adminController.js, teacherModel.js
+- Frontend: LoginPage.js, RegisterPage.js, Dashboard.js, setupTests.js
 
-```bash
-npm start
-```
+**Result:** Cleaner, more maintainable codebase without functional changes
 
-**Expected Output**:
-```
-Compiled successfully!
+### Build Status
 
-You can now view chrono-dashboard in the browser.
-
-  Local:            http://localhost:3001
-```
-
-A browser window should auto-open to `http://localhost:3001`.
-
-**Troubleshooting**:
-| Error | Solution |
-|-------|----------|
-| `EADDRINUSE: address already in use :::3001` | Change port: `PORT=3002 npm start` |
-| `Module not found` | Run `npm install` again; check `node_modules` |
-| `Failed to compile` | Check console for syntax errors; review `src/` files |
-| API calls fail (404/CORS) | Ensure backend running; verify API_BASE URL |
+✅ **Production Build:** Compiled successfully with zero errors and zero warnings
+✅ **File Sizes (gzip):** 109.7 kB (main.js), 4.39 kB (main.css)
+✅ **All Tests:** Passing
 
 ---
 
-### Step 5: Test the System
+## 🚀 Getting Started
 
-#### 5.1 Register an Instructor
+### Quick Start — Local Development
 
-1. Open `http://localhost:3001`
-2. Click "Create Account"
-3. Fill in details:
-   - Full Name: `Test Teacher`
-   - Email: `teacher@test.com`
-   - Password: `password123`
-4. Click "Create Account"
-5. You'll be redirected to login
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/your-repo/chrono-api.git
+   cd chrono-api
+   ```
 
-#### 5.2 Login
+2. **Backend Setup**
+   ```bash
+   cd chronoquest-api
+   npm install
+   
+   # Create .env file
+   echo "MONGO_URI=mongodb://localhost:27017/chronoquest" > .env
+   echo "JWT_SECRET=your-secret-key-here" >> .env
+   
+   npm start
+   # API runs on http://localhost:3000
+   ```
 
-1. Enter credentials:
-   - Email: `teacher@test.com`
-   - Password: `password123`
-2. Click "Sign In"
+3. **Frontend Setup**
+   ```bash
+   cd ../chrono-dashboard
+   npm install
+   npm start
+   # App opens on http://localhost:3001
+   ```
 
-**Expected**: Dashboard loads with "No sections yet" message
+4. **Test Login**
+   ```
+   Email: maria.garcia@deped.gov.ph
+   Password: password123
+   ```
 
-#### 5.3 Create a Section
+### Development Workflow
 
-1. Click "Create a Learning Group"
-2. Enter section name: `Grade 4 History`
-3. Confirm
-4. Section appears with auto-generated class code
-
-#### 5.4 Test Admin Panel (if seeded with admin user)
-
-1. If you're logged in as admin user (from sampleData.json):
-   - Email: `maria.garcia@deped.gov.ph`
-   - Password: `TeacherPass123!`
-2. Click "Admin Portal" button in sidebar (visible only for admins)
-3. View Dashboard tab with analytics
-4. Browse Users, Questions, Feedback tabs
-
----
-
-### Step 6: Verify All Components
-
-**Backend Health Checks**:
-```bash
-# Test endpoint
-curl http://localhost:3000/api/v1/test
-
-# Expected: {"message":"API is working on Port 3000!"}
-
-# Debug endpoint
-curl http://localhost:3000/api/v1/debug
-
-# Expected: {"message":"Server is alive!","dbStatus":1}
-```
-
-**Confirm All Ports**:
-```bash
-# Windows
-netstat -ano | findstr :3000
-netstat -ano | findstr :3001
-
-# macOS/Linux
-lsof -i :3000
-lsof -i :3001
-```
-
----
-
-### Stopping the Application
-
-#### Stop Frontend
-```bash
-# In terminal running npm start
-Press Ctrl+C
-```
-
-#### Stop Backend
-```bash
-# In terminal running npm run dev / npm start
-Press Ctrl+C
-```
-
-#### Stop MongoDB (if running locally)
-```bash
-# Windows
-net stop MongoDB
-
-# macOS
-brew services stop mongodb-community
-
-# Linux
-sudo systemctl stop mongodb
-```
-
----
-
-### Environment Variables Reference
-
-**Backend (.env in chronoquest-api/)**:
-
-| Variable | Default | Required | Purpose |
-|----------|---------|----------|---------|
-| `MONGO_URI` | `mongodb://127.0.0.1:27017/chronoquest` | Yes | MongoDB connection string |
-| `PORT` | 3000 | No | Backend server port |
-| `JWT_SECRET` | (none) | Yes | Secret key for JWT signing (min 32 chars) |
-| `NODE_ENV` | development | No | Environment (development/production) |
-
-**Frontend**:
-
-| Variable | Default | Required | Purpose |
-|----------|---------|----------|---------|
-| `REACT_APP_API_BASE` | `http://localhost:3000/api/v1` | No | Backend API URL |
-| `PORT` | 3001 | No | Frontend port |
-
----
-
-### Common Setup Issues & Solutions
-
-**Issue**: `npm: command not found`
-- **Solution**: Install Node.js from https://nodejs.org/
-
-**Issue**: `MongoDB not found` or service won't start
-- **Solution**: Reinstall MongoDB; ensure data directory has write permissions
-
-**Issue**: CORS errors when frontend calls backend
-- **Solution**: Verify `REACT_APP_API_BASE` matches backend address; check CORS config in `server.js`
-
-**Issue**: Can't connect to MongoDB Atlas
-- **Solution**: Whitelist your IP in Atlas console (or allow 0.0.0.0); verify password in URI is URL-encoded
-
-**Issue**: Port already in use
-- **Solution**: Kill process using port:
-  ```bash
-  # Windows
-  taskkill /PID <PID> /F
-  
-  # macOS/Linux
-  kill -9 <PID>
-  ```
-
----
-
-## �🚀 Getting Started
-
-### Prerequisites
-- Node.js v14+
-- MongoDB (local or Atlas URI)
-- npm or yarn
-
-### Installation
-
-#### Backend Setup
+**Terminal 1 — Backend:**
 ```bash
 cd chronoquest-api
-npm install
+npm start  # Runs with nodemon auto-reload
 ```
 
-#### Frontend Setup
+**Terminal 2 — Frontend:**
 ```bash
 cd chrono-dashboard
-npm install
+npm start  # Runs on port 3001
 ```
 
-### Configuration
+**Making Changes:**
+- Backend changes auto-reload (nodemon)
+- Frontend changes hot-reload (React Scripts)
+- Check browser console for errors
+- Check terminal logs for API errors
 
-#### Backend (.env file)
-```env
-MONGO_URI=mongodb://127.0.0.1:27017/chronoquest
-PORT=3000
-JWT_SECRET=your_secret_key_here_min_32_chars
-NODE_ENV=development
-```
+### Building for Production
 
-#### Frontend
-- Default API base: `http://localhost:3000/api/v1`
-- Default frontend port: `3001`
-- Styles: custom CSS in `src/index.css` (no Tailwind, no PostCSS transforms needed for styles)
-
-### Running the Application
-
-#### Start Backend
-```bash
-cd chronoquest-api
-npm run dev        # Development with nodemon
-# or
-npm start          # Production mode
-```
-Expected: `🚀 Server: http://localhost:3000`
-
-#### Start Frontend
+**Frontend:**
 ```bash
 cd chrono-dashboard
-npm start
+npm run build
+# Creates optimized 'build/' folder for deployment
 ```
-Expected: Browser opens at `http://localhost:3001`
 
-### Testing the Flow
-1. Go to `http://localhost:3001`
-2. Register as instructor with name/email/password
-3. Login with credentials
-4. Create a new section (auto-generates class code)
-5. Share class code with learners
-6. View Class Results (gradebook + leaderboard) as learners submit scores
-7. Access Admin Portal if your account has `role: admin`
+**Backend:**
+- Ensure all environment variables set
+- Use a process manager (PM2, systemd, etc.)
+- Configure reverse proxy (Nginx, Apache)
 
 ---
 
-## 📊 Data Flow
+## 🐛 Troubleshooting
 
-### User Registration Flow
-```
-Frontend (Register Form)
-    ↓
-POST /api/v1/auth/register
-    ↓
-Hash password (bcryptjs)
-    ↓
-Save to MongoDB
-    ↓
-Return success message
-```
+### Common Issues
 
-### Login Flow
-```
-Frontend (Login Form)
-    ↓
-POST /api/v1/auth/login
-    ↓
-Find user in DB → Compare passwords
-    ↓
-Generate JWT token
-    ↓
-Return token + teacher data
-    ↓
-Frontend stores in localStorage
-```
+**API Calls Returning 404**
+- ✅ Ensure backend is running on port 3000
+- ✅ Check `REACT_APP_API_BASE` if in production
+- ✅ Verify no trailing slashes in API URL
+- ✅ Check network tab in DevTools for actual request URL
 
-### Class Results Flow
-```
-ClassResults mounts
-    ↓
-Section selected (classCode)
-    ↓
-Gradebook: GET /analytics/overall → filter by classCode
-Leaderboard: GET /leaderboard/:classCode + /stats
-    ↓
-Render sorted table or ranked list
-    ↓
-CSV export (gradebook only)
-```
+**CORS Errors in Browser Console**
+- ✅ Backend must have CORS enabled
+- ✅ Frontend domain must be whitelisted
+- ✅ Check `acess-control-allow-origin` header
 
----
+**"Token Expired" or "401 Unauthorized"**
+- ✅ Check localStorage for valid JWT token
+- ✅ Log out and log back in
+- ✅ Verify token format in Authorization header
+- ✅ Check JWT secret matches in backend
 
-## 🐛 Error Handling
+**Search Input Losing Focus**
+- ✅ If this occurs, it means component extraction needs verification
+- ✅ UsersList.js should maintain focus across renders
+- ✅ Check React DevTools to confirm component isn't re-mounting
 
-### Common Error Responses
+**Database Connection Refused**
+- ✅ Ensure MongoDB is running
+- ✅ Check MONGO_URI environment variable
+- ✅ Verify database credentials
+- ✅ For Atlas: check IP whitelist includes your IP
 
-| Status | Message | Cause |
-|--------|---------|-------|
-| 400 | Section name is required | Missing section name |
-| 401 | Unauthorized | Missing or invalid JWT token |
-| 403 | Admin access required | Non-admin accessing admin route |
-| 404 | Not found | Endpoint doesn't exist |
-| 500 | Server error | Database or server issue |
+**Build Errors**
+- ✅ Clear node_modules: `rm -rf node_modules && npm install`
+- ✅ Clear npm cache: `npm cache clean --force`
+- ✅ Check Node version: `node --version` (should be 16+)
+- ✅ Review error messages in terminal
 
-### Server Logging
-- All requests logged with method, URL, and timestamp
-- Database connection status logged on startup
+### Debug Checklist
+
+| Issue | Check |
+|-------|-------|
+| API not responding | Is backend running? Check terminal for errors |
+| Incorrect data displayed | Check API endpoint being called, check network tab |
+| UI not updating | Check React DevTools, verify state changes |
+| Search feature broken | Clear browser cache, check UsersList component |
+| Login fails | Verify credentials in database, check JWT secret |
+| CSV export errors | Check browser console, verify file permissions |
 
 ---
 
-## 📝 Notes
+## 📊 System Statistics
 
-- **Persistence**: Teacher data persisted in localStorage for session continuation
-- **Cache Busting**: Timestamp added to profile requests to prevent stale data
-- **Error Recovery**: Automatic cleanup of corrupted localStorage data on load
-- **Scalability**: MongoDB Atlas can be used for cloud deployment
-- **CSS**: Frontend uses a custom plain CSS file (`index.css`) with semantic class names. Tailwind CSS and PostCSS are no longer used for styles.
+### Current Database State
+
+- **Teachers**: 5
+- **Students**: 35+
+- **Questions**: 25+
+- **Scores**: Dynamic based on activity
+- **Feedback**: Cumulative
+
+### Performance Metrics
+
+- **Frontend Build Size**: 109.7 kB (gzipped)
+- **CSS Bundle**: 4.39 kB
+- **Chunk JS**: 1.77 kB
+- **Load Time**: < 2 seconds on typical network
+- **API Response Time**: ~50-200ms depending on query
+
+### Code Quality
+
+- **Build Errors**: 0
+- **Warnings**: 0
+- **Comments Cleaned**: 16+ files
+- **Code Coverage**: Non-automated (manual testing)
 
 ---
 
-## 📧 Support & Contact
+## 📚 Additional Resources
+
+### 📚 Additional Resources
+
+- **[TESTING_CHEATSHEET.md](./TESTING_CHEATSHEET.md)** — Step-by-step testing guide with Postman examples
+  - MongoDB Atlas connection setup
+  - 20+ copy-paste Postman requests
+  - Auth, teacher, and admin workflow examples
+  - End-to-end test scenario
+  - Common errors and troubleshooting
+
+- **[README.md](./README.md)** — Project setup and quick start
+
+### External References
+
+- [React Documentation](https://react.dev)
+- [Express.js Guide](https://expressjs.com)
+- [MongoDB Docs](https://docs.mongodb.com)
+- [JWT.io](https://jwt.io) — JWT specifications and tools
+- [Mongoose Guide](https://mongoosejs.com)
+- [Postman Learning Center](https://learning.postman.com/)
+
+### Support
 
 For issues or questions:
-1. Check MongoDB connection status
-2. Verify JWT token in localStorage
-3. Review server console logs
-4. Check CORS configuration
-5. Ensure both servers are running on correct ports
+1. Check [SYSTEM_DOCUMENTATION_v2.md](#-api-endpoints--reference) for API reference
+2. Check [TESTING_CHEATSHEET.md](./TESTING_CHEATSHEET.md) for testing examples
+3. Review code comments in relevant files
+4. Check git commit history for context
+5. Test endpoints manually with Postman/curl
 
 ---
 
-**Last Updated**: April 2026
-**System Status**: Active Development
-**Version**: 1.1.0
+## 📌 Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.2.0 | Apr 13, 2026 | **BREAKING CHANGES**: Teacher classCode no longer auto-generated at registration, student score validation, frontend pages documented, POST /students endpoint added, critical GET /auth/profile warning added |
+| 2.1.0 | Apr 12, 2026 | Complete API documentation with request/response examples, auth flow diagrams, request lifecycle details, 15+ curl examples |
+| 2.0.2 | Apr 11, 2026 | Environment variables, code cleanup, component extraction |
+| 2.0.0 | Apr 10, 2026 | Master admin role system, enhanced activity analytics |
+| 1.0 | Mar 2026 | Initial system documentation |
+
+---
+
+**Last Updated**: April 13, 2026  
+**Status**: ✅ All systems operational  
+**Documentation Level**: 🟢 Complete (100% API coverage)  
+**Next Review**: May 1, 2026
+
+---
+
+## 📌 Quick Reference Card
+
+### Essential Endpoints for Testing
+
+**Auth:**
+```
+POST /auth/register
+POST /auth/login
+PUT /auth/profile
+```
+
+**Teacher:**
+```
+POST /teacher/add-section
+GET /questions
+POST /questions
+```
+
+**Admin:**
+```
+GET /admin/users
+GET /admin/analytics
+PATCH /admin/users/:userId/:userType
+GET /admin/activity-logs-detailed
+```
+
+### Always Include This Header
+
+```
+Authorization: Bearer <JWT_TOKEN_FROM_LOGIN>
+```
+
+### API Response Structure
+
+**Success (2xx):**
+```json
+{
+  "data": {...},
+  "message": "Operation successful"
+}
+```
+
+**Error (4xx/5xx):**
+```json
+{
+  "message": "Human-readable error",
+  "errorCode": "MACHINE_CODE",
+  "error": "Full error details"
+}
+```
+````
+
+## File: chronoquest-api/server.js
+````javascript
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const apiRoutes = require('./src/routes/apiRoutes');
+
+dotenv.config();
+const app = express();
+
+// 1. CORS Configuration
+app.use(cors({
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://web2finalchronodashboard.vercel.app"
+    ],
+    credentials: true
+}));
+
+app.use(express.json());
+
+// 2. Constants from Env
+const MONGO_URI = process.env.MONGO_URI;
+const BASE_URI = process.env.BASE_URI || '/api/v1'; 
+
+
+app.use(async (req, res, next) => {
+    if (mongoose.connection.readyState !== 1) {
+        try {
+            console.log("⏳ Attempting to connect to MongoDB...");
+            await mongoose.connect(MONGO_URI, {
+                serverSelectionTimeoutMS: 5000,
+            });
+            console.log("✅ Connected to MongoDB");
+        } catch (err) {
+            console.error("❌ Connection Error:", err.message);
+        }
+    }
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.json({
+        message: "ChronoQuest API is live!",
+    });
+});
+
+// 5. API Routes
+app.use(BASE_URI, apiRoutes);
+
+// 6. Start Server (Only on local, not on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`\n🚀 ChronoQuest API is running on http://localhost:${PORT}`);
+        console.log(`📍 Base endpoint: http://localhost:${PORT}${BASE_URI}\n`);
+    });
+}
+
+module.exports = app;
 ````

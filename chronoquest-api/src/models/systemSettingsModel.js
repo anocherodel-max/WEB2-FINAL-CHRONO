@@ -5,9 +5,10 @@ const systemSettingsSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
-        // e.g., "max_sections_per_teacher", "max_students_per_section"
+
     },
-    value: mongoose.Schema.Types.Mixed,  // Can be string, number, boolean, etc.
+    value: mongoose.Schema.Types.Mixed,
+
     type: {
         type: String,
         enum: ['string', 'number', 'boolean', 'json'],

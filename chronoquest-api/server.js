@@ -21,9 +21,9 @@ app.use(express.json());
 
 // 2. Constants from Env
 const MONGO_URI = process.env.MONGO_URI;
-const BASE_URI = process.env.BASE_URI || '/api/v1'; // Uses your .env variable
+const BASE_URI = process.env.BASE_URI || '/api/v1'; 
 
-// 3. Connection Middleware (The "Vercel Fix")
+
 app.use(async (req, res, next) => {
     if (mongoose.connection.readyState !== 1) {
         try {

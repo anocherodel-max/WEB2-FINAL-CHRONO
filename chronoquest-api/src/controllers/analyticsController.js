@@ -6,7 +6,10 @@ exports.getClassProgress = async (req, res) => {
         const progress = await Score.find({ teacherId: req.user.id })
             .sort({ createdAt: -1 }); // Latest sync first
 
-        res.status(200).json(progress);
+        res.status(200).json({
+            message: 'Class progress retrieved successfully',
+            progress
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -20,7 +23,10 @@ exports.getStudentPerformance = async (req, res) => {
             studentName: studentName
         });
 
-        res.status(200).json(performance);
+        res.status(200).json({
+            message: 'Student performance retrieved successfully',
+            performance
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

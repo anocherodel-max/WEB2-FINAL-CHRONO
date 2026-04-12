@@ -64,6 +64,7 @@ exports.getAllQuestions = async (req, res) => {
         const total = await Question.countDocuments(filters);
 
         res.json({
+            message: 'Questions retrieved successfully',
             questions,
             pagination: {
                 total,

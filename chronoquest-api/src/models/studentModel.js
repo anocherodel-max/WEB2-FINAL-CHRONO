@@ -34,7 +34,7 @@ const studentSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// Pre-save hook to hash password and clamp score
+
 studentSchema.pre('save', async function () {
     // Hash password if modified
     if (this.isModified('password')) {
@@ -42,13 +42,13 @@ studentSchema.pre('save', async function () {
         this.password = await bcrypt.hash(this.password, salt);
     }
 
-    // Clamp score to 100
+
     if (this.score > 100) {
         this.score = 100;
     }
 });
 
-// Password comparison method
+
 studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };

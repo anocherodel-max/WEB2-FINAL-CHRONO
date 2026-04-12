@@ -41,19 +41,21 @@ const teacherSchema = new mongoose.Schema({
     classCode: {
         type: String,
         unique: true,
-        required: true
+        sparse: true,
+        default: null
     },
     role: {
         type: String,
         enum: ['teacher', 'admin'],
         default: 'teacher'
     },
-    // Allows one teacher to have multiple sections
+
     sections: [sectionSchema],
-    // Admin-specific fields
+
     permissions: [{
         type: String
-        // e.g., 'manage_users', 'manage_content', 'view_analytics', 'manage_feedback'
+
+
     }],
     isActive: {
         type: Boolean,

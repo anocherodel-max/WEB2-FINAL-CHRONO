@@ -33,7 +33,7 @@ const feedbackSchema = new mongoose.Schema({
         enum: ['open', 'in_progress', 'resolved', 'closed'],
         default: 'open'
     },
-    attachments: [String],  // URLs to attached files/screenshots
+    attachments: [String],
     response: {
         admin: {
             type: mongoose.Schema.Types.ObjectId,

@@ -22,7 +22,7 @@ const questionSchema = new mongoose.Schema(
             trim: true,
             maxlength: 1000
         },
-        // Backward compatibility field
+
         topic: {
             type: String,
             trim: true,
@@ -42,7 +42,7 @@ const questionSchema = new mongoose.Schema(
             },
             required: true
         },
-        // Correct answer index (0-3)
+
         correctAnswer: {
             type: Number,
             enum: [0, 1, 2, 3],
@@ -71,7 +71,7 @@ const questionSchema = new mongoose.Schema(
     }
 );
 
-// Sync topic → period for backward compat
+
 questionSchema.pre('save', function () {
     if (this.period) this.topic = this.period;
 });

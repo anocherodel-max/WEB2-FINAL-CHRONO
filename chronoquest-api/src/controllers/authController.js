@@ -37,21 +37,18 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        const generatedCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-
         const teacher = await Teacher.create({
             name,
             email,
             password,
-            classCode: generatedCode,
             sections: []
         });
 
         res.status(201).json({
+            message: 'User registered successfully',
             _id: teacher._id,
             name: teacher.name,
             email: teacher.email,
-            classCode: teacher.classCode,
             sections: teacher.sections,
             role: 'teacher',
             token: generateToken(teacher._id, 'teacher')
@@ -103,6 +100,7 @@ exports.loginUser = async (req, res) => {
         // Return appropriate response based on user type
         if (userType === 'teacher') {
             return res.json({
+                message: 'Login successful',
                 _id: user._id,
                 name: user.name,
                 email: user.email,
@@ -114,6 +112,7 @@ exports.loginUser = async (req, res) => {
             });
         } else {
             return res.json({
+                message: 'Login successful',
                 _id: user._id,
                 name: user.name,
                 email: user.email,
@@ -123,26 +122,6 @@ exports.loginUser = async (req, res) => {
                 userType: 'student',
                 token: generateToken(user._id, 'student')
             });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-exports.getTeacherProfile = async (req, res) => {
-    try {
-        const teacher = await Teacher.findById(req.user._id);
-        if (teacher) {
-            res.json({
-                _id: teacher._id,
-                name: teacher.name,
-                email: teacher.email,
-                classCode: teacher.classCode,
-                sections: teacher.sections,
-                role: teacher.role
-            });
-        } else {
-            res.status(404).json({ message: 'Teacher not found' });
         }
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -170,6 +149,7 @@ exports.updateTeacherProfile = async (req, res) => {
         await teacher.save();
 
         res.json({
+            message: 'Profile updated successfully',
             _id: teacher._id,
             name: teacher.name,
             email: teacher.email,
@@ -196,6 +176,7 @@ exports.deleteSection = async (req, res) => {
 
             // Return the updated teacher object so the frontend can sync
             res.json({
+                message: 'Section deleted successfully',
                 _id: teacher._id,
                 name: teacher.name,
                 email: teacher.email,

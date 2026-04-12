@@ -21,6 +21,7 @@ exports.getAllUsers = async (req, res) => {
         }));
 
         res.json({
+            message: 'Users retrieved successfully',
             teachers: formattedTeachers,
             students: formattedStudents,
             totalUsers: formattedTeachers.length + formattedStudents.length,
@@ -74,6 +75,8 @@ exports.deleteUser = async (req, res) => {
             });
         }
 
+        let deletedUser;
+
         if (userType === 'teacher') {
             // Check if this is the last admin
             const adminCount = await Teacher.countDocuments({ role: 'admin' });
@@ -83,9 +86,14 @@ exports.deleteUser = async (req, res) => {
                 return res.status(400).json({ message: 'Cannot delete the last admin account' });
             }
 
-            await Teacher.findByIdAndDelete(userId);
+            deletedUser = await Teacher.findByIdAndDelete(userId);
         } else if (userType === 'student') {
-            await Student.findByIdAndDelete(userId);
+            deletedUser = await Student.findByIdAndDelete(userId);
+        }
+
+        // Check if user was actually found and deleted
+        if (!deletedUser) {
+            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
         }
 
         await ActivityLog.create({
@@ -198,7 +206,10 @@ exports.getUserActivityLogs = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(100);
 
-        res.json(logs);
+        res.json({
+            message: 'User activity logs retrieved successfully',
+            logs
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
     }
@@ -214,7 +225,11 @@ exports.getAllActivityLogs = async (req, res) => {
 
         const total = await ActivityLog.countDocuments();
 
-        res.json({ logs, total });
+        res.json({
+            message: 'All activity logs retrieved successfully',
+            logs,
+            total
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching logs', error: error.message });
     }
@@ -222,10 +237,9 @@ exports.getAllActivityLogs = async (req, res) => {
 
 exports.getSystemAnalytics = async (req, res) => {
     try {
-        const totalTeachers = await Teacher.countDocuments({ role: 'teacher', isActive: true });
+        const totalTeachers = await Teacher.countDocuments();
         const totalStudents = await Student.countDocuments();
         const totalSections = await Teacher.aggregate([
-            { $match: { isActive: true } },
             { $unwind: '$sections' },
             { $count: 'total' }
         ]);
@@ -244,7 +258,10 @@ exports.getSystemAnalytics = async (req, res) => {
             recentUsers
         };
 
-        res.json(platformStats);
+        res.json({
+            message: 'System analytics retrieved successfully',
+            ...platformStats
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching analytics', error: error.message });
     }
@@ -275,7 +292,11 @@ exports.getUsageStats = async (req, res) => {
             { $limit: 30 }
         ]);
 
-        res.json({ actionStats: logs, dailyActivity });
+        res.json({
+            message: 'Usage stats retrieved successfully',
+            actionStats: logs,
+            dailyActivity
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching usage stats', error: error.message });
     }
@@ -294,7 +315,10 @@ exports.getAllFeedback = async (req, res) => {
             .populate('response.admin', 'name email')
             .sort({ createdAt: -1 });
 
-        res.json(feedback);
+        res.json({
+            message: 'Feedback retrieved successfully',
+            feedback
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching feedback', error: error.message });
     }

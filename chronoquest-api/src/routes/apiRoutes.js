@@ -39,8 +39,8 @@ router.post('/teacher/add-section', protect, async (req, res) => {
         ).select('-password');
 
         res.status(201).json({
-            updatedTeacher,
-            newSection
+            message: "Section created successfully",
+            section: newSection
         });
     } catch (error) {
         console.error("Add Section Error:", error);
@@ -173,6 +173,11 @@ router.post('/students', protect, async (req, res) => {
         const existingStudent = await Student.findOne({ email });
         if (existingStudent) {
             return res.status(400).json({ message: 'Student with this email already exists' });
+        }
+
+        // Validate score range
+        if (score !== undefined && (score < 0 || score > 100)) {
+            return res.status(400).json({ message: 'Score must be between 0 and 100' });
         }
 
         const student = await Student.create({
