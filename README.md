@@ -5,6 +5,8 @@ Fuerte, Yuan Wilson M.
 Manqueria, Andrea Pearl A.
 Rey, Jhonn Carlo M.
  
-Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.app/
+Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.app/login
 
-Link to the Live Backend API: https://web2finalchronobackend.vercel.app/
+Link to the Live Backend API: https://web2finalchronobackend.vercel.app/api/v1/debug
+
+Link to API Documentation: https://drive.google.com/drive/folders/19ar8SURnIK2FUqo6wHIIQQVLmmp3PIYr?usp=sharing
