@@ -40,7 +40,6 @@ const teacherSchema = new mongoose.Schema({
     },
     classCode: {
         type: String,
-        unique: true,
         sparse: true,
         default: null
     },

@@ -10,6 +10,9 @@ const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
 const questionRoutes = require('./questionRoutes');
 
+const studentController = require('../controllers/studentController');
+
+
 router.get('/test', (req, res) => res.json({ message: "API is working on Port 5000!" }));
 
 router.use('/auth', authRoutes);
@@ -269,5 +272,8 @@ router.delete('/students/:id', protect, async (req, res) => {
         res.status(500).json({ message: "Error deleting student" });
     }
 });
+
+
+router.post('/student/sync', studentController.simulateSync);
 
 module.exports = router;
