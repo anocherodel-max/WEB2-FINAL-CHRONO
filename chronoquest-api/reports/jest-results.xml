@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="21" failures="19" errors="0" time="14.562">
-  <testsuite name="Admin Routes - Auth Guards" errors="0" failures="11" skipped="0" timestamp="2026-04-13T12:26:33" time="8.107" tests="11">
+<testsuites name="jest tests" tests="21" failures="19" errors="0" time="18.003">
+  <testsuite name="Admin Routes - Auth Guards" errors="0" failures="11" skipped="0" timestamp="2026-04-13T12:39:46" time="8.101" tests="11">
     <testcase classname="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" name="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" time="0.006">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
@@ -25,7 +25,7 @@
     at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Admin - GET /api/v1/admin/users passwords are excluded from the response" name="Admin - GET /api/v1/admin/users passwords are excluded from the response" time="0.001">
+    <testcase classname="Admin - GET /api/v1/admin/users passwords are excluded from the response" name="Admin - GET /api/v1/admin/users passwords are excluded from the response" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -41,7 +41,7 @@
     at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" time="0.001">
+    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -65,7 +65,7 @@
     at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" name="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" time="0.001">
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" name="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -73,7 +73,7 @@
     at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" name="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" time="0">
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" name="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" time="0.001">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -90,8 +90,8 @@
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
   </testsuite>
-  <testsuite name="Student Score Sync" errors="0" failures="3" skipped="0" timestamp="2026-04-13T12:26:33" time="9.05" tests="3">
-    <testcase classname="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" name="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" time="0.007">
+  <testsuite name="Student Score Sync" errors="0" failures="3" skipped="0" timestamp="2026-04-13T12:39:46" time="8.082" tests="3">
+    <testcase classname="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" name="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" time="0.006">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -127,7 +127,7 @@
     at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
     at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
     </testcase>
-    <testcase classname="Student Score Sync POST /api/v1/student/sync - score is stored as provided" name="Student Score Sync POST /api/v1/student/sync - score is stored as provided" time="0.001">
+    <testcase classname="Student Score Sync POST /api/v1/student/sync - score is stored as provided" name="Student Score Sync POST /api/v1/student/sync - score is stored as provided" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -146,7 +146,7 @@
     at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
     </testcase>
   </testsuite>
-  <testsuite name="Teacher Section Management" errors="0" failures="3" skipped="0" timestamp="2026-04-13T12:26:42" time="3.331" tests="3">
+  <testsuite name="Teacher Section Management" errors="0" failures="3" skipped="0" timestamp="2026-04-13T12:39:54" time="3.666" tests="3">
     <testcase classname="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" name="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
@@ -226,14 +226,14 @@
     at Object.worker (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\jest-runner\build\testWorker.js:497:12)</failure>
     </testcase>
   </testsuite>
-  <testsuite name="Unit Test: generateClassCode" errors="0" failures="0" skipped="0" timestamp="2026-04-13T12:26:45" time="0.09" tests="2">
-    <testcase classname="Unit Test: generateClassCode should generate a string of exactly 6 characters" name="Unit Test: generateClassCode should generate a string of exactly 6 characters" time="0.003">
+  <testsuite name="Unit Test: generateClassCode" errors="0" failures="0" skipped="0" timestamp="2026-04-13T12:39:58" time="0.086" tests="2">
+    <testcase classname="Unit Test: generateClassCode should generate a string of exactly 6 characters" name="Unit Test: generateClassCode should generate a string of exactly 6 characters" time="0.002">
     </testcase>
     <testcase classname="Unit Test: generateClassCode should only contain alphanumeric characters" name="Unit Test: generateClassCode should only contain alphanumeric characters" time="0.002">
     </testcase>
   </testsuite>
-  <testsuite name="Integration Test: Authentication" errors="0" failures="2" skipped="0" timestamp="2026-04-13T12:26:42" time="3.285" tests="2">
-    <testcase classname="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" name="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" time="0">
+  <testsuite name="Integration Test: Authentication" errors="0" failures="2" skipped="0" timestamp="2026-04-13T12:39:59" time="3.384" tests="2">
+    <testcase classname="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" name="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" time="0.006">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
@@ -241,7 +241,7 @@
     at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\auth.test.js:11:20)
     at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
     </testcase>
-    <testcase classname="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" name="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" time="0.001">
+    <testcase classname="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" name="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" time="0">
       <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
     at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
     at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)

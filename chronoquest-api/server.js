@@ -40,9 +40,11 @@ app.get('/api/v1/status', (req, res) => {
 
 app.use('/api/v1', apiRoutes);
 
-const PORT = 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/chronoquest';
 
+const PORT = 3000;
+
+module.exports = app;
 
 console.log('\n' + '='.repeat(70));
 console.log('ChronoQuest API - Server Startup');
