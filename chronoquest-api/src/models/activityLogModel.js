@@ -3,8 +3,15 @@ const mongoose = require('mongoose');
 const activityLogSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
+        refPath: 'userModel',
         required: true
+    },
+
+    userModel: {
+        type: String,
+        required: true,
+        enum: ['Teacher', 'Student'],
+        default: 'Teacher'
     },
     userRole: {
         type: String,

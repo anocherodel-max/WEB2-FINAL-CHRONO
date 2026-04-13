@@ -1,6 +1,7 @@
 const Teacher = require('../models/teacherModel');
 const Student = require('../models/studentModel');
 const Feedback = require('../models/feedbackModel');
+const ActivityLog = require('../models/activityLogModel');
 const jwt = require('jsonwebtoken');
 
 // Helper to generate JWT
@@ -96,6 +97,15 @@ exports.loginUser = async (req, res) => {
                 errorCode: 'USER_DEACTIVATED'
             });
         }
+
+        // FIX: Log the login activity
+        await ActivityLog.create({
+            userId: user._id,
+            userRole: userType === 'teacher' ? (user.role || 'teacher') : 'student',
+            action: 'LOGIN',
+            resource: userType,
+            status: 'success'
+        });
 
         // Return appropriate response based on user type
         if (userType === 'teacher') {
@@ -214,6 +224,16 @@ exports.submitFeedback = async (req, res) => {
             email: teacher.email,
             priority: priority || 'medium',
             status: 'open'
+        });
+
+        // FIX: Log the feedback submission activity
+        await ActivityLog.create({
+            userId: teacherId,
+            userRole: req.user.role || 'teacher',
+            action: 'SUBMIT_FEEDBACK',
+            resource: 'feedback',
+            resourceId: feedback._id,
+            status: 'success'
         });
 
         res.status(201).json({

@@ -41,6 +41,7 @@ exports.deactivateUser = async (req, res) => {
             await Teacher.findByIdAndUpdate(userId, { isActive: false });
             await ActivityLog.create({
                 userId: req.user._id,
+                userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'DEACTIVATE_TEACHER',
                 resourceId: userId,
@@ -50,6 +51,7 @@ exports.deactivateUser = async (req, res) => {
             await Student.findByIdAndUpdate(userId, { isActive: false });
             await ActivityLog.create({
                 userId: req.user._id,
+                userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'DEACTIVATE_STUDENT',
                 resourceId: userId,
@@ -98,6 +100,7 @@ exports.deleteUser = async (req, res) => {
 
         await ActivityLog.create({
             userId: req.user._id,
+            userModel: 'Teacher', // FIX: added userModel
             userRole: req.user.role,
             action: 'DELETE_USER',
             resource: userType,
@@ -144,6 +147,7 @@ exports.updateUser = async (req, res) => {
             // Log the action
             await ActivityLog.create({
                 userId: req.user._id,
+                userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'UPDATE_USER',
                 resource: 'teacher',
@@ -178,6 +182,7 @@ exports.updateUser = async (req, res) => {
             // Log the action
             await ActivityLog.create({
                 userId: req.user._id,
+                userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'UPDATE_USER',
                 resource: 'student',
@@ -343,6 +348,7 @@ exports.respondToFeedback = async (req, res) => {
 
         await ActivityLog.create({
             userId: req.user._id,
+            userModel: 'Teacher',
             userRole: req.user.role,
             action: 'RESPOND_FEEDBACK',
             resourceId: id,
@@ -393,6 +399,7 @@ exports.updateSystemSetting = async (req, res) => {
 
         await ActivityLog.create({
             userId: req.user._id,
+            userModel: 'Teacher',
             userRole: req.user.role,
             action: 'UPDATE_SETTING',
             details: { key, oldValue: setting.value, newValue: value },
@@ -450,10 +457,11 @@ exports.syncScores = async (req, res) => {
 
         await ActivityLog.create({
             userId: req.user._id,
+            userModel: 'Teacher',
             userRole: req.user.role,
             action: 'SYNC_SCORES',
             details: { totalAttempted: students.length, successfulSync: syncedCount },
-            status: syncErrors.length === 0 ? 'success' : 'partial'
+            status: syncErrors.length === 0 ? 'success' : 'failure'
         });
 
         res.json({
