@@ -128,7 +128,7 @@ const AdminPanel = () => {
     const fetchFeedback = useCallback(async () => {
         try {
             const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
-            setFeedback(data);
+            setFeedback(data.feedback || []);
         } catch (error) {
             toast.error('Failed to load feedback');
         }
