@@ -8,4 +8,3 @@ Rey, Jhonn Carlo M.
 Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.app/
 
 Link to the Live Backend API: https://web2finalchronobackend.vercel.app/
-web2finalchronodashboard.vercel.app
