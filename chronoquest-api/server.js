@@ -9,7 +9,10 @@ const app = express();
 
 // 1. IMPROVED CORS (This stops the "Unsafe attempt" errors)
 app.use(cors({
-    origin: "http://localhost:3001", // Your Frontend Port
+    origin: [
+        "http://localhost:3001",
+        "https://web2finalchronodashboard.vercel.app"
+    ],
     credentials: true
 }));
 
