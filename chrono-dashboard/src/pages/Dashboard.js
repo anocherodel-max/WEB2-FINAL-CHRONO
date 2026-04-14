@@ -5,7 +5,7 @@ import TeacherSidebar from '../components/TeacherSidebar';
 import ProfileSettings from './ProfileSettings';
 import ClassResults from './ClassResults';
 import toast, { Toaster } from 'react-hot-toast';
-import { BarChart3, Trash, Copy, Archive, RotateCcw, Menu, X } from 'lucide-react';
+import { BarChart3, Trash, Copy, Archive, RotateCcw, Menu } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 
