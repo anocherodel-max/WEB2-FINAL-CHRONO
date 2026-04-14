@@ -3,9 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const apiRoutes = require('./src/routes/apiRoutes');
+const { generalLimiter } = require('./src/middleware/rateLimiter');
 
 dotenv.config();
 const app = express();
+
+app.use(generalLimiter);
 
 // 1. IMPROVED CORS (This stops the "Unsafe attempt" errors)
 app.use(cors({
@@ -19,7 +22,7 @@ app.use(cors({
 app.use(express.json());
 // Root route - shows API is alive
 app.get('/', (req, res) => {
-    res.json({ message: "ChronoQuest API is alive!", version: "v1", status: "online" });
+    res.json({ message: "ChronoQuest API is alive!", status: "online" });
 });
 
 // 2. REQUEST LOGGER (Watch your terminal when you click Login!)

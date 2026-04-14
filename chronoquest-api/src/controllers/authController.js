@@ -45,6 +45,21 @@ exports.registerUser = async (req, res) => {
             sections: []
         });
 
+
+        await ActivityLog.create({
+            userId: teacher._id,
+            userModel: 'Teacher',
+            userRole: 'teacher',
+            action: 'REGISTER',
+            resource: 'teacher',
+            status: 'success',
+            details: {
+                email: teacher.email,
+                name: teacher.name,
+                timestamp: new Date()
+            }
+        });
+
         res.status(201).json({
             message: 'User registered successfully',
             _id: teacher._id,
@@ -101,10 +116,16 @@ exports.loginUser = async (req, res) => {
         // FIX: Log the login activity
         await ActivityLog.create({
             userId: user._id,
+            userModel: userType === 'teacher' ? 'Teacher' : 'Student',
             userRole: userType === 'teacher' ? (user.role || 'teacher') : 'student',
             action: 'LOGIN',
             resource: userType,
-            status: 'success'
+            status: 'success',
+            details: {
+                email: user.email,
+                userType: userType,
+                timestamp: new Date()
+            }
         });
 
         // Return appropriate response based on user type
@@ -229,11 +250,18 @@ exports.submitFeedback = async (req, res) => {
         // FIX: Log the feedback submission activity
         await ActivityLog.create({
             userId: teacherId,
+            userModel: 'Teacher',
             userRole: req.user.role || 'teacher',
             action: 'SUBMIT_FEEDBACK',
             resource: 'feedback',
             resourceId: feedback._id,
-            status: 'success'
+            status: 'success',
+            details: {
+                feedbackTitle: title,
+                feedbackType: type,
+                priority: priority || 'medium',
+                timestamp: new Date()
+            }
         });
 
         res.status(201).json({
@@ -296,14 +324,28 @@ exports.changePassword = async (req, res) => {
         // Log the password change
         await ActivityLog.create({
             userId: teacher._id,
+            userModel: 'Teacher',
             userRole: teacher.role || 'teacher',
             action: 'CHANGE_PASSWORD',
             resource: 'profile',
-            status: 'success'
+            status: 'success',
+            details: {
+                email: teacher.email,
+                timestamp: new Date()
+            }
         });
 
         res.json({ message: 'Password changed successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error changing password', error: error.message });
+    }
+};
+
+
+exports.validateToken = async (req, res) => {
+    try {
+        res.status(200).json({ valid: true, teacher: req.teacher });
+    } catch (error) {
+        res.status(401).json({ valid: false });
     }
 };
