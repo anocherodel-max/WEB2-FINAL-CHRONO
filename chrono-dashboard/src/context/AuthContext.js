@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
                     if (isValid) {
                         setTeacher(JSON.parse(savedTeacher));
                     } else {
-                        // Token is invalid or expired
                         localStorage.removeItem('teacherData');
                         localStorage.removeItem('teacherToken');
                         setTeacher(null);
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }) => {
         };
 
         initializeAuth();
-    }, []);
+    }, [API_BASE]);
 
     const login = (data, token) => {
         if (!data || !token) return;
