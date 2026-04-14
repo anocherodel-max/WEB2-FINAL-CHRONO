@@ -17,6 +17,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
+// Root route - shows API is alive
+app.get('/', (req, res) => {
+    res.json({ message: "ChronoQuest API is alive!", version: "v1", status: "online" });
+});
 
 // 2. REQUEST LOGGER (Watch your terminal when you click Login!)
 app.use((req, res, next) => {

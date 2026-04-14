@@ -35,6 +35,8 @@ const AdminPanel = () => {
 
     const [analytics, setAnalytics] = useState(null);
     const [activityLogs, setActivityLogs] = useState([]);
+    const [activityLogPage, setActivityLogPage] = useState(1);
+    const LOGS_PER_PAGE = 10;
     const [feedback, setFeedback] = useState([]);
     const [feedbackSearch, setFeedbackSearch] = useState('');
     const [expandedFeedback, setExpandedFeedback] = useState(null);
@@ -82,7 +84,7 @@ const AdminPanel = () => {
     const handleDeleteUser = async (userId, userType) => {
         if (window.confirm('Confirm deletion? This action cannot be undone!')) {
             try {
-                await axios.delete(`${API_BASE}/admin/users/${userId}`, { headers, data: { userId, userType } });
+                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
                 toast.success('User deleted');
                 fetchAllUsers();
             } catch (error) {
@@ -179,7 +181,6 @@ const AdminPanel = () => {
         else if (activeTab === 'settings') fetchSettings();
     }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
 
-    // Search filters — computed outside sub-components so they react to state changes
     const filteredTeachers = users.teachers?.filter(t =>
         t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         t.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -204,64 +205,74 @@ const AdminPanel = () => {
         );
     });
 
-
-
     const AnalyticsDashboard = () => {
         const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
+        const totalPages = Math.ceil(activityLogs.length / LOGS_PER_PAGE);
+        const pagedLogs = activityLogs.slice((activityLogPage - 1) * LOGS_PER_PAGE, activityLogPage * LOGS_PER_PAGE);
+
         return (
-            <div className="space-y-10">
-                <div>
-                    <h2 className="page-title">Learning Analytics</h2>
-                    <p className="page-subtitle">System-wide overview and statistics</p>
+            <div className="space-y-8">
+                {/* ── Dashboard header (no duplicate — AdminPanel page-header removed) ── */}
+                <div className="flex-between">
+                    <div>
+                        <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
+                        <p className="page-subtitle">System-wide overview and statistics</p>
+                    </div>
                 </div>
+
                 <div className="grid-4">
-                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={24} />} />
-                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={24} />} />
-                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={24} />} />
-                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={24} />} />
+                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
+                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
                 </div>
 
                 {activityLogs.length > 0 && (
                     <div className="card">
-                        <div style={{ marginBottom: '24px' }}>
-                            <h3 className="section-title">Recent Activity</h3>
-                            <p className="section-subtitle">Last 50 system activities</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
+                            <div>
+                                <h3 className="section-title">Recent Activity</h3>
+                                <p className="section-subtitle">{activityLogs.length} total log entries</p>
+                            </div>
+                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
+                                Page {activityLogPage} of {totalPages}
+                            </span>
                         </div>
-                        <div style={{ overflowX: 'auto' }}>
+                        <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '420px' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
+                                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
                                     <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
                                         {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
-                                            <th key={h} style={{ padding: '12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.875rem' }}>{h}</th>
+                                            <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {activityLogs.map(log => (
+                                    {pagedLogs.map(log => (
                                         <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
                                                 <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
-                                                <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '4px 0 0 0' }}>{log.userEmail}</p>
+                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.userEmail}</p>
                                             </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
-                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '4px 8px', borderRadius: '4px', fontWeight: 600 }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                                     {log.action?.replace(/_/g, ' ')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
                                                 {new Date(log.createdAt).toLocaleString()}
                                             </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
                                                 <span style={{
                                                     backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
                                                     color: log.status === 'success' ? '#166534' : '#991b1b',
-                                                    padding: '4px 8px', borderRadius: '4px', fontWeight: 600
+                                                    padding: '3px 7px', borderRadius: '4px', fontWeight: 600
                                                 }}>
                                                     {log.status?.toUpperCase()}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '12px', fontSize: '0.875rem', color: '#64748b', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {log.details ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
                                             </td>
                                         </tr>
@@ -269,17 +280,49 @@ const AdminPanel = () => {
                                 </tbody>
                             </table>
                         </div>
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.max(1, p - 1))}
+                                    disabled={activityLogPage === 1}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === 1 ? '#f8fafc' : '#fff', color: activityLogPage === 1 ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === 1 ? 'not-allowed' : 'pointer' }}
+                                >
+                                    ← Prev
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setActivityLogPage(page)}
+                                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === page ? '#0f172a' : '#fff', color: activityLogPage === page ? '#fff' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={activityLogPage === totalPages}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === totalPages ? '#f8fafc' : '#fff', color: activityLogPage === totalPages ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === totalPages ? 'not-allowed' : 'pointer' }}
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
         );
     };
 
-
-
     const SettingsSection = () => (
-        <div className="space-y-8">
-            <h2 className="page-title">System Settings</h2>
+        <div className="space-y-6">
+            {/* ── Settings header ── */}
+            <div className="flex-between">
+                <div>
+                    <h2 className="page-title">System Settings</h2>
+                    <p className="page-subtitle">Configure platform-wide limits and security rules</p>
+                </div>
+            </div>
+
             <div className="card">
                 <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
                     <Lock size={20} style={{ color: '#475569' }} /> Security Settings
@@ -333,37 +376,36 @@ const AdminPanel = () => {
             <Toaster position="top-right" />
             <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-            <main className="main-padded">
-                <header className="page-header">
-                    <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
-                </header>
-
-                {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700 }}>Loading...</div>}
-                {activeTab === 'dashboard' && <AnalyticsDashboard />}
-                {activeTab === 'users' && (
-                    <UsersList
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                        users={users}
-                        filteredTeachers={filteredTeachers}
-                        filteredStudents={filteredStudents}
-                        handleEditUser={handleEditUser}
-                        handleDeactivateUser={handleDeactivateUser}
-                        handleDeleteUser={handleDeleteUser}
-                    />
-                )}
-                {activeTab === 'questions' && <QuestionManagement />}
-                {activeTab === 'feedback' && (
-                    <FeedbackSection
-                        feedbackSearch={feedbackSearch}
-                        setFeedbackSearch={setFeedbackSearch}
-                        filteredFeedback={filteredFeedback}
-                        feedback={feedback}
-                        expandedFeedback={expandedFeedback}
-                        setExpandedFeedback={setExpandedFeedback}
-                    />
-                )}
-                {activeTab === 'settings' && <SettingsSection />}
+            <main className="main-padded" style={{ marginLeft: '256px' }}>
+                <div style={{ padding: '32px 40px' }}>
+                    {/* ── No duplicate page-header here; each tab renders its own title ── */}
+                    {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
+                    {activeTab === 'dashboard' && <AnalyticsDashboard />}
+                    {activeTab === 'users' && (
+                        <UsersList
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            users={users}
+                            filteredTeachers={filteredTeachers}
+                            filteredStudents={filteredStudents}
+                            handleEditUser={handleEditUser}
+                            handleDeactivateUser={handleDeactivateUser}
+                            handleDeleteUser={handleDeleteUser}
+                        />
+                    )}
+                    {activeTab === 'questions' && <QuestionManagement />}
+                    {activeTab === 'feedback' && (
+                        <FeedbackSection
+                            feedbackSearch={feedbackSearch}
+                            setFeedbackSearch={setFeedbackSearch}
+                            filteredFeedback={filteredFeedback}
+                            feedback={feedback}
+                            expandedFeedback={expandedFeedback}
+                            setExpandedFeedback={setExpandedFeedback}
+                        />
+                    )}
+                    {activeTab === 'settings' && <SettingsSection />}
+                </div>
             </main>
 
             {editModalOpen && (

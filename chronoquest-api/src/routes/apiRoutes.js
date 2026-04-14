@@ -43,7 +43,8 @@ router.post('/teacher/add-section', protect, async (req, res) => {
 
         res.status(201).json({
             message: "Section created successfully",
-            section: newSection
+            section: newSection,
+            updatedTeacher: updatedTeacher
         });
     } catch (error) {
         console.error("Add Section Error:", error);

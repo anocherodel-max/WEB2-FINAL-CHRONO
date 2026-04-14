@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Save, Eye, EyeOff, Lock } from 'lucide-react';
 
-const ProfileSettings = () => {
+const ProfileSettings = ({ onProfileUpdate }) => {
     const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
     const { teacher, setTeacher } = useContext(AuthContext);
 
@@ -34,6 +34,7 @@ const ProfileSettings = () => {
             setTeacher(updatedTeacher);
             localStorage.setItem('teacherData', JSON.stringify(updatedTeacher));
             toast.success("Account information updated.");
+            if (onProfileUpdate) onProfileUpdate();
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to update profile.");
         } finally {

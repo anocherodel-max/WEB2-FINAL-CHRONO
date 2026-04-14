@@ -91,7 +91,11 @@ const Dashboard = () => {
         }
     }, [selectedSection]);
 
-    useEffect(() => { fetchTeacherProfile(); }, [fetchTeacherProfile]);
+    useEffect(() => {
+        if (activeTab === 'overview') {
+            fetchTeacherProfile();
+        }
+    }, [activeTab, fetchTeacherProfile]);
     useEffect(() => { fetchSummary(); }, [fetchSummary]);
     useEffect(() => {
         if (teacher) localStorage.setItem('teacherData', JSON.stringify(teacher));
@@ -150,7 +154,7 @@ const Dashboard = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setTeacher(data.updatedTeacher);
-            setSelectedSection(data.newSection.classCode);
+            setSelectedSection(data.section.classCode);
             setModalOpen(false);
             setNewSectionName("");
             toast.success("Section created");
@@ -201,7 +205,7 @@ const Dashboard = () => {
                             </button>
                         </header>
 
-                        <div className="space-y-4" style={{ marginBottom: '40px' }}>
+                        <div className="space-y-4" style={{ marginBottom: '20px' }}>
                             <div className="section-panel">
                                 <div className="section-panel-header">
                                     <p className="section-panel-label">Active Classes</p>
@@ -259,58 +263,55 @@ const Dashboard = () => {
                             )}
                         </div>
 
-                        <div className="space-y-10">
-                            <div className="grid-2">
-                                <div>
-                                    <div className="space-y-6">
-                                        <div className="stat-card">
-                                            <p className="stat-card-label">Learners</p>
-                                            <p className="stat-card-value">{summary.totalStudents}</p>
-                                        </div>
-                                        <div className="stat-card">
-                                            <p className="stat-card-label">Average Score</p>
-                                            <p className="stat-card-value">{summary.avgScore}</p>
+                        <div className="grid-2" style={{ alignItems: 'start', gap: '16px' }}>
+                            {/* LEFT COLUMN */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {selectedSection && (
+                                    <div className="access-code-card">
+                                        <p className="access-code-label">Section Access Code</p>
+                                        <div className="access-code-row">
+                                            <p className="access-code-text">{selectedSection}</p>
+                                            <button
+                                                onClick={() => { navigator.clipboard.writeText(selectedSection); toast.success("Copied!"); }}
+                                                className="access-code-copy-btn"
+                                            >
+                                                <Copy size={20} />
+                                            </button>
                                         </div>
                                     </div>
+                                )}
+                                <div className="stat-card">
+                                    <p className="stat-card-label">Learners</p>
+                                    <p className="stat-card-value">{summary.totalStudents}</p>
                                 </div>
-
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h3 className="card-title">Top 15 Learners</h3>
-                                    </div>
-                                    <div className="leaderboard-list">
-                                        {leaderboardData.length > 0 ? (
-                                            leaderboardData.map((student) => (
-                                                <div key={student.classCode + student.name} className="leaderboard-item">
-                                                    <div className="leaderboard-rank">{student.rank}</div>
-                                                    <div className="leaderboard-info">
-                                                        <p className="leaderboard-name">{student.name}</p>
-                                                        <p className="leaderboard-code">{student.classCode}</p>
-                                                    </div>
-                                                    <div className="leaderboard-score">{student.score}</div>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <p className="no-results" style={{ padding: '24px' }}>No student data yet</p>
-                                        )}
-                                    </div>
+                                <div className="stat-card">
+                                    <p className="stat-card-label">Average Score</p>
+                                    <p className="stat-card-value">{summary.avgScore}</p>
                                 </div>
                             </div>
 
-                            {selectedSection && (
-                                <div className="access-code-card">
-                                    <p className="access-code-label">Section Access Code</p>
-                                    <div className="access-code-row">
-                                        <p className="access-code-text">{selectedSection}</p>
-                                        <button
-                                            onClick={() => { navigator.clipboard.writeText(selectedSection); toast.success("Copied!"); }}
-                                            className="access-code-copy-btn"
-                                        >
-                                            <Copy size={20} />
-                                        </button>
-                                    </div>
+                            {/* RIGHT COLUMN - Leaderboard */}
+                            <div className="card" style={{ padding: '20px' }}>
+                                <div className="card-header" style={{ marginBottom: '12px', paddingBottom: '10px' }}>
+                                    <h3 className="card-title">Top 15 Learners</h3>
                                 </div>
-                            )}
+                                <div className="leaderboard-list">
+                                    {leaderboardData.length > 0 ? (
+                                        leaderboardData.map((student) => (
+                                            <div key={student.classCode + student.name} className="leaderboard-item">
+                                                <div className="leaderboard-rank">{student.rank}</div>
+                                                <div className="leaderboard-info">
+                                                    <p className="leaderboard-name">{student.name}</p>
+                                                    <p className="leaderboard-code">{student.classCode}</p>
+                                                </div>
+                                                <div className="leaderboard-score">{student.score}</div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="no-results" style={{ padding: '16px' }}>No student data yet</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -325,7 +326,7 @@ const Dashboard = () => {
 
                 {activeTab === 'settings' && (
                     <div className="content-area">
-                        <ProfileSettings />
+                        <ProfileSettings onProfileUpdate={fetchTeacherProfile} />
                     </div>
                 )}
 

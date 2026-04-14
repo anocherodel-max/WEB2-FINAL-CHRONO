@@ -43,9 +43,10 @@ const FeedbackSection = ({
 
     return (
         <div className="space-y-8">
+            {/* ── Section header (owns the page title for this tab) ── */}
             <div className="flex-between">
                 <div>
-                    <h2 className="page-title">Feedback & Support</h2>
+                    <h2 className="page-title">Feedback &amp; Support</h2>
                     <p className="page-subtitle">Instructor feedback and support tickets</p>
                 </div>
                 <input
@@ -59,9 +60,11 @@ const FeedbackSection = ({
             </div>
 
             <div className="card">
-                <h3 className="section-title" style={{ marginBottom: '24px' }}>
-                    Tickets ({filteredFeedback.length}{feedbackSearch ? ` of ${feedback.length}` : ''})
-                </h3>
+                <div className="flex-between" style={{ marginBottom: '16px' }}>
+                    <h3 className="section-title">
+                        Tickets ({filteredFeedback.length}{feedbackSearch ? ` of ${feedback.length}` : ''})
+                    </h3>
+                </div>
                 <div className="space-y-4">
                     {filteredFeedback.length === 0 ? (
                         <div className="empty-state">

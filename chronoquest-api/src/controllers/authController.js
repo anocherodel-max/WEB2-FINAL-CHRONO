@@ -244,3 +244,66 @@ exports.submitFeedback = async (req, res) => {
         res.status(500).json({ message: 'Error submitting feedback', error: error.message });
     }
 };
+
+exports.getTeacherProfile = async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.user._id).select('-password');
+
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        res.json({
+            _id: teacher._id,
+            name: teacher.name,
+            email: teacher.email,
+            sections: teacher.sections,
+            role: teacher.role
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching profile', error: error.message });
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current password and new password are required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters' });
+        }
+
+        const teacher = await Teacher.findById(req.user._id);
+
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        // Verify current password
+        const passwordMatches = await teacher.matchPassword(currentPassword);
+        if (!passwordMatches) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        // Update password
+        teacher.password = newPassword;
+        await teacher.save();
+
+        // Log the password change
+        await ActivityLog.create({
+            userId: teacher._id,
+            userRole: teacher.role || 'teacher',
+            action: 'CHANGE_PASSWORD',
+            resource: 'profile',
+            status: 'success'
+        });
+
+        res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error changing password', error: error.message });
+    }
+};
