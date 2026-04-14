@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, BookOpen, X } from 'lucide-react';
 
-const AdminSidebar = ({ activeTab, setActiveTab }) => {
+const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -19,7 +19,17 @@ const AdminSidebar = ({ activeTab, setActiveTab }) => {
         `sidebar-btn${activeTab === id ? ' active' : ''}`;
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
+
+            {/* Close button — only visible on mobile via CSS */}
+            <button
+                className="sidebar-close-btn"
+                onClick={onClose}
+                aria-label="Close menu"
+            >
+                <X size={18} />
+            </button>
+
             <button onClick={() => navigate('/dashboard')} className="sidebar-back-btn">
                 <ArrowLeft size={14} />
                 <span>Back</span>

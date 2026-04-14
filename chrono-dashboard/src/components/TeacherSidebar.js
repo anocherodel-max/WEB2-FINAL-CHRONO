@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, BarChart3, LogOut, Settings, MessageSquare, Shield } from 'lucide-react';
+import { LayoutDashboard, BarChart3, LogOut, Settings, MessageSquare, Shield, X } from 'lucide-react';
 
-const TeacherSidebar = ({ activeTab, setActiveTab }) => {
+const TeacherSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
     const { teacher } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -11,7 +11,17 @@ const TeacherSidebar = ({ activeTab, setActiveTab }) => {
         `sidebar-btn${activeTab === id ? ' active' : ''}`;
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
+
+            {/* Close button — only visible on mobile via CSS */}
+            <button
+                className="sidebar-close-btn"
+                onClick={onClose}
+                aria-label="Close menu"
+            >
+                <X size={18} />
+            </button>
+
             <h1 className="sidebar-title">Instructor</h1>
 
             <nav className="sidebar-nav">

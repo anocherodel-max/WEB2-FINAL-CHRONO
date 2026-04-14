@@ -5,7 +5,7 @@ import TeacherSidebar from '../components/TeacherSidebar';
 import ProfileSettings from './ProfileSettings';
 import ClassResults from './ClassResults';
 import toast, { Toaster } from 'react-hot-toast';
-import { BarChart3, Trash, Copy, Archive, RotateCcw } from 'lucide-react';
+import { BarChart3, Trash, Copy, Archive, RotateCcw, Menu, X } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 
@@ -18,12 +18,19 @@ const Dashboard = () => {
     const [leaderboardData, setLeaderboardData] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [showArchived, setShowArchived] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
 
     const [feedbackTitle, setFeedbackTitle] = useState("");
     const [feedbackDescription, setFeedbackDescription] = useState("");
     const [feedbackType, setFeedbackType] = useState("general_feedback");
     const [feedbackPriority, setFeedbackPriority] = useState("medium");
     const [feedbackLoading, setFeedbackLoading] = useState(false);
+
+    // Close sidebar when switching tabs on mobile
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSidebarOpen(false);
+    };
 
     const fetchTeacherProfile = useCallback(async () => {
         const token = localStorage.getItem('teacherToken');
@@ -192,7 +199,28 @@ const Dashboard = () => {
     return (
         <div className="page">
             <Toaster position="top-right" />
-            <TeacherSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+            {/* ── Mobile hamburger button ── */}
+            <button
+                className="mobile-menu-btn"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+            >
+                <Menu size={20} />
+            </button>
+
+            {/* ── Backdrop overlay (mobile only) ── */}
+            <div
+                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            <TeacherSidebar
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+                sidebarOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
 
             <main className="main-content">
 

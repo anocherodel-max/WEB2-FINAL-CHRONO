@@ -6,7 +6,7 @@ import QuestionManagement from './QuestionManagement';
 import UsersList from '../components/admin/UsersList';
 import FeedbackSection from '../components/admin/FeedbackSection';
 import toast, { Toaster } from 'react-hot-toast';
-import { Users, BookOpen, Lock } from 'lucide-react';
+import { Users, BookOpen, Lock, Menu } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 
@@ -24,6 +24,7 @@ const AdminPanel = () => {
     const { teacher, logout } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
 
     const [users, setUsers] = useState({ teachers: [], students: [] });
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,6 +50,12 @@ const AdminPanel = () => {
 
     const token = localStorage.getItem('teacherToken');
     const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
+
+    // Close sidebar when switching tabs on mobile
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSidebarOpen(false);
+    };
 
     useEffect(() => {
         if (teacher && teacher.role !== 'admin') {
@@ -212,7 +219,6 @@ const AdminPanel = () => {
 
         return (
             <div className="space-y-8">
-                {/* ── Dashboard header (no duplicate — AdminPanel page-header removed) ── */}
                 <div className="flex-between">
                     <div>
                         <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
@@ -315,7 +321,6 @@ const AdminPanel = () => {
 
     const SettingsSection = () => (
         <div className="space-y-6">
-            {/* ── Settings header ── */}
             <div className="flex-between">
                 <div>
                     <h2 className="page-title">System Settings</h2>
@@ -374,11 +379,31 @@ const AdminPanel = () => {
     return (
         <div className="page">
             <Toaster position="top-right" />
-            <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+
+            {/* ── Mobile hamburger button ── */}
+            <button
+                className="mobile-menu-btn"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+            >
+                <Menu size={20} />
+            </button>
+
+            {/* ── Backdrop overlay (mobile only) ── */}
+            <div
+                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            <AdminSidebar
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+                sidebarOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
 
             <main className="main-padded" style={{ marginLeft: '256px' }}>
                 <div style={{ padding: '32px 40px' }}>
-                    {/* ── No duplicate page-header here; each tab renders its own title ── */}
                     {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
                     {activeTab === 'dashboard' && <AnalyticsDashboard />}
                     {activeTab === 'users' && (
