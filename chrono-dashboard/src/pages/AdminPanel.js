@@ -1,3 +1,4 @@
+
 import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -21,7 +22,7 @@ const StatCard = ({ title, value, icon }) => (
 );
 
 const AdminPanel = () => {
-    const { teacher, logout } = useContext(AuthContext);
+    const { teacher, setTeacher, logout } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [loading, setLoading] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
@@ -89,14 +90,12 @@ const AdminPanel = () => {
     };
 
     const handleDeleteUser = async (userId, userType) => {
-        if (window.confirm('Confirm deletion? This action cannot be undone!')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
-                toast.success('User deleted');
-                fetchAllUsers();
-            } catch (error) {
-                toast.error('Failed to delete user');
-            }
+        try {
+            await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
+            toast.success('User deleted');
+            fetchAllUsers();
+        } catch (error) {
+            toast.error('Failed to delete user');
         }
     };
 
@@ -112,6 +111,15 @@ const AdminPanel = () => {
         try {
             await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
             toast.success('User updated successfully');
+
+            // If updating current user's role, refresh their auth data
+            if (editingUser._id === teacher._id) {
+                const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
+                localStorage.setItem('teacherData', JSON.stringify(data.teacher));
+                setTeacher(data.teacher); // ← Add this
+                window.location.reload(); // Force UI update
+            }
+
             setEditModalOpen(false);
             fetchAllUsers();
         } catch (error) {
@@ -147,13 +155,16 @@ const AdminPanel = () => {
         setLoading(true);
         try {
             const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
+            console.log('Settings response:', data); // ← Add this for debugging
+
             setSettingsForm(prev => ({
                 ...prev,
-                max_learning_groups_per_instructor: data.max_learning_groups_per_instructor?.value || 5,
-                max_learners_per_group: data.max_learners_per_group?.value || 50
+                max_learning_groups_per_instructor: data.settings?.max_learning_groups_per_instructor || 10,
+                max_learners_per_group: data.settings?.max_learners_per_group || 30
             }));
         } catch (error) {
-            toast.error('Failed to load settings');
+            console.error('Settings fetch error:', error.response?.data || error.message); // ← Add this
+            toast.error('Failed to load settings: ' + (error.response?.data?.message || error.message));
         }
         setLoading(false);
     }, [headers]);
@@ -228,7 +239,7 @@ const AdminPanel = () => {
 
                 <div className="grid-4">
                     <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
-                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Teachers" value={users.teachers?.length || 0} icon={<Users size={20} />} />
                     <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
                     <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
                 </div>

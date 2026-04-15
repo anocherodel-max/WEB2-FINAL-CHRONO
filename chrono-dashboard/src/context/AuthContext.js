@@ -33,7 +33,28 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const isValid = await validateToken(token);
                     if (isValid) {
-                        setTeacher(JSON.parse(savedTeacher));
+                        try {
+                            // Fetch fresh profile on validation
+                            const profileRes = await fetch(`${API_BASE}/auth/profile`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            if (profileRes.ok) {
+                                const profileData = await profileRes.json();
+                                setTeacher(profileData.teacher);
+                                localStorage.setItem('teacherData', JSON.stringify(profileData.teacher));
+                            } else {
+                                // If profile fetch fails, fall back to saved data
+                                console.warn("Profile fetch failed, using saved data");
+                                setTeacher(JSON.parse(savedTeacher));
+                            }
+                        } catch (err) {
+                            console.error("Profile fetch error:", err);
+                            setTeacher(JSON.parse(savedTeacher));
+                        }
                     } else {
                         localStorage.removeItem('teacherData');
                         localStorage.removeItem('teacherToken');

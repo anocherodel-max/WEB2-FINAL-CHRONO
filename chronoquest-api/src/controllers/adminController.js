@@ -6,8 +6,9 @@ const SystemSettings = require('../models/systemSettingsModel');
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const teachers = await Teacher.find().select('-password');
-        const students = await Student.find().select('-password');
+        // Filter out deleted users
+        const teachers = await Teacher.find({ isDeleted: false }).select('-password');
+        const students = await Student.find({ isDeleted: false }).select('-password');
 
         const formattedTeachers = teachers.map(t => ({
             ...t.toObject(),
@@ -30,6 +31,33 @@ exports.getAllUsers = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+exports.getDeletedUsers = async (req, res) => {
+    try {
+        const deletedTeachers = await Teacher.find({ isDeleted: true }).select('-password');
+        const deletedStudents = await Student.find({ isDeleted: true }).select('-password');
+
+        const formattedTeachers = deletedTeachers.map(t => ({
+            ...t.toObject(),
+            userType: 'teacher',
+            totalSections: t.sections?.length || 0
+        }));
+
+        const formattedStudents = deletedStudents.map(s => ({
+            ...s.toObject(),
+            userType: 'student'
+        }));
+
+        res.json({
+            message: 'Deleted users retrieved successfully',
+            teachers: formattedTeachers,
+            students: formattedStudents,
+            total: formattedTeachers.length + formattedStudents.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
     }
 };
 
@@ -69,10 +97,9 @@ exports.deleteUser = async (req, res) => {
     try {
         const { userId, userType } = req.body;
 
-        // Validate userType
         if (!['teacher', 'student'].includes(userType)) {
             return res.status(400).json({
-                message: 'Invalid userType. Use "teacher" or "student". Note: admins are teachers with role="admin"',
+                message: 'Invalid userType. Use "teacher" or "student".',
                 errorCode: 'INVALID_USER_TYPE'
             });
         }
@@ -80,27 +107,41 @@ exports.deleteUser = async (req, res) => {
         let deletedUser;
 
         if (userType === 'teacher') {
-            // Check if this is the last admin
-            const adminCount = await Teacher.countDocuments({ role: 'admin' });
+            const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
             const userToDelete = await Teacher.findById(userId);
 
             if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
                 return res.status(400).json({ message: 'Cannot delete the last admin account' });
             }
 
-            deletedUser = await Teacher.findByIdAndDelete(userId);
+            // SOFT DELETE: Mark as deleted instead of removing
+            deletedUser = await Teacher.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: true,
+                    deletedAt: new Date()
+                },
+                { new: true }
+            );
         } else if (userType === 'student') {
-            deletedUser = await Student.findByIdAndDelete(userId);
+            // SOFT DELETE: Mark as deleted instead of removing
+            deletedUser = await Student.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: true,
+                    deletedAt: new Date()
+                },
+                { new: true }
+            );
         }
 
-        // Check if user was actually found and deleted
         if (!deletedUser) {
             return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
         }
 
         await ActivityLog.create({
             userId: req.user._id,
-            userModel: 'Teacher', // FIX: added userModel
+            userModel: 'Teacher',
             userRole: req.user.role,
             action: 'DELETE_USER',
             resource: userType,
@@ -114,28 +155,89 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+// NEW: Restore a deleted user
+exports.restoreUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        let restoredUser;
+
+        if (userType === 'teacher') {
+            restoredUser = await Teacher.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: false,
+                    deletedAt: null
+                },
+                { new: true }
+            ).select('-password');
+        } else if (userType === 'student') {
+            restoredUser = await Student.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: false,
+                    deletedAt: null
+                },
+                { new: true }
+            ).select('-password');
+        }
+
+        if (!restoredUser) {
+            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'RESTORE_USER',
+            resource: userType,
+            resourceId: userId,
+            status: 'success'
+        });
+
+        res.json({ message: 'User restored successfully', user: restoredUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Error restoring user', error: error.message });
+    }
+};
+
 exports.updateUser = async (req, res) => {
     try {
         const { userId, userType } = req.params;
         const { name, email, role } = req.body;
 
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        if (name && (name.trim().length < 2 || name.trim().length > 100)) {
+            return res.status(400).json({ message: 'Name must be between 2-100 characters' });
+        }
+
+        if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+
         if (userType === 'teacher') {
-            // Validate email uniqueness if provided
             if (email) {
-                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId } });
+                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId }, isDeleted: false });
                 if (existingTeacher) {
                     return res.status(400).json({ message: 'Email already in use' });
                 }
             }
 
-            // Validate role if provided
             if (role && !['teacher', 'admin'].includes(role)) {
                 return res.status(400).json({ message: 'Invalid role' });
             }
 
             const updateData = {};
-            if (name) updateData.name = name;
-            if (email) updateData.email = email;
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
             if (role) updateData.role = role;
 
             const updatedTeacher = await Teacher.findByIdAndUpdate(
@@ -144,7 +246,10 @@ exports.updateUser = async (req, res) => {
                 { new: true }
             ).select('-password');
 
-            // Log the action
+            if (!updatedTeacher) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
+
             await ActivityLog.create({
                 userId: req.user._id,
                 userModel: 'Teacher',
@@ -156,22 +261,18 @@ exports.updateUser = async (req, res) => {
                 status: 'success'
             });
 
-            res.json({
-                message: 'User updated successfully',
-                user: updatedTeacher
-            });
+            res.json({ message: 'User updated successfully', user: updatedTeacher });
         } else if (userType === 'student') {
-            // Validate email uniqueness if provided
             if (email) {
-                const existingStudent = await Student.findOne({ email, _id: { $ne: userId } });
+                const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
                 if (existingStudent) {
                     return res.status(400).json({ message: 'Email already in use' });
                 }
             }
 
             const updateData = {};
-            if (name) updateData.name = name;
-            if (email) updateData.email = email;
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
 
             const updatedStudent = await Student.findByIdAndUpdate(
                 userId,
@@ -179,24 +280,11 @@ exports.updateUser = async (req, res) => {
                 { new: true }
             ).select('-password');
 
-            // Log the action
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'student',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
+            if (!updatedStudent) {
+                return res.status(404).json({ message: 'Student not found' });
+            }
 
-            res.json({
-                message: 'User updated successfully',
-                user: updatedStudent
-            });
-        } else {
-            res.status(400).json({ message: 'Invalid user type' });
+            res.json({ message: 'User updated successfully', user: updatedStudent });
         }
     } catch (error) {
         console.error('Update User Error:', error);
@@ -204,52 +292,17 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-exports.getUserActivityLogs = async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const logs = await ActivityLog.find({ userId })
-            .sort({ createdAt: -1 })
-            .limit(100);
-
-        res.json({
-            message: 'User activity logs retrieved successfully',
-            logs
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
-    }
-};
-
-exports.getAllActivityLogs = async (req, res) => {
-    try {
-        const { limit = 500, skip = 0 } = req.query;
-        const logs = await ActivityLog.find()
-            .sort({ createdAt: -1 })
-            .limit(parseInt(limit))
-            .skip(parseInt(skip));
-
-        const total = await ActivityLog.countDocuments();
-
-        res.json({
-            message: 'All activity logs retrieved successfully',
-            logs,
-            total
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching logs', error: error.message });
-    }
-};
-
 exports.getSystemAnalytics = async (req, res) => {
     try {
-        const totalTeachers = await Teacher.countDocuments();
-        const totalStudents = await Student.countDocuments();
+        const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
+        const totalStudents = await Student.countDocuments({ isDeleted: false });
         const totalSections = await Teacher.aggregate([
+            { $match: { isDeleted: false } },
             { $unwind: '$sections' },
             { $count: 'total' }
         ]);
 
-        const recentUsers = await Teacher.find()
+        const recentUsers = await Teacher.find({ isDeleted: false })
             .sort({ createdAt: -1 })
             .limit(10)
             .select('name email createdAt');
@@ -272,57 +325,41 @@ exports.getSystemAnalytics = async (req, res) => {
     }
 };
 
-exports.getUsageStats = async (req, res) => {
+exports.getRecentActivityLogs = async (req, res) => {
     try {
-        const logs = await ActivityLog.aggregate([
-            {
-                $group: {
-                    _id: '$action',
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { count: -1 } }
-        ]);
+        const limit = req.query.limit || 50;
+        const logs = await ActivityLog.find()
+            .populate('userId', 'name')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .select('-__v');
 
-        const dailyActivity = await ActivityLog.aggregate([
-            {
-                $group: {
-                    _id: {
-                        $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
-                    },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { _id: -1 } },
-            { $limit: 30 }
-        ]);
+        // Transform logs to include userName
+        const transformedLogs = logs.map(log => ({
+            ...log.toObject(),
+            userName: log.userId?.name || 'Unknown'
+        }));
 
         res.json({
-            message: 'Usage stats retrieved successfully',
-            actionStats: logs,
-            dailyActivity
+            message: 'Activity logs retrieved successfully',
+            logs: transformedLogs
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching usage stats', error: error.message });
+        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
     }
 };
 
 exports.getAllFeedback = async (req, res) => {
     try {
-        const { status, type } = req.query;
-        const filter = {};
-
-        if (status) filter.status = status;
-        if (type) filter.type = type;
-
-        const feedback = await Feedback.find(filter)
+        const feedback = await Feedback.find()
             .populate('submittedBy', 'name email')
-            .populate('response.admin', 'name email')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .select('-__v');
 
         res.json({
             message: 'Feedback retrieved successfully',
-            feedback
+            feedback,
+            total: feedback.length
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching feedback', error: error.message });
@@ -332,30 +369,33 @@ exports.getAllFeedback = async (req, res) => {
 exports.respondToFeedback = async (req, res) => {
     try {
         const { id } = req.params;
-        const { message, status } = req.body;
+        const { response } = req.body;
 
         const feedback = await Feedback.findByIdAndUpdate(
             id,
             {
-                'response.admin': req.user._id,
-                'response.message': message,
-                'response.respondedAt': new Date(),
-                status: status || 'in_progress'
+                response,
+                respondedAt: new Date(),
+                respondedBy: req.user._id
             },
             { new: true }
-        ).populate('submittedBy', 'name email')
-            .populate('response.admin', 'name email');
+        );
+
+        if (!feedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+        }
 
         await ActivityLog.create({
             userId: req.user._id,
             userModel: 'Teacher',
             userRole: req.user.role,
             action: 'RESPOND_FEEDBACK',
+            resource: 'feedback',
             resourceId: id,
             status: 'success'
         });
 
-        res.json({ message: 'Feedback responded successfully', feedback });
+        res.json({ message: 'Feedback response submitted', feedback });
     } catch (error) {
         res.status(500).json({ message: 'Error responding to feedback', error: error.message });
     }
@@ -363,175 +403,63 @@ exports.respondToFeedback = async (req, res) => {
 
 exports.getSystemSettings = async (req, res) => {
     try {
-        const settings = await SystemSettings.find();
-        const settingsObj = {};
+        // Find all settings
+        let settings = await SystemSettings.find();
 
-        settings.forEach(s => {
-            settingsObj[s.key] = {
-                value: s.value,
-                type: s.type,
-                description: s.description,
-                category: s.category
-            };
+        // Convert array to object keyed by setting name
+        const settingsObj = {};
+        settings.forEach(setting => {
+            settingsObj[setting.key] = setting.value;
         });
 
-        res.json(settingsObj);
+        // If no settings exist, create defaults
+        if (Object.keys(settingsObj).length === 0) {
+            const defaults = [
+                { key: 'max_learning_groups_per_instructor', value: 10, type: 'number', category: 'security' },
+                { key: 'max_learners_per_group', value: 30, type: 'number', category: 'security' }
+            ];
+            await SystemSettings.insertMany(defaults);
+            defaults.forEach(d => {
+                settingsObj[d.key] = d.value;
+            });
+        }
+
+        res.json({
+            message: 'System settings retrieved successfully',
+            settings: settingsObj
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching settings', error: error.message });
     }
 };
-
 exports.updateSystemSetting = async (req, res) => {
     try {
-        const { key, value, type = 'string' } = req.body;
+        const { key, value } = req.body;
 
-        const setting = await SystemSettings.findOneAndUpdate(
-            { key },
-            {
-                key,
-                value,
-                type,
-                updatedBy: req.user._id,
-                updatedAt: new Date()
-            },
-            { upsert: true, new: true }
-        );
+        let settings = await SystemSettings.findOne();
+
+        if (!settings) {
+            settings = new SystemSettings();
+        }
+
+        settings[key] = value;
+        await settings.save();
 
         await ActivityLog.create({
             userId: req.user._id,
             userModel: 'Teacher',
             userRole: req.user.role,
-            action: 'UPDATE_SETTING',
-            details: { key, oldValue: setting.value, newValue: value },
+            action: 'UPDATE_SETTINGS',
+            resource: 'settings',
+            resourceId: key,
             status: 'success'
         });
 
-        res.json({ message: 'Setting updated successfully', setting });
+        res.json({
+            message: 'Setting updated successfully',
+            settings
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error updating setting', error: error.message });
-    }
-};
-
-exports.syncScores = async (req, res) => {
-    try {
-        const Score = require('../models/scoreModel');
-        // Sync ALL students (including score: 0) for initial leaderboard population
-        const students = await Student.find({});
-
-        if (students.length === 0) {
-            return res.json({ message: 'No students to sync', synced: 0 });
-        }
-
-        let syncedCount = 0;
-        const syncErrors = [];
-
-        for (const student of students) {
-            try {
-                // Check if score already exists for this student
-                const existingScore = await Score.findOne({
-                    studentName: student.name,
-                    classCode: student.classCode
-                });
-
-                if (!existingScore) {
-                    // Get teacher data for this student's class
-                    const teacher = await Teacher.findOne({
-                        sections: { $elemMatch: { classCode: student.classCode } }
-                    });
-
-                    if (teacher) {
-                        await Score.create({
-                            studentName: student.name,
-                            classCode: student.classCode,
-                            levelReached: student.levelReached,
-                            score: Math.min(student.score, 100), // Ensure max 100
-                            teacherId: teacher._id
-                        });
-                        syncedCount++;
-                    }
-                }
-            } catch (error) {
-                syncErrors.push(`Failed to sync ${student.name}: ${error.message}`);
-            }
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'SYNC_SCORES',
-            details: { totalAttempted: students.length, successfulSync: syncedCount },
-            status: syncErrors.length === 0 ? 'success' : 'failure'
-        });
-
-        res.json({
-            message: 'Score sync completed',
-            synced: syncedCount,
-            total: students.length,
-            errors: syncErrors.length > 0 ? syncErrors : null
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error syncing scores', error: error.message });
-    }
-};
-
-exports.getRecentActivityLogs = async (req, res) => {
-    try {
-        const { limit = 50 } = req.query;
-
-        const logs = await ActivityLog.aggregate([
-            { $sort: { createdAt: -1 } },
-            { $limit: parseInt(limit) },
-            {
-                $lookup: {
-                    from: 'teachers',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'userDetails'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'students',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'studentDetails'
-                }
-            },
-            {
-                $project: {
-                    _id: 1,
-                    userId: 1,
-                    action: 1,
-                    resource: 1,
-                    resourceId: 1,
-                    details: 1,
-                    status: 1,
-                    createdAt: 1,
-                    userName: {
-                        $cond: [
-                            { $gt: [{ $size: '$userDetails' }, 0] },
-                            { $arrayElemAt: ['$userDetails.name', 0] },
-                            { $arrayElemAt: ['$studentDetails.name', 0] }
-                        ]
-                    },
-                    userEmail: {
-                        $cond: [
-                            { $gt: [{ $size: '$userDetails' }, 0] },
-                            { $arrayElemAt: ['$userDetails.email', 0] },
-                            { $arrayElemAt: ['$studentDetails.email', 0] }
-                        ]
-                    }
-                }
-            }
-        ]);
-
-        res.json({
-            logs,
-            total: logs.length,
-            timestamp: new Date()
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
     }
 };

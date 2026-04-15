@@ -1,4 +1,5 @@
 const Question = require('../models/questionModel');
+const ActivityLog = require('../models/activityLogModel');
 
 // @desc    Create a new question
 // @access  Private/Admin
@@ -32,6 +33,17 @@ exports.createQuestion = async (req, res) => {
 
         await newQuestion.save();
 
+        // Log the action
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'CREATE_QUESTION',
+            resource: 'Question',
+            resourceId: newQuestion._id,
+            status: 'success'
+        });
+
         res.status(201).json({
             message: 'Question created successfully',
             question: newQuestion
@@ -48,7 +60,7 @@ exports.getAllQuestions = async (req, res) => {
     try {
         const { topic, difficulty, isActive, page = 1, limit = 10 } = req.query;
 
-        const filters = {};
+        const filters = { isDeleted: false };
         if (topic) filters.topic = { $regex: topic, $options: 'i' };
         if (difficulty) filters.difficultyLevel = difficulty;
         if (isActive !== undefined) filters.isActive = isActive === 'true';
@@ -88,12 +100,12 @@ exports.getQuestionsByTeacher = async (req, res) => {
 
         const skip = (page - 1) * limit;
 
-        const questions = await Question.find({ createdBy: teacherId })
+        const questions = await Question.find({ createdBy: teacherId, isDeleted: false })
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(parseInt(limit));
 
-        const total = await Question.countDocuments({ createdBy: teacherId });
+        const total = await Question.countDocuments({ createdBy: teacherId, isDeleted: false });
 
         res.json({
             questions,
@@ -137,6 +149,17 @@ exports.updateQuestion = async (req, res) => {
 
         await question.save();
 
+        // Log the action
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'UPDATE_QUESTION',
+            resource: 'Question',
+            resourceId: questionId,
+            status: 'success'
+        });
+
         res.json({
             message: 'Question updated successfully',
             question
@@ -147,7 +170,7 @@ exports.updateQuestion = async (req, res) => {
     }
 };
 
-// @desc    Delete a question
+// @desc    Delete a question (soft delete)
 // @access  Private/Admin
 exports.deleteQuestion = async (req, res) => {
     try {
@@ -164,7 +187,22 @@ exports.deleteQuestion = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to delete this question' });
         }
 
-        await Question.findByIdAndDelete(questionId);
+        // Soft delete: mark as deleted instead of removing
+        await Question.findByIdAndUpdate(questionId, {
+            isDeleted: true,
+            deletedAt: new Date()
+        });
+
+        // Log the action
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'DELETE_QUESTION',
+            resource: 'Question',
+            resourceId: questionId,
+            status: 'success'
+        });
 
         res.json({ message: 'Question deleted successfully' });
     } catch (error) {
@@ -200,5 +238,78 @@ exports.toggleQuestionStatus = async (req, res) => {
     } catch (error) {
         console.error('Toggle Question Status Error:', error);
         res.status(500).json({ message: 'Error toggling question status' });
+    }
+};
+
+// @desc    Get all deleted questions
+// @access  Private/Admin
+exports.getDeletedQuestions = async (req, res) => {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (page - 1) * limit;
+
+        const deletedQuestions = await Question.find({ isDeleted: true })
+            .populate('createdBy', 'name email')
+            .sort({ deletedAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit));
+
+        const total = await Question.countDocuments({ isDeleted: true });
+
+        res.json({
+            message: 'Deleted questions retrieved successfully',
+            questions: deletedQuestions,
+            pagination: {
+                total,
+                page: parseInt(page),
+                limit: parseInt(limit),
+                pages: Math.ceil(total / limit)
+            }
+        });
+    } catch (error) {
+        console.error('Get Deleted Questions Error:', error);
+        res.status(500).json({ message: 'Error fetching deleted questions' });
+    }
+};
+
+// @desc    Restore a deleted question
+// @access  Private/Admin
+exports.restoreQuestion = async (req, res) => {
+    try {
+        const { questionId } = req.params;
+
+        const question = await Question.findById(questionId);
+
+        if (!question) {
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        if (!question.isDeleted) {
+            return res.status(400).json({ message: 'Question is not deleted' });
+        }
+
+        // Restore the question
+        question.isDeleted = false;
+        question.deletedAt = null;
+        await question.save();
+
+        // Log the action
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'RESTORE_QUESTION',
+            resource: 'Question',
+            resourceId: questionId,
+            status: 'success'
+        });
+
+        res.json({
+            message: 'Question restored successfully',
+            question
+        });
+    } catch (error) {
+        console.error('Restore Question Error:', error);
+        res.status(500).json({ message: 'Error restoring question' });
     }
 };

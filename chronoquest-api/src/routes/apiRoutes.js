@@ -22,18 +22,33 @@ router.use('/questions', questionRoutes);
 router.post('/teacher/add-section', protect, async (req, res) => {
     const { sectionName } = req.body;
 
-    if (!sectionName) {
-        return res.status(400).json({ message: "Section name is required" });
+    if (!sectionName || sectionName.trim() === '') {
+        return res.status(400).json({ message: "Section name is required and cannot be empty" });
+    }
+
+    // NEW: Validate section name length
+    if (sectionName.length > 100) {
+        return res.status(400).json({ message: "Section name cannot exceed 100 characters" });
     }
 
     try {
         const teacherId = req.user._id;
-        const newClassCode = generateClassCode();
+        const teacher = await Teacher.findById(teacherId);
 
-        const newSection = {
-            sectionName,
-            classCode: newClassCode
-        };
+        // NEW: Check for duplicate section name
+        const duplicateSection = teacher.sections?.some(s =>
+            s.sectionName.toLowerCase() === sectionName.toLowerCase()
+        );
+
+        if (duplicateSection) {
+            return res.status(409).json({
+                message: "A section with this name already exists. Please use a different name.",
+                errorCode: 'DUPLICATE_SECTION'
+            });
+        }
+
+        const newClassCode = generateClassCode();
+        const newSection = { sectionName, classCode: newClassCode };
 
         const updatedTeacher = await Teacher.findByIdAndUpdate(
             teacherId,

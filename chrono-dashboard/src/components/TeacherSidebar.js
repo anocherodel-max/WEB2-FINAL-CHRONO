@@ -22,7 +22,7 @@ const TeacherSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
                 <X size={18} />
             </button>
 
-            <h1 className="sidebar-title">Instructor</h1>
+            <h1 className="sidebar-title">Teacher</h1>
 
             <nav className="sidebar-nav">
                 <div>

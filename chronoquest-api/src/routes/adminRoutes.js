@@ -6,18 +6,16 @@ const { protect, adminOnly, checkPermission } = require('../middleware/adminMidd
 
 router.use(protect);
 router.use(adminOnly);
+router.post('/users/restore', protect, adminOnly, adminController.restoreUser);
 
 router.get('/users', adminController.getAllUsers);
+router.get('/users/deleted', adminController.getDeletedUsers);
 router.post('/users/deactivate', adminController.deactivateUser);
 router.post('/users/delete', adminController.deleteUser);
 router.patch('/users/:userId/:userType', adminController.updateUser);
-router.get('/users/:userId/logs', adminController.getUserActivityLogs);
-router.get('/activity-logs', adminController.getAllActivityLogs);
-router.get('/activity-logs-detailed', adminController.getRecentActivityLogs);
 
-router.post('/sync-scores', adminController.syncScores);
+router.get('/activity-logs-detailed', adminController.getRecentActivityLogs);
 router.get('/analytics', adminController.getSystemAnalytics);
-router.get('/usage-stats', adminController.getUsageStats);
 
 router.get('/feedback', adminController.getAllFeedback);
 router.post('/feedback/:id/respond', checkPermission('manage_feedback'), adminController.respondToFeedback);

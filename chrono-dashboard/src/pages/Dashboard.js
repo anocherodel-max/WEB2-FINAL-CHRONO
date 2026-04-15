@@ -5,7 +5,7 @@ import TeacherSidebar from '../components/TeacherSidebar';
 import ProfileSettings from './ProfileSettings';
 import ClassResults from './ClassResults';
 import toast, { Toaster } from 'react-hot-toast';
-import { BarChart3, Trash, Copy, Archive, RotateCcw, Menu } from 'lucide-react';
+import { BarChart3, Trash, Copy, Archive, RotateCcw, Menu, Star, PlusCircle, Trophy, Users, Swords } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
 
@@ -39,7 +39,7 @@ const Dashboard = () => {
             const { data } = await axios.get(`${API_BASE}/auth/profile?t=${Date.now()}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setTeacher(data);
+            setTeacher(data.teacher);
         } catch (err) {
             console.error("Session expired or sync failed");
         }
@@ -227,8 +227,16 @@ const Dashboard = () => {
                 {activeTab === 'overview' && (
                     <div className="content-area">
                         <header className="page-header">
-                            <h2 className="page-title">Welcome, {teacher?.name || 'Instructor'}</h2>
-                            <button onClick={() => setModalOpen(true)} className="btn-dark">
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Star size={22} style={{ color: 'var(--color-sun-main)', fill: 'var(--color-sun-main)' }} />
+                                    <h2 className="page-title">Welcome, {teacher?.name || 'Instructor'}!</h2>
+                                </div>
+                                <p className="page-subtitle">Quest Board — Active Missions</p>
+                            </div>
+                            <button onClick={() => setModalOpen(true)} className="btn-dark"
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <PlusCircle size={16} />
                                 New Section
                             </button>
                         </header>
@@ -251,9 +259,7 @@ const Dashboard = () => {
                                             <button onClick={(e) => handleArchiveSection(sec.classCode, e)} title="Archive" className="section-chip-icon-btn">
                                                 <Archive size={14} />
                                             </button>
-                                            <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
-                                                <Trash size={14} />
-                                            </button>
+
                                         </div>
                                     )) : (
                                         <p className="no-results">No active sections created yet.</p>
@@ -296,7 +302,7 @@ const Dashboard = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {selectedSection && (
                                     <div className="access-code-card">
-                                        <p className="access-code-label">Section Access Code</p>
+                                        <p className="access-code-label">&#9670; Quest Code</p>
                                         <div className="access-code-row">
                                             <p className="access-code-text">{selectedSection}</p>
                                             <button
@@ -309,19 +315,28 @@ const Dashboard = () => {
                                     </div>
                                 )}
                                 <div className="stat-card">
-                                    <p className="stat-card-label">Learners</p>
-                                    <p className="stat-card-value">{summary.totalStudents}</p>
+                                    <p className="stat-card-label">Adventurers</p>
+                                    <div className="stat-card-icon-row">
+                                        <Users size={20} style={{ color: 'var(--color-ink-muted)' }} />
+                                        <p className="stat-card-value">{summary.totalStudents}</p>
+                                    </div>
                                 </div>
                                 <div className="stat-card">
-                                    <p className="stat-card-label">Average Score</p>
-                                    <p className="stat-card-value">{summary.avgScore}</p>
+                                    <p className="stat-card-label">Avg XP Score</p>
+                                    <div className="stat-card-icon-row">
+                                        <Swords size={20} style={{ color: 'var(--color-sun-dark)' }} />
+                                        <p className="stat-card-value-accent">{summary.avgScore}</p>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* RIGHT COLUMN - Leaderboard */}
                             <div className="card" style={{ padding: '20px' }}>
                                 <div className="card-header" style={{ marginBottom: '12px', paddingBottom: '10px' }}>
-                                    <h3 className="card-title">Top 15 Learners</h3>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Trophy size={18} style={{ color: 'var(--color-sun-main)' }} />
+                                        <h3 className="card-title">Hall of Heroes</h3>
+                                    </div>
                                 </div>
                                 <div className="leaderboard-list">
                                     {leaderboardData.length > 0 ? (

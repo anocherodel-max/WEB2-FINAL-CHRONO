@@ -48,13 +48,9 @@ const teacherSchema = new mongoose.Schema({
         enum: ['teacher', 'admin'],
         default: 'teacher'
     },
-
     sections: [sectionSchema],
-
     permissions: [{
         type: String
-
-
     }],
     isActive: {
         type: Boolean,
@@ -62,10 +58,17 @@ const teacherSchema = new mongoose.Schema({
     },
     lastLogin: {
         type: Date
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 }, { timestamps: true });
 
-// --- PASSWORD HASHING LOGIC ---
 teacherSchema.pre('save', async function () {
     if (!this.isModified('password')) {
         return;
@@ -74,7 +77,6 @@ teacherSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// --- PASSWORD COMPARISON LOGIC ---
 teacherSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };

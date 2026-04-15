@@ -31,23 +31,28 @@ const studentSchema = new mongoose.Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
+        default: null
     }
 }, { timestamps: true });
 
 
 studentSchema.pre('save', async function () {
-    // Hash password if modified
     if (this.isModified('password')) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
     }
 
-
     if (this.score > 100) {
         this.score = 100;
     }
 });
-
 
 studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
