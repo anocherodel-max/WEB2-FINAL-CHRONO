@@ -98,7 +98,7 @@ router.post('/teacher/archive-section/:classCode', protect, async (req, res) => 
         const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
 
         if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
+            return res.status(404).json({ message: 'Section not found in your classes' });
         }
 
         teacher.sections[sectionIndex].isArchived = true;
@@ -128,7 +128,7 @@ router.post('/teacher/unarchive-section/:classCode', protect, async (req, res) =
         const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
 
         if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
+            return res.status(404).json({ message: 'Section not found in your classes' });
         }
 
         teacher.sections[sectionIndex].isArchived = false;
@@ -163,7 +163,9 @@ router.get('/analytics/overall', protect, async (req, res) => {
         const codes = activeSections.map(s => s.classCode);
 
         const students = await Student.find({
-            classCode: { $in: codes }
+            classCode: { $in: codes },
+            isActive: true,
+            isDeleted: false   // ← ADD THIS
         }).select('name score classCode levelReached');
 
         const formattedScores = students.map(s => ({
@@ -189,7 +191,7 @@ router.post('/students', protect, async (req, res) => {
             return res.status(403).json({ message: 'You can only add students to your own sections' });
         }
 
-        const existingStudent = await Student.findOne({ email });
+        const existingStudent = await Student.findOne({ email, isDeleted: false });
         if (existingStudent) {
             return res.status(400).json({ message: 'Student with this email already exists' });
         }
@@ -281,7 +283,8 @@ router.delete('/students/:id', protect, async (req, res) => {
             return res.status(403).json({ message: 'You can only delete students in your sections' });
         }
 
-        await Student.findByIdAndDelete(studentId);
+
+        await Student.findByIdAndUpdate(studentId, { isDeleted: true, isActive: false, deletedAt: new Date() });
         res.json({ message: 'Student deleted successfully' });
     } catch (error) {
         console.error("Delete Student Error:", error);

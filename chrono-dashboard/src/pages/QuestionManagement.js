@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 import { Plus, Edit2, Trash2, X, CheckCircle, Circle } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
@@ -48,7 +49,6 @@ const QuestionManagement = () => {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [filterDifficulty, setFilterDifficulty] = useState('');
     const [filterPeriod, setFilterPeriod] = useState('');
@@ -109,7 +109,6 @@ const QuestionManagement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
 
         if (!formData.title.trim()) return setError('Question title is required');
         if (!formData.period) return setError('Please select a historical period');
@@ -117,23 +116,25 @@ const QuestionManagement = () => {
 
         try {
             const token = localStorage.getItem('teacherToken');
-            const payload = { ...formData, topic: formData.period };
+            const payload = { ...formData };
 
             if (editingId) {
                 await axios.patch(`${API_BASE}/questions/${editingId}`, payload, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setSuccess('Question updated successfully');
+                toast.success('Question updated successfully');
             } else {
                 await axios.post(`${API_BASE}/questions`, payload, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setSuccess('Question created successfully');
+                toast.success('Question created successfully');
             }
             closeModal();
             fetchQuestions(page);
         } catch (err) {
-            setError(err.response?.data?.message || 'Error saving question');
+            const errorMsg = err.response?.data?.message || 'Error saving question';
+            toast.error(errorMsg);
+            setError(errorMsg);
         }
     };
 
@@ -158,10 +159,11 @@ const QuestionManagement = () => {
             await axios.delete(`${API_BASE}/questions/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setSuccess('Question deleted successfully');
+            toast.success('Question deleted successfully');
             fetchQuestions(page);
         } catch (err) {
-            setError(err.response?.data?.message || 'Error deleting question');
+            const errorMsg = err.response?.data?.message || 'Error deleting question';
+            toast.error(errorMsg);
         }
     };
 
@@ -180,6 +182,7 @@ const QuestionManagement = () => {
 
     return (
         <div className="content-area space-y-8">
+            <Toaster position="top-right" />
             <header className="flex-between">
                 <h2 className="page-title">Question Management</h2>
                 <button onClick={handleNewQuestion} className="btn-dark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -188,7 +191,6 @@ const QuestionManagement = () => {
             </header>
 
             {error && <div className="alert-error">{error}</div>}
-            {success && <div className="alert-success">{success}</div>}
 
             <div className="filter-bar">
                 <input

@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-const { protect, adminOnly, checkPermission } = require('../middleware/adminMiddleware');
-
+const { protect, adminOnly, checkPermission } = require('../middleware/authMiddleware');
 
 router.use(protect);
 router.use(adminOnly);
-router.post('/users/restore', protect, adminOnly, adminController.restoreUser);
+router.post('/users/restore', adminController.restoreUser);
 
 router.get('/users', adminController.getAllUsers);
 router.get('/users/deleted', adminController.getDeletedUsers);

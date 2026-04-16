@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Archive, Edit2, ChevronLeft, ChevronRight, X, RotateCcw, Trash2 } from 'lucide-react';
+import { Archive, Edit2, ChevronLeft, ChevronRight, X, RotateCcw } from 'lucide-react';
 
 const PAGE_SIZE = 10;
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
@@ -54,7 +54,8 @@ const UsersList = ({
     filteredStudents,
     handleEditUser,
     handleDeactivateUser,
-    handleDeleteUser
+    handleArchiveUser,
+    fetchAllUsers
 }) => {
     const [teacherPage, setTeacherPage] = useState(1);
     const [studentPage, setStudentPage] = useState(1);
@@ -143,8 +144,9 @@ const UsersList = ({
             );
             toast.success('User restored successfully');
             setShowDeletedUsers(false);
-            // Refresh deleted users list
-            handleShowDeletedUsers();
+            // Refresh both deleted and main users lists
+            await fetchAllUsers();
+            await handleShowDeletedUsers();
         } catch (error) {
             toast.error('Failed to restore user');
         }
@@ -152,15 +154,10 @@ const UsersList = ({
 
     // Archive user with confirmation
     const handleArchiveUserWithConfirm = (userId, userType) => {
-        if (!window.confirm("Archive this user?")) return;
-        handleDeleteUser(userId, userType);
+        handleArchiveUser(userId, userType);
     };
 
-    // Permanently delete user with confirmation
-    const handlePermanentDeleteWithConfirm = (userId, userType) => {
-        if (!window.confirm("Permanently delete this user? This action cannot be undone!")) return;
-        handleDeleteUser(userId, userType);
-    };
+
 
     return (
         <div className="space-y-8">
@@ -249,24 +246,6 @@ const UsersList = ({
                                                         >
                                                             <RotateCcw size={14} /> Restore
                                                         </button>
-                                                        <button
-                                                            onClick={() => handlePermanentDeleteWithConfirm(t._id, 'teacher')}
-                                                            style={{
-                                                                padding: '6px 12px',
-                                                                backgroundColor: '#dc2626',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '6px',
-                                                                cursor: 'pointer',
-                                                                fontSize: '0.75rem',
-                                                                fontWeight: 600,
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '4px'
-                                                            }}
-                                                        >
-                                                            <Trash2 size={14} /> Delete
-                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -318,24 +297,6 @@ const UsersList = ({
                                                             }}
                                                         >
                                                             <RotateCcw size={14} /> Restore
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handlePermanentDeleteWithConfirm(s._id, 'student')}
-                                                            style={{
-                                                                padding: '6px 12px',
-                                                                backgroundColor: '#dc2626',
-                                                                color: 'white',
-                                                                border: 'none',
-                                                                borderRadius: '6px',
-                                                                cursor: 'pointer',
-                                                                fontSize: '0.75rem',
-                                                                fontWeight: 600,
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                gap: '4px'
-                                                            }}
-                                                        >
-                                                            <Trash2 size={14} /> Delete
                                                         </button>
                                                     </div>
                                                 </td>

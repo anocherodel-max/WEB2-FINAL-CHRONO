@@ -8,7 +8,7 @@ exports.createQuestion = async (req, res) => {
         const { title, description, topic, period, difficultyLevel, options, correctAnswer } = req.body;
 
         // Validation
-        if (!title || !topic || !period || !options || correctAnswer === undefined) {
+        if (!title || !period || !options || correctAnswer === undefined) {
             return res.status(400).json({
                 message: 'Title, topic, period, options, and correctAnswer are required'
             });
@@ -23,7 +23,7 @@ exports.createQuestion = async (req, res) => {
         const newQuestion = new Question({
             title,
             description,
-            topic,
+            topic: topic || period,
             period,
             difficultyLevel: difficultyLevel || 'Medium',
             options,
@@ -136,7 +136,7 @@ exports.updateQuestion = async (req, res) => {
         }
 
         // Verify ownership (only creator or admin can edit)
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to update this question' });
         }
 
@@ -183,7 +183,7 @@ exports.deleteQuestion = async (req, res) => {
         }
 
         // Verify ownership (only creator or admin can delete)
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to delete this question' });
         }
 
@@ -224,7 +224,7 @@ exports.toggleQuestionStatus = async (req, res) => {
         }
 
         // Verify ownership
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to modify this question' });
         }
 

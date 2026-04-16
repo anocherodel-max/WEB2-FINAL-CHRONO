@@ -1,7 +1,12 @@
 const jwt = require('jsonwebtoken');
 const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
 
 exports.protect = async (req, res, next) => {
+    if (!process.env.JWT_SECRET) {
+        return res.status(500).json({ message: 'Server misconfigured: JWT_SECRET not set' });
+    }
+
     let token;
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -15,12 +20,18 @@ exports.protect = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = await Teacher.findById(decoded.id).select('-password');
+        // Try to find as Teacher first, then Student
+        let user = await Teacher.findOne({ _id: decoded.id, isDeleted: false }).select('-password');
 
-        if (!req.user) {
-            return res.status(401).json({ message: 'User not found' });
+        if (!user) {
+            user = await Student.findOne({ _id: decoded.id, isDeleted: false }).select('-password');
         }
 
+        if (!user) {
+            return res.status(401).json({ message: 'User not found or has been deleted' });
+        }
+
+        req.user = user;
         next();
     } catch (error) {
         return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
@@ -34,4 +45,14 @@ exports.adminOnly = (req, res, next) => {
     } else {
         res.status(403).json({ message: 'Access denied: Admin privileges required' });
     }
+};
+
+// Permission check middleware
+exports.checkPermission = (requiredPermission) => {
+    return async (req, res, next) => {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin access required' });
+        }
+        next();
+    };
 };

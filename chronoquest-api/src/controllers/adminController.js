@@ -8,7 +8,7 @@ exports.getAllUsers = async (req, res) => {
     try {
         // Filter out deleted users
         const teachers = await Teacher.find({ isDeleted: false }).select('-password');
-        const students = await Student.find({ isDeleted: false }).select('-password');
+        const students = await Student.find({ isDeleted: false, isActive: true }).select('-password');
 
         const formattedTeachers = teachers.map(t => ({
             ...t.toObject(),
@@ -66,22 +66,24 @@ exports.deactivateUser = async (req, res) => {
         const { userId, userType } = req.body;
 
         if (userType === 'teacher') {
-            await Teacher.findByIdAndUpdate(userId, { isActive: false });
+            await Teacher.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
             await ActivityLog.create({
                 userId: req.user._id,
                 userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'DEACTIVATE_TEACHER',
+                resource: 'teacher',
                 resourceId: userId,
                 status: 'success'
             });
         } else if (userType === 'student') {
-            await Student.findByIdAndUpdate(userId, { isActive: false });
+            await Student.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
             await ActivityLog.create({
                 userId: req.user._id,
                 userModel: 'Teacher',
                 userRole: req.user.role,
                 action: 'DEACTIVATE_STUDENT',
+                resource: 'student',
                 resourceId: userId,
                 status: 'success'
             });
@@ -127,10 +129,7 @@ exports.deleteUser = async (req, res) => {
             // SOFT DELETE: Mark as deleted instead of removing
             deletedUser = await Student.findByIdAndUpdate(
                 userId,
-                {
-                    isDeleted: true,
-                    deletedAt: new Date()
-                },
+                { isDeleted: true, deletedAt: new Date(), isActive: false },  // ← ADD isActive: false
                 { new: true }
             );
         }
@@ -171,7 +170,8 @@ exports.restoreUser = async (req, res) => {
                 userId,
                 {
                     isDeleted: false,
-                    deletedAt: null
+                    deletedAt: null,
+                    isActive: true
                 },
                 { new: true }
             ).select('-password');
@@ -180,7 +180,8 @@ exports.restoreUser = async (req, res) => {
                 userId,
                 {
                     isDeleted: false,
-                    deletedAt: null
+                    deletedAt: null,
+                    isActive: true   // ← ADD THIS
                 },
                 { new: true }
             ).select('-password');
@@ -436,14 +437,11 @@ exports.updateSystemSetting = async (req, res) => {
     try {
         const { key, value } = req.body;
 
-        let settings = await SystemSettings.findOne();
-
-        if (!settings) {
-            settings = new SystemSettings();
-        }
-
-        settings[key] = value;
-        await settings.save();
+        const settings = await SystemSettings.findOneAndUpdate(
+            { key },
+            { value, updatedBy: req.user._id, updatedAt: new Date() },
+            { new: true, upsert: true, runValidators: true }
+        );
 
         await ActivityLog.create({
             userId: req.user._id,

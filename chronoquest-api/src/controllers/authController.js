@@ -178,14 +178,15 @@ exports.loginUser = async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             token: generateToken(user._id, user.role || userType),
-            teacher: {
+            user: {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role || userType,
                 sections: user.sections || [],
                 classCode: user.classCode || null
-            }
+            },
+            userType: userType
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -194,15 +195,17 @@ exports.loginUser = async (req, res) => {
 
 exports.validateToken = async (req, res) => {
     try {
-        const user = await Teacher.findOne({ _id: req.user._id, isDeleted: false }).select('-password');
-        if (!user) {
-            return res.status(401).json({ message: 'User not found or has been deleted' });
+        const userModel = req.user.classCode ? 'Student' : (req.user.role ? 'Teacher' : null);
+
+        if (!userModel) {
+            return res.status(401).json({ message: 'Invalid user type' });
         }
 
         res.status(200).json({
             message: 'Token is valid',
             isValid: true,
-            user: user  // ← Return FULL user object with sections
+            user: req.user,
+            userType: userModel === 'Student' ? 'student' : 'teacher'
         });
     } catch (error) {
         res.status(500).json({ error: error.message });

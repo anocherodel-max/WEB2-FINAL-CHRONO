@@ -100,62 +100,6 @@ README.md
 
 # Files
 
-## File: chronoquest-api/src/models/quizResultsModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const quizResultSchema = new mongoose.Schema({
-    studentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
-        required: true,
-        index: true
-    },
-    studentName: {
-        type: String,
-        required: true
-    },
-    classCode: {
-        type: String,
-        required: true
-    },
-    testDate: {
-        type: Date,
-        default: Date.now
-    },
-    questionsAsked: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question'
-    }],
-    answers: [Number],
-    correctAnswersCount: {
-        type: Number,
-        default: 0
-    },
-    totalQuestions: {
-        type: Number,
-        required: true
-    },
-    score: {
-        type: Number,
-        required: true
-    },
-    percentage: {
-        type: Number
-    },
-    levelReached: {
-        type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        index: true
-    }
-}, { timestamps: true });
-
-module.exports = mongoose.model('QuizResult', quizResultSchema);
-````
-
 ## File: .gitignore
 ````
 # --- CHRONOQUEST MASTER GITIGNORE ---
@@ -268,56 +212,6 @@ module.exports = {
 }
 ````
 
-## File: chrono-dashboard/public/index.html
-````html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>React App</title>
-</head>
-
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-</body>
-
-</html>
-````
-
 ## File: chrono-dashboard/public/manifest.json
 ````json
 {
@@ -426,6 +320,1421 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+````
+
+## File: chrono-dashboard/src/App.css
+````css
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Archive Feature Styles */
+.archived-section-btn {
+  opacity: 0.7;
+  background-color: rgba(71, 85, 105, 0.05);
+}
+
+.archived-section-btn:hover {
+  opacity: 0.9;
+}
+````
+
+## File: chrono-dashboard/src/App.js
+````javascript
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import Dashboard from './pages/Dashboard';
+import AdminPanel from './pages/AdminPanel';
+
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+export default App;
+````
+
+## File: chrono-dashboard/src/index.js
+````javascript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+reportWebVitals();
+````
+
+## File: chrono-dashboard/src/logo.svg
+````xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3"><g fill="#61DAFB"><path d="M666.3 296.5c0-32.5-40.7-63.3-103.1-82.4 14.4-63.6 8-114.2-20.2-130.4-6.5-3.8-14.1-5.6-22.4-5.6v22.3c4.6 0 8.3.9 11.4 2.6 13.6 7.8 19.5 37.5 14.9 75.7-1.1 9.4-2.9 19.3-5.1 29.4-19.6-4.8-41-8.5-63.5-10.9-13.5-18.5-27.5-35.3-41.6-50 32.6-30.3 63.2-46.9 84-46.9V78c-27.5 0-63.5 19.6-99.9 53.6-36.4-33.8-72.4-53.2-99.9-53.2v22.3c20.7 0 51.4 16.5 84 46.6-14 14.7-28 31.4-41.3 49.9-22.6 2.4-44 6.1-63.6 11-2.3-10-4-19.7-5.2-29-4.7-38.2 1.1-67.9 14.6-75.8 3-1.8 6.9-2.6 11.5-2.6V78.5c-8.4 0-16 1.8-22.6 5.6-28.1 16.2-34.4 66.7-19.9 130.1-62.2 19.2-102.7 49.9-102.7 82.3 0 32.5 40.7 63.3 103.1 82.4-14.4 63.6-8 114.2 20.2 130.4 6.5 3.8 14.1 5.6 22.5 5.6 27.5 0 63.5-19.6 99.9-53.6 36.4 33.8 72.4 53.2 99.9 53.2 8.4 0 16-1.8 22.6-5.6 28.1-16.2 34.4-66.7 19.9-130.1 62-19.1 102.5-49.9 102.5-82.3zm-130.2-66.7c-3.7 12.9-8.3 26.2-13.5 39.5-4.1-8-8.4-16-13.1-24-4.6-8-9.5-15.8-14.4-23.4 14.2 2.1 27.9 4.7 41 7.9zm-45.8 106.5c-7.8 13.5-15.8 26.3-24.1 38.2-14.9 1.3-30 2-45.2 2-15.1 0-30.2-.7-45-1.9-8.3-11.9-16.4-24.6-24.2-38-7.6-13.1-14.5-26.4-20.8-39.8 6.2-13.4 13.2-26.8 20.7-39.9 7.8-13.5 15.8-26.3 24.1-38.2 14.9-1.3 30-2 45.2-2 15.1 0 30.2.7 45 1.9 8.3 11.9 16.4 24.6 24.2 38 7.6 13.1 14.5 26.4 20.8 39.8-6.3 13.4-13.2 26.8-20.7 39.9zm32.3-13c5.4 13.4 10 26.8 13.8 39.8-13.1 3.2-26.9 5.9-41.2 8 4.9-7.7 9.8-15.6 14.4-23.7 4.6-8 8.9-16.1 13-24.1zM421.2 430c-9.3-9.6-18.6-20.3-27.8-32 9 .4 18.2.7 27.5.7 9.4 0 18.7-.2 27.8-.7-9 11.7-18.3 22.4-27.5 32zm-74.4-58.9c-14.2-2.1-27.9-4.7-41-7.9 3.7-12.9 8.3-26.2 13.5-39.5 4.1 8 8.4 16 13.1 24 4.7 8 9.5 15.8 14.4 23.4zM420.7 163c9.3 9.6 18.6 20.3 27.8 32-9-.4-18.2-.7-27.5-.7-9.4 0-18.7.2-27.8.7 9-11.7 18.3-22.4 27.5-32zm-74 58.9c-4.9 7.7-9.8 15.6-14.4 23.7-4.6 8-8.9 16-13 24-5.4-13.4-10-26.8-13.8-39.8 13.1-3.1 26.9-5.8 41.2-7.9zm-90.5 125.2c-35.4-15.1-58.3-34.9-58.3-50.6 0-15.7 22.9-35.6 58.3-50.6 8.6-3.7 18-7 27.7-10.1 5.7 19.6 13.2 40 22.5 60.9-9.2 20.8-16.6 41.1-22.2 60.6-9.9-3.1-19.3-6.5-28-10.2zM310 490c-13.6-7.8-19.5-37.5-14.9-75.7 1.1-9.4 2.9-19.3 5.1-29.4 19.6 4.8 41 8.5 63.5 10.9 13.5 18.5 27.5 35.3 41.6 50-32.6 30.3-63.2 46.9-84 46.9-4.5-.1-8.3-1-11.3-2.7zm237.2-76.2c4.7 38.2-1.1 67.9-14.6 75.8-3 1.8-6.9 2.6-11.5 2.6-20.7 0-51.4-16.5-84-46.6 14-14.7 28-31.4 41.3-49.9 22.6-2.4 44-6.1 63.6-11 2.3 10.1 4.1 19.8 5.2 29.1zm38.5-66.7c-8.6 3.7-18 7-27.7 10.1-5.7-19.6-13.2-40-22.5-60.9 9.2-20.8 16.6-41.1 22.2-60.6 9.9 3.1 19.3 6.5 28.1 10.2 35.4 15.1 58.3 34.9 58.3 50.6-.1 15.7-23 35.6-58.4 50.6zM320.8 78.4z"/><circle cx="420.9" cy="296.5" r="45.7"/><path d="M520.5 78.1z"/></g></svg>
+````
+
+## File: chrono-dashboard/src/pages/ClassResults.js
+````javascript
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { BarChart3, Download, ChevronRight } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const ClassResults = ({ sections = [], selectedSection = '', onSectionSelect = () => { } }) => {
+    const [activeSection, setActiveSection] = useState(selectedSection);
+
+    const [scores, setScores] = useState([]);
+    const [gbLoading, setGbLoading] = useState(false);
+    const [gbError, setGbError] = useState('');
+
+    const fetchGradebook = useCallback(async (classCode) => {
+        if (!classCode) return;
+        setGbLoading(true);
+        setGbError('');
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.get(`${API_BASE}/analytics/overall`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setScores(data.filter(s => s.classCode === classCode));
+        } catch (err) {
+            setGbError(err.response?.data?.message || 'Error fetching gradebook');
+        } finally {
+            setGbLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!activeSection) return;
+        fetchGradebook(activeSection);
+    }, [activeSection, fetchGradebook]);
+
+    const handleSectionChange = (classCode) => {
+        setActiveSection(classCode);
+        onSectionSelect(classCode);
+    };
+
+    const downloadCSV = () => {
+        if (scores.length === 0) return;
+        const sectionName = sections.find(s => s.classCode === activeSection)?.sectionName || activeSection;
+        const headers = ['Rank', 'Student Name', 'Score', 'Level Reached', 'Submitted'];
+        const sorted = [...scores].sort((a, b) => b.score - a.score);
+        const rows = sorted.map((s, i) => [
+            i + 1,
+            `"${s.studentName}"`,
+            s.score,
+            `"${s.levelReached || ''}"`,
+            new Date(s.createdAt).toLocaleDateString(),
+        ]);
+        const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', `Results_${sectionName}.csv`);
+        link.click();
+    };
+
+    const currentSectionName =
+        sections.find(s => s.classCode === activeSection)?.sectionName || 'Selected Class';
+
+    const EmptyState = ({ icon: Icon, message, sub }) => (
+        <div className="empty-state">
+            <Icon className="empty-state-icon" size={56} />
+            <p className="empty-state-text">{message}</p>
+            {sub && <p className="empty-state-sub">{sub}</p>}
+        </div>
+    );
+
+    return (
+        <div className="content-area space-y-8">
+            <header className="flex-between">
+                <h2 className="page-title">Class Results</h2>
+            </header>
+
+            {sections.length > 0 ? (
+                <div className="section-panel">
+                    <div className="section-chips">
+                        {sections.map(sec => (
+                            <button
+                                key={sec.classCode}
+                                onClick={() => handleSectionChange(sec.classCode)}
+                                className={`section-chip-btn${activeSection === sec.classCode ? ' active' : ''}`}
+                                style={{ background: activeSection === sec.classCode ? '' : '#f8fafc' }}
+                            >
+                                {sec.sectionName}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <div className="card" style={{ textAlign: 'center' }}>
+                    <p className="empty-state-text">No sections yet — create one from the Overview tab</p>
+                </div>
+            )}
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                <div style={{ padding: '32px', borderBottom: '1px solid #f1f5f9' }} className="flex-between">
+                    <div>
+                        <h3 className="section-title">Learning Progress</h3>
+                        <p className="section-subtitle">
+                            {activeSection
+                                ? <>Performance for <strong>{currentSectionName}</strong></>
+                                : 'Select a class above'
+                            }
+                        </p>
+                    </div>
+                    {scores.length > 0 && (
+                        <button onClick={downloadCSV} className="btn-emerald">
+                            <Download size={14} /> Export CSV
+                        </button>
+                    )}
+                </div>
+
+                {gbLoading ? (
+                    <EmptyState icon={BarChart3} message="Loading..." />
+                ) : gbError ? (
+                    <div style={{ margin: '24px' }} className="alert-error">{gbError}</div>
+                ) : !activeSection ? (
+                    <EmptyState icon={BarChart3} message="Select a class to view grades" />
+                ) : scores.length === 0 ? (
+                    <EmptyState icon={BarChart3} message="No learner data found" sub="Scores will appear as students complete assessments" />
+                ) : (
+                    <div className="table-wrapper" style={{ border: 'none', borderRadius: 0 }}>
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Learner Name</th>
+                                    <th>Score</th>
+                                    <th>Level Reached</th>
+                                    <th>Submitted</th>
+                                    <th style={{ textAlign: 'right' }}>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {[...scores].sort((a, b) => b.score - a.score).map((s, i) => (
+                                    <tr key={i}>
+                                        <td className="table-cell-meta">{i + 1}</td>
+                                        <td className="table-cell-name">{s.studentName}</td>
+                                        <td><span className="badge badge-amber">{s.score}</span></td>
+                                        <td className="table-cell-sub">{s.levelReached || '—'}</td>
+                                        <td className="table-cell-meta">{s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—'}</td>
+                                        <td style={{ textAlign: 'right' }}>
+                                            <ChevronRight size={18} style={{ color: '#cbd5e1', display: 'inline' }} />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default ClassResults;
+````
+
+## File: chrono-dashboard/src/pages/QuestionManagement.js
+````javascript
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
+import { Plus, Edit2, Trash2, X, CheckCircle, Circle } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const PERIODS = [
+    'Pre-colonial',
+    'Spanish Colonization',
+    'Revolutionary',
+    'American/Japanese',
+    'Post-war',
+];
+
+const OPTION_LABELS = ['A', 'B', 'C', 'D'];
+
+const EMPTY_FORM = {
+    title: '',
+    description: '',
+    topic: '',
+    period: '',
+    difficultyLevel: 'Medium',
+    options: ['', '', '', ''],
+    correctAnswer: 0,
+};
+
+const getDifficultyClass = (level) => {
+    switch (level) {
+        case 'Easy': return 'difficulty-badge-easy';
+        case 'Medium': return 'difficulty-badge-medium';
+        case 'Hard': return 'difficulty-badge-hard';
+        default: return 'difficulty-badge-default';
+    }
+};
+
+const getPeriodClass = (period) => {
+    const map = {
+        'Pre-colonial': 'period-badge-precolonial',
+        'Spanish Colonization': 'period-badge-spanish',
+        'Revolutionary': 'period-badge-revolutionary',
+        'American/Japanese': 'period-badge-american',
+        'Post-war': 'period-badge-postwar',
+    };
+    return map[period] || 'period-badge-default';
+};
+
+const QuestionManagement = () => {
+    const [questions, setQuestions] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterDifficulty, setFilterDifficulty] = useState('');
+    const [filterPeriod, setFilterPeriod] = useState('');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [formData, setFormData] = useState(EMPTY_FORM);
+
+    const fetchQuestions = useCallback(async (pageNum = 1) => {
+        setLoading(true);
+        setError('');
+        try {
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('topic', searchTerm);
+            if (filterDifficulty) params.append('difficulty', filterDifficulty);
+            if (filterPeriod) params.append('period', filterPeriod);
+            params.append('page', pageNum);
+            params.append('limit', 10);
+
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.get(
+                `${API_BASE}/questions?${params.toString()}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setQuestions(data.questions);
+            setTotalPages(data.pagination.pages);
+            setPage(pageNum);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error fetching questions');
+        } finally {
+            setLoading(false);
+        }
+    }, [searchTerm, filterDifficulty, filterPeriod]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => fetchQuestions(1), 300);
+        return () => clearTimeout(timer);
+    }, [searchTerm, filterDifficulty, filterPeriod, fetchQuestions]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleOptionChange = (index, value) => {
+        setFormData(prev => {
+            const options = [...prev.options];
+            options[index] = value;
+            return { ...prev, options };
+        });
+    };
+
+    const handleCorrectAnswer = (index) => {
+        setFormData(prev => ({ ...prev, correctAnswer: index }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (!formData.title.trim()) return setError('Question title is required');
+        if (!formData.period) return setError('Please select a historical period');
+        if (formData.options.some(o => !o.trim())) return setError('All 4 answer options are required');
+
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const payload = { ...formData, topic: formData.period };
+
+            if (editingId) {
+                await axios.patch(`${API_BASE}/questions/${editingId}`, payload, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                toast.success('Question updated successfully');
+            } else {
+                await axios.post(`${API_BASE}/questions`, payload, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                toast.success('Question created successfully');
+            }
+            closeModal();
+            fetchQuestions(page);
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || 'Error saving question';
+            toast.error(errorMsg);
+            setError(errorMsg);
+        }
+    };
+
+    const handleEdit = (question) => {
+        setFormData({
+            title: question.title || '',
+            description: question.description || '',
+            topic: question.topic || '',
+            period: question.period || question.topic || '',
+            difficultyLevel: question.difficultyLevel || 'Medium',
+            options: question.options?.length === 4 ? question.options : ['', '', '', ''],
+            correctAnswer: question.correctAnswer ?? 0,
+        });
+        setEditingId(question._id);
+        setModalOpen(true);
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this question?')) return;
+        try {
+            const token = localStorage.getItem('teacherToken');
+            await axios.delete(`${API_BASE}/questions/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            toast.success('Question deleted successfully');
+            fetchQuestions(page);
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || 'Error deleting question';
+            toast.error(errorMsg);
+        }
+    };
+
+    const handleNewQuestion = () => {
+        setFormData(EMPTY_FORM);
+        setEditingId(null);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setEditingId(null);
+        setFormData(EMPTY_FORM);
+        setError('');
+    };
+
+    return (
+        <div className="content-area space-y-8">
+            <Toaster position="top-right" />
+            <header className="flex-between">
+                <h2 className="page-title">Question Management</h2>
+                <button onClick={handleNewQuestion} className="btn-dark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Plus size={16} /> New Question
+                </button>
+            </header>
+
+            {error && <div className="alert-error">{error}</div>}
+
+            <div className="filter-bar">
+                <input
+                    type="text"
+                    placeholder="Search by topic or title..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="form-input-sm"
+                    style={{ flex: 1, minWidth: '180px' }}
+                />
+                <select value={filterPeriod} onChange={(e) => setFilterPeriod(e.target.value)} className="form-select">
+                    <option value="">All Periods</option>
+                    {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+                <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="form-select">
+                    <option value="">All Difficulties</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+                {loading ? (
+                    <div className="empty-state"><p className="empty-state-text">Loading...</p></div>
+                ) : questions.length === 0 ? (
+                    <div className="empty-state"><p className="empty-state-text">No questions found</p></div>
+                ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                        <table className="table" style={{ minWidth: 'unset', width: '100%' }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: '45%' }}>Question</th>
+                                    <th style={{ width: '20%' }}>Period</th>
+                                    <th style={{ width: '15%' }}>Difficulty</th>
+                                    <th style={{ width: '12%' }}>Created By</th>
+                                    <th style={{ width: '8%', textAlign: 'center' }}>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {questions.map((question) => (
+                                    <tr key={question._id}>
+                                        <td>
+                                            <p className="table-cell-name" style={{ fontSize: '0.875rem' }}>{question.title}</p>
+                                            {question.description && (
+                                                <p className="table-cell-meta" style={{ marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '320px' }}>
+                                                    {question.description}
+                                                </p>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <span className={getPeriodClass(question.period || question.topic)}>
+                                                {question.period || question.topic}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={getDifficultyClass(question.difficultyLevel)}>
+                                                {question.difficultyLevel}
+                                            </span>
+                                        </td>
+                                        <td className="table-cell-sub">{question.createdBy?.name}</td>
+                                        <td>
+                                            <div className="table-actions" style={{ justifyContent: 'center' }}>
+                                                <button onClick={() => handleEdit(question)} className="btn-icon btn-icon-slate" title="Edit">
+                                                    <Edit2 size={15} />
+                                                </button>
+                                                <button onClick={() => handleDelete(question._id)} className="btn-icon btn-icon-red" title="Delete">
+                                                    <Trash2 size={15} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
+            {totalPages > 1 && (
+                <div className="pagination">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                        <button
+                            key={p}
+                            onClick={() => fetchQuestions(p)}
+                            className={`pagination-btn ${p === page ? 'active' : 'inactive'}`}
+                        >
+                            {p}
+                        </button>
+                    ))}
+                </div>
+            )}
+
+            {modalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-lg">
+                        <div className="modal-header">
+                            <h2 className="section-title">{editingId ? 'Edit Question' : 'New Question'}</h2>
+                            <button onClick={closeModal} className="btn-icon btn-icon-slate">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="modal-body space-y-6" style={{ paddingTop: '24px', paddingBottom: '24px' }}>
+                            {error && <div className="alert-error">{error}</div>}
+
+                            <div className="form-group">
+                                <label className="form-label">
+                                    Question <span style={{ color: '#f87171' }}>*</span>
+                                </label>
+                                <textarea
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={handleInputChange}
+                                    rows={2}
+                                    className="form-textarea-sm"
+                                    placeholder="Type your question here..."
+                                />
+                            </div>
+
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label className="form-label">
+                                        Historical Period <span style={{ color: '#f87171' }}>*</span>
+                                    </label>
+                                    <select name="period" value={formData.period} onChange={handleInputChange} className="form-select">
+                                        <option value="">Select period...</option>
+                                        {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Difficulty</label>
+                                    <select name="difficultyLevel" value={formData.difficultyLevel} onChange={handleInputChange} className="form-select">
+                                        <option value="Easy">Easy</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">
+                                    Answer Options <span style={{ color: '#f87171' }}>*</span>
+                                    <span style={{ marginLeft: '8px', color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>
+                                        — click the circle to mark the correct answer
+                                    </span>
+                                </label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    {formData.options.map((opt, i) => {
+                                        const isCorrect = formData.correctAnswer === i;
+                                        return (
+                                            <div key={i} className={`question-answer-option ${isCorrect ? 'selected' : 'unselected'}`}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleCorrectAnswer(i)}
+                                                    className={`option-selector-btn ${isCorrect ? 'selected' : 'unselected'}`}
+                                                    title="Mark as correct answer"
+                                                >
+                                                    {isCorrect ? <CheckCircle size={20} /> : <Circle size={20} />}
+                                                </button>
+                                                <span className={`option-prefix ${isCorrect ? 'selected' : 'unselected'}`}>
+                                                    {OPTION_LABELS[i]}.
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    value={opt}
+                                                    onChange={(e) => handleOptionChange(i, e.target.value)}
+                                                    className="option-text-input"
+                                                    placeholder={`Option ${OPTION_LABELS[i]}...`}
+                                                />
+                                                {isCorrect && <span className="option-correct-label">Correct</span>}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">
+                                    Additional Notes <span style={{ color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span>
+                                </label>
+                                <textarea
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    rows={2}
+                                    className="form-textarea-sm"
+                                    placeholder="Any extra context or explanation..."
+                                />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', paddingTop: '8px' }}>
+                                <button type="button" onClick={closeModal} className="btn-outline">Cancel</button>
+                                <button type="submit" className="btn-dark">
+                                    {editingId ? 'Update Question' : 'Create Question'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default QuestionManagement;
+````
+
+## File: chrono-dashboard/src/reportWebVitals.js
+````javascript
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+````
+
+## File: chrono-dashboard/src/setupTests.js
+````javascript
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+````
+
+## File: chronoquest-api/src/config/db.js
+````javascript
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`❌ Error: ${error.message}`);
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;
+````
+
+## File: chronoquest-api/src/controllers/studentController.js
+````javascript
+const Score = require('../models/scoreModel');
+const Teacher = require('../models/teacherModel');
+
+exports.simulateSync = async (req, res) => {
+    try {
+        const { studentName, classCode, levelReached, score } = req.body;
+
+        const teacher = await Teacher.findOne({ classCode });
+        if (!teacher) {
+            return res.status(404).json({ message: 'Invalid Class Code' });
+        }
+
+        const newScore = await Score.create({
+            studentName,
+            classCode,
+            levelReached,
+            score,
+            teacherId: teacher._id
+        });
+
+        res.status(201).json({ message: 'Sync Successful', data: newScore });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+````
+
+## File: chronoquest-api/src/middleware/authMiddleware.js
+````javascript
+const jwt = require('jsonwebtoken');
+const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+
+exports.protect = async (req, res, next) => {
+    if (!process.env.JWT_SECRET) {
+        return res.status(500).json({ message: 'Server misconfigured: JWT_SECRET not set' });
+    }
+
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+        return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Try to find as Teacher first, then Student
+        let user = await Teacher.findOne({ _id: decoded.id, isDeleted: false }).select('-password');
+
+        if (!user) {
+            user = await Student.findOne({ _id: decoded.id, isDeleted: false }).select('-password');
+        }
+
+        if (!user) {
+            return res.status(401).json({ message: 'User not found or has been deleted' });
+        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
+    }
+};
+
+// Admin-only middleware
+exports.adminOnly = (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Access denied: Admin privileges required' });
+    }
+};
+
+// Permission check middleware
+exports.checkPermission = (requiredPermission) => {
+    return async (req, res, next) => {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Admin access required' });
+        }
+        next();
+    };
+};
+````
+
+## File: chronoquest-api/src/middleware/rateLimiter.js
+````javascript
+const rateLimit = require('express-rate-limit');
+
+
+const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 100, 
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true, 
+    legacyHeaders: false, 
+});
+
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5, 
+    message: 'Too many login attempts, please try again after 15 minutes.',
+    skipSuccessfulRequests: true, 
+});
+
+module.exports = { generalLimiter, loginLimiter };
+````
+
+## File: chronoquest-api/src/models/quizResultsModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const quizResultSchema = new mongoose.Schema({
+    studentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true,
+        index: true
+    },
+    studentName: {
+        type: String,
+        required: true
+    },
+    classCode: {
+        type: String,
+        required: true
+    },
+    testDate: {
+        type: Date,
+        default: Date.now
+    },
+    questionsAsked: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question'
+    }],
+    answers: [Number],
+    correctAnswersCount: {
+        type: Number,
+        default: 0
+    },
+    totalQuestions: {
+        type: Number,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    },
+    percentage: {
+        type: Number
+    },
+    levelReached: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        index: true
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('QuizResult', quizResultSchema);
+````
+
+## File: chronoquest-api/src/models/scoreModel.js
+````javascript
+const mongoose = require('mongoose');
+
+const scoreSchema = new mongoose.Schema({
+    studentName: { type: String, required: true },
+    classCode: { type: String, required: true },
+    levelReached: { type: String, required: true },
+    score: { type: Number, required: true },
+    teacherId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Teacher',
+        required: true
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('Score', scoreSchema);
+````
+
+## File: chronoquest-api/src/tests/admin.test.js
+````javascript
+const request = require('supertest');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('../../server');
+
+let mongoServer;
+let adminToken;
+let teacherToken;
+let seededTeacherId;
+let seededStudentId;
+
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri());
+
+    // Register an admin directly via model so we can set role = 'admin'
+    const Teacher = require('../../src/models/teacherModel');
+    const jwt = require('jsonwebtoken');
+
+    const admin = await Teacher.create({
+        name: 'Admin User',
+        email: 'admin@chronoquest.edu',
+        password: 'adminpass123',
+        role: 'admin',
+    });
+    adminToken = jwt.sign(
+        { id: admin._id, role: 'admin' },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '1d' }
+    );
+
+    // Register a regular teacher for comparison / target in delete tests
+    const teacher = await Teacher.create({
+        name: 'Regular Teacher',
+        email: 'teacher@chronoquest.edu',
+        password: 'teacherpass123',
+        role: 'teacher',
+    });
+    seededTeacherId = teacher._id.toString();
+    teacherToken = jwt.sign(
+        { id: teacher._id, role: 'teacher' },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '1d' }
+    );
+
+    // Create a student to target in deactivate/delete tests
+    const Student = require('../../src/models/studentModel');
+    const student = await Student.create({
+        name: 'Test Student',
+        email: 'student@chronoquest.edu',
+        password: 'studentpass123',
+        classCode: 'CLASS1',
+    });
+    seededStudentId = student._id.toString();
+}, 30000);
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+// ─── Auth Guard Tests ─────────────────────────────────────────────────────────
+
+describe('Admin Routes - Auth Guards', () => {
+    test('GET /api/v1/admin/users - 401 with no token', async () => {
+        const res = await request(app).get('/api/v1/admin/users');
+        expect(res.statusCode).toBe(401);
+    });
+
+    test('GET /api/v1/admin/users - 403 when caller is a regular teacher', async () => {
+        const res = await request(app)
+            .get('/api/v1/admin/users')
+            .set('Authorization', `Bearer ${teacherToken}`);
+        expect(res.statusCode).toBe(403);
+    });
+});
+
+// ─── getAllUsers ──────────────────────────────────────────────────────────────
+
+describe('Admin - GET /api/v1/admin/users', () => {
+    test('200 and returns teachers + students arrays', async () => {
+        const res = await request(app)
+            .get('/api/v1/admin/users')
+            .set('Authorization', `Bearer ${adminToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('teachers');
+        expect(res.body).toHaveProperty('students');
+        expect(Array.isArray(res.body.teachers)).toBe(true);
+        expect(Array.isArray(res.body.students)).toBe(true);
+        expect(res.body).toHaveProperty('totalUsers');
+    });
+
+    test('passwords are excluded from the response', async () => {
+        const res = await request(app)
+            .get('/api/v1/admin/users')
+            .set('Authorization', `Bearer ${adminToken}`);
+
+        res.body.teachers.forEach(t => expect(t).not.toHaveProperty('password'));
+        res.body.students.forEach(s => expect(s).not.toHaveProperty('password'));
+    });
+});
+
+// ─── getSystemAnalytics ───────────────────────────────────────────────────────
+
+describe('Admin - GET /api/v1/admin/analytics', () => {
+    test('200 and returns platform stats', async () => {
+        const res = await request(app)
+            .get('/api/v1/admin/analytics')
+            .set('Authorization', `Bearer ${adminToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('totalTeachers');
+        expect(res.body).toHaveProperty('totalStudents');
+        expect(res.body).toHaveProperty('totalUsers');
+    });
+});
+
+// ─── deactivateUser ───────────────────────────────────────────────────────────
+
+describe('Admin - POST /api/v1/admin/users/deactivate', () => {
+    test('200 when deactivating a student', async () => {
+        const res = await request(app)
+            .post('/api/v1/admin/users/deactivate')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: seededStudentId, userType: 'student' });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toMatch(/deactivated/i);
+    });
+
+    test('200 when deactivating a teacher', async () => {
+        const res = await request(app)
+            .post('/api/v1/admin/users/deactivate')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: seededTeacherId, userType: 'teacher' });
+
+        expect(res.statusCode).toBe(200);
+    });
+});
+
+// ─── deleteUser ───────────────────────────────────────────────────────────────
+
+describe('Admin - POST /api/v1/admin/users/delete', () => {
+    test('400 when userType is invalid', async () => {
+        const res = await request(app)
+            .post('/api/v1/admin/users/delete')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: seededStudentId, userType: 'invalid' });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.errorCode).toBe('INVALID_USER_TYPE');
+    });
+
+    test('404 when student id does not exist', async () => {
+        const fakeId = new mongoose.Types.ObjectId().toString();
+        const res = await request(app)
+            .post('/api/v1/admin/users/delete')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: fakeId, userType: 'student' });
+
+        expect(res.statusCode).toBe(404);
+    });
+
+    test('200 when deleting a real student', async () => {
+        // Create a fresh student so the seeded one stays for other tests
+        const Student = require('../../src/models/studentModel');
+        const temp = await Student.create({
+            name: 'Temp Student',
+            email: 'temp@chronoquest.edu',
+            password: 'pass1234',
+            classCode: 'TEMP01',
+        });
+
+        const res = await request(app)
+            .post('/api/v1/admin/users/delete')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: temp._id.toString(), userType: 'student' });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe('User deleted successfully');
+    });
+
+    test('400 when trying to delete the last admin', async () => {
+        // The only admin in this in-memory DB is the one we created in beforeAll
+        const Teacher = require('../../src/models/teacherModel');
+        const admin = await Teacher.findOne({ role: 'admin' });
+
+        const res = await request(app)
+            .post('/api/v1/admin/users/delete')
+            .set('Authorization', `Bearer ${adminToken}`)
+            .send({ userId: admin._id.toString(), userType: 'teacher' });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toMatch(/last admin/i);
+    });
+});
+````
+
+## File: chronoquest-api/src/tests/auth.test.js
+````javascript
+const request = require('supertest');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('../../server');
+
+let mongoServer;
+
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    await mongoose.connect(uri);
+});
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+describe('Integration Test: Authentication', () => {
+    const mockUser = {
+        name: "Test Instructor",
+        email: "tester@chronoquest.edu",
+        password: "securepassword123"
+    };
+
+    test('POST /api/v1/auth/register - Should create a new instructor', async () => {
+        const res = await request(app)
+            .post('/api/v1/auth/register')
+            .send(mockUser);
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toHaveProperty('message');
+    });
+
+    test('POST /api/v1/auth/login - Should return a JWT token', async () => {
+        const res = await request(app)
+            .post('/api/v1/auth/login')
+            .send({
+                email: mockUser.email,
+                password: mockUser.password
+            });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('token');
+    });
+});
+````
+
+## File: chronoquest-api/src/tests/generateCode.test.js
+````javascript
+const generateClassCode = require('../utils/generateCode');
+
+describe('Unit Test: generateClassCode', () => {
+    test('should generate a string of exactly 6 characters', () => {
+        const code = generateClassCode();
+        expect(code).toHaveLength(6);
+    });
+
+    test('should only contain alphanumeric characters', () => {
+        const code = generateClassCode();
+        expect(code).toMatch(/^[A-Z0-9]+$/);
+    });
+});
+````
+
+## File: chronoquest-api/src/tests/student.test.js
+````javascript
+const request = require('supertest');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('../../server');
+
+let mongoServer;
+
+beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    await mongoose.connect(mongoServer.getUri());
+}, 30000);
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+describe('Student Score Sync', () => {
+    let validClassCode;
+
+    // Seed a teacher with a known classCode so we can test the happy path
+    beforeAll(async () => {
+        const Teacher = require('../../src/models/teacherModel');
+        const teacher = await Teacher.create({
+            name: 'Seed Teacher',
+            email: 'seed@chronoquest.edu',
+            password: 'password123',
+            // classCode lives on sections, not the teacher root —
+            // but studentController looks up Teacher.findOne({ classCode })
+            // which matches the root classCode field.
+            classCode: 'VALID1',
+        });
+        validClassCode = teacher.classCode;
+    });
+
+    test('POST /api/v1/student/sync - 201 when class code is valid', async () => {
+        const res = await request(app)
+            .post('/api/v1/student/sync')
+            .send({
+                studentName: 'Jane Doe',
+                classCode: validClassCode,
+                levelReached: 'Ancient Egypt',
+                score: 80,
+            });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body).toHaveProperty('message', 'Sync Successful');
+        expect(res.body.data).toHaveProperty('studentName', 'Jane Doe');
+        expect(res.body.data).toHaveProperty('classCode', validClassCode);
+    });
+
+    test('POST /api/v1/student/sync - 404 when class code does not exist', async () => {
+        const res = await request(app)
+            .post('/api/v1/student/sync')
+            .send({
+                studentName: 'Ghost Student',
+                classCode: 'BADCOD',
+                levelReached: 'Era 1',
+                score: 50,
+            });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body).toHaveProperty('message', 'Invalid Class Code');
+    });
+
+    test('POST /api/v1/student/sync - score is stored as provided', async () => {
+        const res = await request(app)
+            .post('/api/v1/student/sync')
+            .send({
+                studentName: 'High Scorer',
+                classCode: validClassCode,
+                levelReached: 'Post-war',
+                score: 99,
+            });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body.data.score).toBe(99);
+    });
+});
+````
+
+## File: chronoquest-api/src/tests/teacher.test.js
+````javascript
+// chronoquest-api/src/tests/teacher.test.js
+const request = require('supertest');
+const app = require('../../server');
+const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+
+let mongoServer;
+
+beforeAll(async () => {
+    // ✅ Spin up an isolated in-memory DB for this test suite
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+    await mongoose.connect(uri);
+}, 30000);
+
+afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+});
+
+describe('Teacher Section Management', () => {
+    let token;
+    const testEmail = `teacher_${Date.now()}@test.com`;
+
+    beforeAll(async () => {
+        // 1. Register the teacher
+        await request(app).post('/api/v1/auth/register').send({
+            name: "Test Teacher",
+            email: testEmail,
+            password: "password123"
+        });
+
+        // 2. Login to get the token
+        const loginRes = await request(app).post('/api/v1/auth/login').send({
+            email: testEmail,
+            password: "password123"
+        });
+
+        token = loginRes.body.token;
+
+        if (!token) {
+            throw new Error("Failed to login and retrieve token");
+        }
+    }, 30000);
+
+    test('POST /api/v1/teacher/add-section - Adds a new class', async () => {
+        const res = await request(app)
+            .post('/api/v1/teacher/add-section')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ sectionName: "Science 101" });
+
+        expect(res.statusCode).toBe(201);
+        expect(res.body.section).toHaveProperty('classCode');
+    }, 10000);
+
+    test('POST /api/v1/teacher/archive-section/:code - Should archive class', async () => {
+        const setup = await request(app)
+            .post('/api/v1/teacher/add-section')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ sectionName: "Archive Me" });
+
+        const code = setup.body.section.classCode;
+
+        const res = await request(app)
+            .post(`/api/v1/teacher/archive-section/${code}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toContain("archived");
+    }, 10000);
+
+    test('DELETE /api/v1/teacher/delete-section/:code - Should delete class', async () => {
+        const setup = await request(app)
+            .post('/api/v1/teacher/add-section')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ sectionName: "Delete Me" });
+
+        const code = setup.body.section.classCode;
+
+        const res = await request(app)
+            .delete(`/api/v1/teacher/delete-section/${code}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toBe("Section removed");
+    }, 10000);
+});
+````
+
+## File: chronoquest-api/src/utils/generateCode.js
+````javascript
+const generateClassCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    const codeLength = 6;
+
+    for (let i = 0; i < codeLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+    }
+
+    return result;
+};
+
+module.exports = generateClassCode;
+````
+
+## File: chrono-dashboard/public/index.html
+````html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+  <title>React App</title>
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+</body>
+
+</html>
 ````
 
 ## File: chrono-dashboard/repomix-output.md
@@ -5990,1292 +7299,6 @@ import '@testing-library/jest-dom';
 ```
 ````
 
-## File: chrono-dashboard/src/App.css
-````css
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Archive Feature Styles */
-.archived-section-btn {
-  opacity: 0.7;
-  background-color: rgba(71, 85, 105, 0.05);
-}
-
-.archived-section-btn:hover {
-  opacity: 0.9;
-}
-````
-
-## File: chrono-dashboard/src/App.js
-````javascript
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import Dashboard from './pages/Dashboard';
-import AdminPanel from './pages/AdminPanel';
-
-function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
-}
-
-export default App;
-````
-
-## File: chrono-dashboard/src/index.js
-````javascript
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-
-reportWebVitals();
-````
-
-## File: chrono-dashboard/src/logo.svg
-````xml
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3"><g fill="#61DAFB"><path d="M666.3 296.5c0-32.5-40.7-63.3-103.1-82.4 14.4-63.6 8-114.2-20.2-130.4-6.5-3.8-14.1-5.6-22.4-5.6v22.3c4.6 0 8.3.9 11.4 2.6 13.6 7.8 19.5 37.5 14.9 75.7-1.1 9.4-2.9 19.3-5.1 29.4-19.6-4.8-41-8.5-63.5-10.9-13.5-18.5-27.5-35.3-41.6-50 32.6-30.3 63.2-46.9 84-46.9V78c-27.5 0-63.5 19.6-99.9 53.6-36.4-33.8-72.4-53.2-99.9-53.2v22.3c20.7 0 51.4 16.5 84 46.6-14 14.7-28 31.4-41.3 49.9-22.6 2.4-44 6.1-63.6 11-2.3-10-4-19.7-5.2-29-4.7-38.2 1.1-67.9 14.6-75.8 3-1.8 6.9-2.6 11.5-2.6V78.5c-8.4 0-16 1.8-22.6 5.6-28.1 16.2-34.4 66.7-19.9 130.1-62.2 19.2-102.7 49.9-102.7 82.3 0 32.5 40.7 63.3 103.1 82.4-14.4 63.6-8 114.2 20.2 130.4 6.5 3.8 14.1 5.6 22.5 5.6 27.5 0 63.5-19.6 99.9-53.6 36.4 33.8 72.4 53.2 99.9 53.2 8.4 0 16-1.8 22.6-5.6 28.1-16.2 34.4-66.7 19.9-130.1 62-19.1 102.5-49.9 102.5-82.3zm-130.2-66.7c-3.7 12.9-8.3 26.2-13.5 39.5-4.1-8-8.4-16-13.1-24-4.6-8-9.5-15.8-14.4-23.4 14.2 2.1 27.9 4.7 41 7.9zm-45.8 106.5c-7.8 13.5-15.8 26.3-24.1 38.2-14.9 1.3-30 2-45.2 2-15.1 0-30.2-.7-45-1.9-8.3-11.9-16.4-24.6-24.2-38-7.6-13.1-14.5-26.4-20.8-39.8 6.2-13.4 13.2-26.8 20.7-39.9 7.8-13.5 15.8-26.3 24.1-38.2 14.9-1.3 30-2 45.2-2 15.1 0 30.2.7 45 1.9 8.3 11.9 16.4 24.6 24.2 38 7.6 13.1 14.5 26.4 20.8 39.8-6.3 13.4-13.2 26.8-20.7 39.9zm32.3-13c5.4 13.4 10 26.8 13.8 39.8-13.1 3.2-26.9 5.9-41.2 8 4.9-7.7 9.8-15.6 14.4-23.7 4.6-8 8.9-16.1 13-24.1zM421.2 430c-9.3-9.6-18.6-20.3-27.8-32 9 .4 18.2.7 27.5.7 9.4 0 18.7-.2 27.8-.7-9 11.7-18.3 22.4-27.5 32zm-74.4-58.9c-14.2-2.1-27.9-4.7-41-7.9 3.7-12.9 8.3-26.2 13.5-39.5 4.1 8 8.4 16 13.1 24 4.7 8 9.5 15.8 14.4 23.4zM420.7 163c9.3 9.6 18.6 20.3 27.8 32-9-.4-18.2-.7-27.5-.7-9.4 0-18.7.2-27.8.7 9-11.7 18.3-22.4 27.5-32zm-74 58.9c-4.9 7.7-9.8 15.6-14.4 23.7-4.6 8-8.9 16-13 24-5.4-13.4-10-26.8-13.8-39.8 13.1-3.1 26.9-5.8 41.2-7.9zm-90.5 125.2c-35.4-15.1-58.3-34.9-58.3-50.6 0-15.7 22.9-35.6 58.3-50.6 8.6-3.7 18-7 27.7-10.1 5.7 19.6 13.2 40 22.5 60.9-9.2 20.8-16.6 41.1-22.2 60.6-9.9-3.1-19.3-6.5-28-10.2zM310 490c-13.6-7.8-19.5-37.5-14.9-75.7 1.1-9.4 2.9-19.3 5.1-29.4 19.6 4.8 41 8.5 63.5 10.9 13.5 18.5 27.5 35.3 41.6 50-32.6 30.3-63.2 46.9-84 46.9-4.5-.1-8.3-1-11.3-2.7zm237.2-76.2c4.7 38.2-1.1 67.9-14.6 75.8-3 1.8-6.9 2.6-11.5 2.6-20.7 0-51.4-16.5-84-46.6 14-14.7 28-31.4 41.3-49.9 22.6-2.4 44-6.1 63.6-11 2.3 10.1 4.1 19.8 5.2 29.1zm38.5-66.7c-8.6 3.7-18 7-27.7 10.1-5.7-19.6-13.2-40-22.5-60.9 9.2-20.8 16.6-41.1 22.2-60.6 9.9 3.1 19.3 6.5 28.1 10.2 35.4 15.1 58.3 34.9 58.3 50.6-.1 15.7-23 35.6-58.4 50.6zM320.8 78.4z"/><circle cx="420.9" cy="296.5" r="45.7"/><path d="M520.5 78.1z"/></g></svg>
-````
-
-## File: chrono-dashboard/src/pages/ClassResults.js
-````javascript
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { BarChart3, Download, ChevronRight } from 'lucide-react';
-
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const ClassResults = ({ sections = [], selectedSection = '', onSectionSelect = () => { } }) => {
-    const [activeSection, setActiveSection] = useState(selectedSection);
-
-    const [scores, setScores] = useState([]);
-    const [gbLoading, setGbLoading] = useState(false);
-    const [gbError, setGbError] = useState('');
-
-    const fetchGradebook = useCallback(async (classCode) => {
-        if (!classCode) return;
-        setGbLoading(true);
-        setGbError('');
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.get(`${API_BASE}/analytics/overall`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setScores(data.filter(s => s.classCode === classCode));
-        } catch (err) {
-            setGbError(err.response?.data?.message || 'Error fetching gradebook');
-        } finally {
-            setGbLoading(false);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!activeSection) return;
-        fetchGradebook(activeSection);
-    }, [activeSection, fetchGradebook]);
-
-    const handleSectionChange = (classCode) => {
-        setActiveSection(classCode);
-        onSectionSelect(classCode);
-    };
-
-    const downloadCSV = () => {
-        if (scores.length === 0) return;
-        const sectionName = sections.find(s => s.classCode === activeSection)?.sectionName || activeSection;
-        const headers = ['Rank', 'Student Name', 'Score', 'Level Reached', 'Submitted'];
-        const sorted = [...scores].sort((a, b) => b.score - a.score);
-        const rows = sorted.map((s, i) => [
-            i + 1,
-            `"${s.studentName}"`,
-            s.score,
-            `"${s.levelReached || ''}"`,
-            new Date(s.createdAt).toLocaleDateString(),
-        ]);
-        const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', `Results_${sectionName}.csv`);
-        link.click();
-    };
-
-    const currentSectionName =
-        sections.find(s => s.classCode === activeSection)?.sectionName || 'Selected Class';
-
-    const EmptyState = ({ icon: Icon, message, sub }) => (
-        <div className="empty-state">
-            <Icon className="empty-state-icon" size={56} />
-            <p className="empty-state-text">{message}</p>
-            {sub && <p className="empty-state-sub">{sub}</p>}
-        </div>
-    );
-
-    return (
-        <div className="content-area space-y-8">
-            <header className="flex-between">
-                <h2 className="page-title">Class Results</h2>
-            </header>
-
-            {sections.length > 0 ? (
-                <div className="section-panel">
-                    <div className="section-chips">
-                        {sections.map(sec => (
-                            <button
-                                key={sec.classCode}
-                                onClick={() => handleSectionChange(sec.classCode)}
-                                className={`section-chip-btn${activeSection === sec.classCode ? ' active' : ''}`}
-                                style={{ background: activeSection === sec.classCode ? '' : '#f8fafc' }}
-                            >
-                                {sec.sectionName}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                <div className="card" style={{ textAlign: 'center' }}>
-                    <p className="empty-state-text">No sections yet — create one from the Overview tab</p>
-                </div>
-            )}
-
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                <div style={{ padding: '32px', borderBottom: '1px solid #f1f5f9' }} className="flex-between">
-                    <div>
-                        <h3 className="section-title">Learning Progress</h3>
-                        <p className="section-subtitle">
-                            {activeSection
-                                ? <>Performance for <strong>{currentSectionName}</strong></>
-                                : 'Select a class above'
-                            }
-                        </p>
-                    </div>
-                    {scores.length > 0 && (
-                        <button onClick={downloadCSV} className="btn-emerald">
-                            <Download size={14} /> Export CSV
-                        </button>
-                    )}
-                </div>
-
-                {gbLoading ? (
-                    <EmptyState icon={BarChart3} message="Loading..." />
-                ) : gbError ? (
-                    <div style={{ margin: '24px' }} className="alert-error">{gbError}</div>
-                ) : !activeSection ? (
-                    <EmptyState icon={BarChart3} message="Select a class to view grades" />
-                ) : scores.length === 0 ? (
-                    <EmptyState icon={BarChart3} message="No learner data found" sub="Scores will appear as students complete assessments" />
-                ) : (
-                    <div className="table-wrapper" style={{ border: 'none', borderRadius: 0 }}>
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Learner Name</th>
-                                    <th>Score</th>
-                                    <th>Level Reached</th>
-                                    <th>Submitted</th>
-                                    <th style={{ textAlign: 'right' }}>Details</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {[...scores].sort((a, b) => b.score - a.score).map((s, i) => (
-                                    <tr key={i}>
-                                        <td className="table-cell-meta">{i + 1}</td>
-                                        <td className="table-cell-name">{s.studentName}</td>
-                                        <td><span className="badge badge-amber">{s.score}</span></td>
-                                        <td className="table-cell-sub">{s.levelReached || '—'}</td>
-                                        <td className="table-cell-meta">{s.createdAt ? new Date(s.createdAt).toLocaleDateString() : '—'}</td>
-                                        <td style={{ textAlign: 'right' }}>
-                                            <ChevronRight size={18} style={{ color: '#cbd5e1', display: 'inline' }} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-export default ClassResults;
-````
-
-## File: chrono-dashboard/src/pages/QuestionManagement.js
-````javascript
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import { Plus, Edit2, Trash2, X, CheckCircle, Circle } from 'lucide-react';
-
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const PERIODS = [
-    'Pre-colonial',
-    'Spanish Colonization',
-    'Revolutionary',
-    'American/Japanese',
-    'Post-war',
-];
-
-const OPTION_LABELS = ['A', 'B', 'C', 'D'];
-
-const EMPTY_FORM = {
-    title: '',
-    description: '',
-    topic: '',
-    period: '',
-    difficultyLevel: 'Medium',
-    options: ['', '', '', ''],
-    correctAnswer: 0,
-};
-
-const getDifficultyClass = (level) => {
-    switch (level) {
-        case 'Easy': return 'difficulty-badge-easy';
-        case 'Medium': return 'difficulty-badge-medium';
-        case 'Hard': return 'difficulty-badge-hard';
-        default: return 'difficulty-badge-default';
-    }
-};
-
-const getPeriodClass = (period) => {
-    const map = {
-        'Pre-colonial': 'period-badge-precolonial',
-        'Spanish Colonization': 'period-badge-spanish',
-        'Revolutionary': 'period-badge-revolutionary',
-        'American/Japanese': 'period-badge-american',
-        'Post-war': 'period-badge-postwar',
-    };
-    return map[period] || 'period-badge-default';
-};
-
-const QuestionManagement = () => {
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterDifficulty, setFilterDifficulty] = useState('');
-    const [filterPeriod, setFilterPeriod] = useState('');
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [editingId, setEditingId] = useState(null);
-    const [formData, setFormData] = useState(EMPTY_FORM);
-
-    const fetchQuestions = useCallback(async (pageNum = 1) => {
-        setLoading(true);
-        setError('');
-        try {
-            const params = new URLSearchParams();
-            if (searchTerm) params.append('topic', searchTerm);
-            if (filterDifficulty) params.append('difficulty', filterDifficulty);
-            if (filterPeriod) params.append('period', filterPeriod);
-            params.append('page', pageNum);
-            params.append('limit', 10);
-
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.get(
-                `${API_BASE}/questions?${params.toString()}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setQuestions(data.questions);
-            setTotalPages(data.pagination.pages);
-            setPage(pageNum);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error fetching questions');
-        } finally {
-            setLoading(false);
-        }
-    }, [searchTerm, filterDifficulty, filterPeriod]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => fetchQuestions(1), 300);
-        return () => clearTimeout(timer);
-    }, [searchTerm, filterDifficulty, filterPeriod, fetchQuestions]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleOptionChange = (index, value) => {
-        setFormData(prev => {
-            const options = [...prev.options];
-            options[index] = value;
-            return { ...prev, options };
-        });
-    };
-
-    const handleCorrectAnswer = (index) => {
-        setFormData(prev => ({ ...prev, correctAnswer: index }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-
-        if (!formData.title.trim()) return setError('Question title is required');
-        if (!formData.period) return setError('Please select a historical period');
-        if (formData.options.some(o => !o.trim())) return setError('All 4 answer options are required');
-
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const payload = { ...formData, topic: formData.period };
-
-            if (editingId) {
-                await axios.patch(`${API_BASE}/questions/${editingId}`, payload, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setSuccess('Question updated successfully');
-            } else {
-                await axios.post(`${API_BASE}/questions`, payload, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setSuccess('Question created successfully');
-            }
-            closeModal();
-            fetchQuestions(page);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error saving question');
-        }
-    };
-
-    const handleEdit = (question) => {
-        setFormData({
-            title: question.title || '',
-            description: question.description || '',
-            topic: question.topic || '',
-            period: question.period || question.topic || '',
-            difficultyLevel: question.difficultyLevel || 'Medium',
-            options: question.options?.length === 4 ? question.options : ['', '', '', ''],
-            correctAnswer: question.correctAnswer ?? 0,
-        });
-        setEditingId(question._id);
-        setModalOpen(true);
-    };
-
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this question?')) return;
-        try {
-            const token = localStorage.getItem('teacherToken');
-            await axios.delete(`${API_BASE}/questions/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setSuccess('Question deleted successfully');
-            fetchQuestions(page);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error deleting question');
-        }
-    };
-
-    const handleNewQuestion = () => {
-        setFormData(EMPTY_FORM);
-        setEditingId(null);
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setEditingId(null);
-        setFormData(EMPTY_FORM);
-        setError('');
-    };
-
-    return (
-        <div className="content-area space-y-8">
-            <header className="flex-between">
-                <h2 className="page-title">Question Management</h2>
-                <button onClick={handleNewQuestion} className="btn-dark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Plus size={16} /> New Question
-                </button>
-            </header>
-
-            {error && <div className="alert-error">{error}</div>}
-            {success && <div className="alert-success">{success}</div>}
-
-            <div className="filter-bar">
-                <input
-                    type="text"
-                    placeholder="Search by topic or title..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="form-input-sm"
-                    style={{ flex: 1, minWidth: '180px' }}
-                />
-                <select value={filterPeriod} onChange={(e) => setFilterPeriod(e.target.value)} className="form-select">
-                    <option value="">All Periods</option>
-                    {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
-                <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="form-select">
-                    <option value="">All Difficulties</option>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-            </div>
-
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                {loading ? (
-                    <div className="empty-state"><p className="empty-state-text">Loading...</p></div>
-                ) : questions.length === 0 ? (
-                    <div className="empty-state"><p className="empty-state-text">No questions found</p></div>
-                ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table className="table" style={{ minWidth: 'unset', width: '100%' }}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '45%' }}>Question</th>
-                                    <th style={{ width: '20%' }}>Period</th>
-                                    <th style={{ width: '15%' }}>Difficulty</th>
-                                    <th style={{ width: '12%' }}>Created By</th>
-                                    <th style={{ width: '8%', textAlign: 'center' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((question) => (
-                                    <tr key={question._id}>
-                                        <td>
-                                            <p className="table-cell-name" style={{ fontSize: '0.875rem' }}>{question.title}</p>
-                                            {question.description && (
-                                                <p className="table-cell-meta" style={{ marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '320px' }}>
-                                                    {question.description}
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <span className={getPeriodClass(question.period || question.topic)}>
-                                                {question.period || question.topic}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={getDifficultyClass(question.difficultyLevel)}>
-                                                {question.difficultyLevel}
-                                            </span>
-                                        </td>
-                                        <td className="table-cell-sub">{question.createdBy?.name}</td>
-                                        <td>
-                                            <div className="table-actions" style={{ justifyContent: 'center' }}>
-                                                <button onClick={() => handleEdit(question)} className="btn-icon btn-icon-slate" title="Edit">
-                                                    <Edit2 size={15} />
-                                                </button>
-                                                <button onClick={() => handleDelete(question._id)} className="btn-icon btn-icon-red" title="Delete">
-                                                    <Trash2 size={15} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-
-            {totalPages > 1 && (
-                <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                        <button
-                            key={p}
-                            onClick={() => fetchQuestions(p)}
-                            className={`pagination-btn ${p === page ? 'active' : 'inactive'}`}
-                        >
-                            {p}
-                        </button>
-                    ))}
-                </div>
-            )}
-
-            {modalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-lg">
-                        <div className="modal-header">
-                            <h2 className="section-title">{editingId ? 'Edit Question' : 'New Question'}</h2>
-                            <button onClick={closeModal} className="btn-icon btn-icon-slate">
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="modal-body space-y-6" style={{ paddingTop: '24px', paddingBottom: '24px' }}>
-                            {error && <div className="alert-error">{error}</div>}
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Question <span style={{ color: '#f87171' }}>*</span>
-                                </label>
-                                <textarea
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    rows={2}
-                                    className="form-textarea-sm"
-                                    placeholder="Type your question here..."
-                                />
-                            </div>
-
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">
-                                        Historical Period <span style={{ color: '#f87171' }}>*</span>
-                                    </label>
-                                    <select name="period" value={formData.period} onChange={handleInputChange} className="form-select">
-                                        <option value="">Select period...</option>
-                                        {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Difficulty</label>
-                                    <select name="difficultyLevel" value={formData.difficultyLevel} onChange={handleInputChange} className="form-select">
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Answer Options <span style={{ color: '#f87171' }}>*</span>
-                                    <span style={{ marginLeft: '8px', color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>
-                                        — click the circle to mark the correct answer
-                                    </span>
-                                </label>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {formData.options.map((opt, i) => {
-                                        const isCorrect = formData.correctAnswer === i;
-                                        return (
-                                            <div key={i} className={`question-answer-option ${isCorrect ? 'selected' : 'unselected'}`}>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleCorrectAnswer(i)}
-                                                    className={`option-selector-btn ${isCorrect ? 'selected' : 'unselected'}`}
-                                                    title="Mark as correct answer"
-                                                >
-                                                    {isCorrect ? <CheckCircle size={20} /> : <Circle size={20} />}
-                                                </button>
-                                                <span className={`option-prefix ${isCorrect ? 'selected' : 'unselected'}`}>
-                                                    {OPTION_LABELS[i]}.
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    value={opt}
-                                                    onChange={(e) => handleOptionChange(i, e.target.value)}
-                                                    className="option-text-input"
-                                                    placeholder={`Option ${OPTION_LABELS[i]}...`}
-                                                />
-                                                {isCorrect && <span className="option-correct-label">Correct</span>}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Additional Notes <span style={{ color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span>
-                                </label>
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    rows={2}
-                                    className="form-textarea-sm"
-                                    placeholder="Any extra context or explanation..."
-                                />
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', paddingTop: '8px' }}>
-                                <button type="button" onClick={closeModal} className="btn-outline">Cancel</button>
-                                <button type="submit" className="btn-dark">
-                                    {editingId ? 'Update Question' : 'Create Question'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default QuestionManagement;
-````
-
-## File: chrono-dashboard/src/reportWebVitals.js
-````javascript
-const reportWebVitals = onPerfEntry => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    });
-  }
-};
-
-export default reportWebVitals;
-````
-
-## File: chrono-dashboard/src/setupTests.js
-````javascript
-// jest-dom adds custom jest matchers for asserting on DOM nodes.
-// allows you to do things like:
-// expect(element).toHaveTextContent(/react/i)
-// learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
-````
-
-## File: chronoquest-api/src/config/db.js
-````javascript
-const mongoose = require('mongoose');
-
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`❌ Error: ${error.message}`);
-        process.exit(1);
-    }
-};
-
-module.exports = connectDB;
-````
-
-## File: chronoquest-api/src/controllers/studentController.js
-````javascript
-const Score = require('../models/scoreModel');
-const Teacher = require('../models/teacherModel');
-
-exports.simulateSync = async (req, res) => {
-    try {
-        const { studentName, classCode, levelReached, score } = req.body;
-
-        const teacher = await Teacher.findOne({ classCode });
-        if (!teacher) {
-            return res.status(404).json({ message: 'Invalid Class Code' });
-        }
-
-        const newScore = await Score.create({
-            studentName,
-            classCode,
-            levelReached,
-            score,
-            teacherId: teacher._id
-        });
-
-        res.status(201).json({ message: 'Sync Successful', data: newScore });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-````
-
-## File: chronoquest-api/src/middleware/authMiddleware.js
-````javascript
-const jwt = require('jsonwebtoken');
-const Teacher = require('../models/teacherModel');
-
-exports.protect = async (req, res, next) => {
-    let token;
-
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        req.user = await Teacher.findById(decoded.id).select('-password');
-
-        if (!req.user) {
-            return res.status(401).json({ message: 'User not found' });
-        }
-
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: `Not authorized, token failed: ${error.message}` });
-    }
-};
-
-// Admin-only middleware
-exports.adminOnly = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
-        next();
-    } else {
-        res.status(403).json({ message: 'Access denied: Admin privileges required' });
-    }
-};
-````
-
-## File: chronoquest-api/src/middleware/rateLimiter.js
-````javascript
-const rateLimit = require('express-rate-limit');
-
-
-const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, 
-    max: 100, 
-    message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true, 
-    legacyHeaders: false, 
-});
-
-
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 5, 
-    message: 'Too many login attempts, please try again after 15 minutes.',
-    skipSuccessfulRequests: true, 
-});
-
-module.exports = { generalLimiter, loginLimiter };
-````
-
-## File: chronoquest-api/src/models/scoreModel.js
-````javascript
-const mongoose = require('mongoose');
-
-const scoreSchema = new mongoose.Schema({
-    studentName: { type: String, required: true },
-    classCode: { type: String, required: true },
-    levelReached: { type: String, required: true },
-    score: { type: Number, required: true },
-    teacherId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
-        required: true
-    }
-}, { timestamps: true });
-
-module.exports = mongoose.model('Score', scoreSchema);
-````
-
-## File: chronoquest-api/src/tests/admin.test.js
-````javascript
-const request = require('supertest');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const app = require('../../server');
-
-let mongoServer;
-let adminToken;
-let teacherToken;
-let seededTeacherId;
-let seededStudentId;
-
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
-
-    // Register an admin directly via model so we can set role = 'admin'
-    const Teacher = require('../../src/models/teacherModel');
-    const jwt = require('jsonwebtoken');
-
-    const admin = await Teacher.create({
-        name: 'Admin User',
-        email: 'admin@chronoquest.edu',
-        password: 'adminpass123',
-        role: 'admin',
-    });
-    adminToken = jwt.sign(
-        { id: admin._id, role: 'admin' },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '1d' }
-    );
-
-    // Register a regular teacher for comparison / target in delete tests
-    const teacher = await Teacher.create({
-        name: 'Regular Teacher',
-        email: 'teacher@chronoquest.edu',
-        password: 'teacherpass123',
-        role: 'teacher',
-    });
-    seededTeacherId = teacher._id.toString();
-    teacherToken = jwt.sign(
-        { id: teacher._id, role: 'teacher' },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '1d' }
-    );
-
-    // Create a student to target in deactivate/delete tests
-    const Student = require('../../src/models/studentModel');
-    const student = await Student.create({
-        name: 'Test Student',
-        email: 'student@chronoquest.edu',
-        password: 'studentpass123',
-        classCode: 'CLASS1',
-    });
-    seededStudentId = student._id.toString();
-}, 30000);
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-// ─── Auth Guard Tests ─────────────────────────────────────────────────────────
-
-describe('Admin Routes - Auth Guards', () => {
-    test('GET /api/v1/admin/users - 401 with no token', async () => {
-        const res = await request(app).get('/api/v1/admin/users');
-        expect(res.statusCode).toBe(401);
-    });
-
-    test('GET /api/v1/admin/users - 403 when caller is a regular teacher', async () => {
-        const res = await request(app)
-            .get('/api/v1/admin/users')
-            .set('Authorization', `Bearer ${teacherToken}`);
-        expect(res.statusCode).toBe(403);
-    });
-});
-
-// ─── getAllUsers ──────────────────────────────────────────────────────────────
-
-describe('Admin - GET /api/v1/admin/users', () => {
-    test('200 and returns teachers + students arrays', async () => {
-        const res = await request(app)
-            .get('/api/v1/admin/users')
-            .set('Authorization', `Bearer ${adminToken}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('teachers');
-        expect(res.body).toHaveProperty('students');
-        expect(Array.isArray(res.body.teachers)).toBe(true);
-        expect(Array.isArray(res.body.students)).toBe(true);
-        expect(res.body).toHaveProperty('totalUsers');
-    });
-
-    test('passwords are excluded from the response', async () => {
-        const res = await request(app)
-            .get('/api/v1/admin/users')
-            .set('Authorization', `Bearer ${adminToken}`);
-
-        res.body.teachers.forEach(t => expect(t).not.toHaveProperty('password'));
-        res.body.students.forEach(s => expect(s).not.toHaveProperty('password'));
-    });
-});
-
-// ─── getSystemAnalytics ───────────────────────────────────────────────────────
-
-describe('Admin - GET /api/v1/admin/analytics', () => {
-    test('200 and returns platform stats', async () => {
-        const res = await request(app)
-            .get('/api/v1/admin/analytics')
-            .set('Authorization', `Bearer ${adminToken}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('totalTeachers');
-        expect(res.body).toHaveProperty('totalStudents');
-        expect(res.body).toHaveProperty('totalUsers');
-    });
-});
-
-// ─── deactivateUser ───────────────────────────────────────────────────────────
-
-describe('Admin - POST /api/v1/admin/users/deactivate', () => {
-    test('200 when deactivating a student', async () => {
-        const res = await request(app)
-            .post('/api/v1/admin/users/deactivate')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: seededStudentId, userType: 'student' });
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toMatch(/deactivated/i);
-    });
-
-    test('200 when deactivating a teacher', async () => {
-        const res = await request(app)
-            .post('/api/v1/admin/users/deactivate')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: seededTeacherId, userType: 'teacher' });
-
-        expect(res.statusCode).toBe(200);
-    });
-});
-
-// ─── deleteUser ───────────────────────────────────────────────────────────────
-
-describe('Admin - POST /api/v1/admin/users/delete', () => {
-    test('400 when userType is invalid', async () => {
-        const res = await request(app)
-            .post('/api/v1/admin/users/delete')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: seededStudentId, userType: 'invalid' });
-
-        expect(res.statusCode).toBe(400);
-        expect(res.body.errorCode).toBe('INVALID_USER_TYPE');
-    });
-
-    test('404 when student id does not exist', async () => {
-        const fakeId = new mongoose.Types.ObjectId().toString();
-        const res = await request(app)
-            .post('/api/v1/admin/users/delete')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: fakeId, userType: 'student' });
-
-        expect(res.statusCode).toBe(404);
-    });
-
-    test('200 when deleting a real student', async () => {
-        // Create a fresh student so the seeded one stays for other tests
-        const Student = require('../../src/models/studentModel');
-        const temp = await Student.create({
-            name: 'Temp Student',
-            email: 'temp@chronoquest.edu',
-            password: 'pass1234',
-            classCode: 'TEMP01',
-        });
-
-        const res = await request(app)
-            .post('/api/v1/admin/users/delete')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: temp._id.toString(), userType: 'student' });
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe('User deleted successfully');
-    });
-
-    test('400 when trying to delete the last admin', async () => {
-        // The only admin in this in-memory DB is the one we created in beforeAll
-        const Teacher = require('../../src/models/teacherModel');
-        const admin = await Teacher.findOne({ role: 'admin' });
-
-        const res = await request(app)
-            .post('/api/v1/admin/users/delete')
-            .set('Authorization', `Bearer ${adminToken}`)
-            .send({ userId: admin._id.toString(), userType: 'teacher' });
-
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toMatch(/last admin/i);
-    });
-});
-````
-
-## File: chronoquest-api/src/tests/auth.test.js
-````javascript
-const request = require('supertest');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const app = require('../../server');
-
-let mongoServer;
-
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
-});
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-describe('Integration Test: Authentication', () => {
-    const mockUser = {
-        name: "Test Instructor",
-        email: "tester@chronoquest.edu",
-        password: "securepassword123"
-    };
-
-    test('POST /api/v1/auth/register - Should create a new instructor', async () => {
-        const res = await request(app)
-            .post('/api/v1/auth/register')
-            .send(mockUser);
-
-        expect(res.statusCode).toBe(201);
-        expect(res.body).toHaveProperty('message');
-    });
-
-    test('POST /api/v1/auth/login - Should return a JWT token', async () => {
-        const res = await request(app)
-            .post('/api/v1/auth/login')
-            .send({
-                email: mockUser.email,
-                password: mockUser.password
-            });
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('token');
-    });
-});
-````
-
-## File: chronoquest-api/src/tests/generateCode.test.js
-````javascript
-const generateClassCode = require('../utils/generateCode');
-
-describe('Unit Test: generateClassCode', () => {
-    test('should generate a string of exactly 6 characters', () => {
-        const code = generateClassCode();
-        expect(code).toHaveLength(6);
-    });
-
-    test('should only contain alphanumeric characters', () => {
-        const code = generateClassCode();
-        expect(code).toMatch(/^[A-Z0-9]+$/);
-    });
-});
-````
-
-## File: chronoquest-api/src/tests/student.test.js
-````javascript
-const request = require('supertest');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const app = require('../../server');
-
-let mongoServer;
-
-beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
-}, 30000);
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-describe('Student Score Sync', () => {
-    let validClassCode;
-
-    // Seed a teacher with a known classCode so we can test the happy path
-    beforeAll(async () => {
-        const Teacher = require('../../src/models/teacherModel');
-        const teacher = await Teacher.create({
-            name: 'Seed Teacher',
-            email: 'seed@chronoquest.edu',
-            password: 'password123',
-            // classCode lives on sections, not the teacher root —
-            // but studentController looks up Teacher.findOne({ classCode })
-            // which matches the root classCode field.
-            classCode: 'VALID1',
-        });
-        validClassCode = teacher.classCode;
-    });
-
-    test('POST /api/v1/student/sync - 201 when class code is valid', async () => {
-        const res = await request(app)
-            .post('/api/v1/student/sync')
-            .send({
-                studentName: 'Jane Doe',
-                classCode: validClassCode,
-                levelReached: 'Ancient Egypt',
-                score: 80,
-            });
-
-        expect(res.statusCode).toBe(201);
-        expect(res.body).toHaveProperty('message', 'Sync Successful');
-        expect(res.body.data).toHaveProperty('studentName', 'Jane Doe');
-        expect(res.body.data).toHaveProperty('classCode', validClassCode);
-    });
-
-    test('POST /api/v1/student/sync - 404 when class code does not exist', async () => {
-        const res = await request(app)
-            .post('/api/v1/student/sync')
-            .send({
-                studentName: 'Ghost Student',
-                classCode: 'BADCOD',
-                levelReached: 'Era 1',
-                score: 50,
-            });
-
-        expect(res.statusCode).toBe(404);
-        expect(res.body).toHaveProperty('message', 'Invalid Class Code');
-    });
-
-    test('POST /api/v1/student/sync - score is stored as provided', async () => {
-        const res = await request(app)
-            .post('/api/v1/student/sync')
-            .send({
-                studentName: 'High Scorer',
-                classCode: validClassCode,
-                levelReached: 'Post-war',
-                score: 99,
-            });
-
-        expect(res.statusCode).toBe(201);
-        expect(res.body.data.score).toBe(99);
-    });
-});
-````
-
-## File: chronoquest-api/src/tests/teacher.test.js
-````javascript
-// chronoquest-api/src/tests/teacher.test.js
-const request = require('supertest');
-const app = require('../../server');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
-let mongoServer;
-
-beforeAll(async () => {
-    // ✅ Spin up an isolated in-memory DB for this test suite
-    mongoServer = await MongoMemoryServer.create();
-    const uri = mongoServer.getUri();
-    await mongoose.connect(uri);
-}, 30000);
-
-afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoServer.stop();
-});
-
-describe('Teacher Section Management', () => {
-    let token;
-    const testEmail = `teacher_${Date.now()}@test.com`;
-
-    beforeAll(async () => {
-        // 1. Register the teacher
-        await request(app).post('/api/v1/auth/register').send({
-            name: "Test Teacher",
-            email: testEmail,
-            password: "password123"
-        });
-
-        // 2. Login to get the token
-        const loginRes = await request(app).post('/api/v1/auth/login').send({
-            email: testEmail,
-            password: "password123"
-        });
-
-        token = loginRes.body.token;
-
-        if (!token) {
-            throw new Error("Failed to login and retrieve token");
-        }
-    }, 30000);
-
-    test('POST /api/v1/teacher/add-section - Adds a new class', async () => {
-        const res = await request(app)
-            .post('/api/v1/teacher/add-section')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ sectionName: "Science 101" });
-
-        expect(res.statusCode).toBe(201);
-        expect(res.body.section).toHaveProperty('classCode');
-    }, 10000);
-
-    test('POST /api/v1/teacher/archive-section/:code - Should archive class', async () => {
-        const setup = await request(app)
-            .post('/api/v1/teacher/add-section')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ sectionName: "Archive Me" });
-
-        const code = setup.body.section.classCode;
-
-        const res = await request(app)
-            .post(`/api/v1/teacher/archive-section/${code}`)
-            .set('Authorization', `Bearer ${token}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toContain("archived");
-    }, 10000);
-
-    test('DELETE /api/v1/teacher/delete-section/:code - Should delete class', async () => {
-        const setup = await request(app)
-            .post('/api/v1/teacher/add-section')
-            .set('Authorization', `Bearer ${token}`)
-            .send({ sectionName: "Delete Me" });
-
-        const code = setup.body.section.classCode;
-
-        const res = await request(app)
-            .delete(`/api/v1/teacher/delete-section/${code}`)
-            .set('Authorization', `Bearer ${token}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe("Section removed");
-    }, 10000);
-});
-````
-
-## File: chronoquest-api/src/utils/generateCode.js
-````javascript
-const generateClassCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    const codeLength = 6;
-
-    for (let i = 0; i < codeLength; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters.charAt(randomIndex);
-    }
-
-    return result;
-};
-
-module.exports = generateClassCode;
-````
-
 ## File: chrono-dashboard/src/components/admin/FeedbackSection.js
 ````javascript
 import React from 'react';
@@ -7525,513 +7548,6 @@ const FeedbackSection = ({
 export default FeedbackSection;
 ````
 
-## File: chrono-dashboard/src/components/admin/UsersList.js
-````javascript
-import React, { useState } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { Trash2, Edit2, AlertCircle, ChevronLeft, ChevronRight, X, RotateCcw } from 'lucide-react';
-
-const PAGE_SIZE = 10;
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const PERIODS = [
-    "Era 1: Pre-Colonial",
-    "Era 2: Spanish Colonization",
-    "Era 3: Revolutionary",
-    "Era 4: American/Japanese",
-    "Era 5: Post-war"
-];
-
-const Pagination = ({ total, page, onPage }) => {
-    const pages = Math.ceil(total / PAGE_SIZE);
-    if (pages <= 1) return null;
-    return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px', marginTop: '16px' }}>
-            <button
-                onClick={() => onPage(page - 1)}
-                disabled={page === 1}
-                style={{ padding: '4px 8px', border: '1px solid #e2e8f0', borderRadius: '8px', background: 'none', cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.4 : 1, display: 'flex', alignItems: 'center' }}
-            ><ChevronLeft size={14} /></button>
-            {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
-                <button
-                    key={p}
-                    onClick={() => onPage(p)}
-                    style={{
-                        padding: '4px 10px', border: '1px solid', borderRadius: '8px', cursor: 'pointer',
-                        fontWeight: 700, fontSize: '0.75rem',
-                        borderColor: p === page ? '#0f172a' : '#e2e8f0',
-                        background: p === page ? '#0f172a' : 'none',
-                        color: p === page ? '#fff' : '#475569',
-                    }}
-                >{p}</button>
-            ))}
-            <button
-                onClick={() => onPage(page + 1)}
-                disabled={page === pages}
-                style={{ padding: '4px 8px', border: '1px solid #e2e8f0', borderRadius: '8px', background: 'none', cursor: page === pages ? 'not-allowed' : 'pointer', opacity: page === pages ? 0.4 : 1, display: 'flex', alignItems: 'center' }}
-            ><ChevronRight size={14} /></button>
-        </div>
-    );
-};
-
-const UsersList = ({
-    searchTerm,
-    setSearchTerm,
-    users,
-    filteredTeachers,
-    filteredStudents,
-    handleEditUser,
-    handleDeactivateUser,
-    handleDeleteUser
-}) => {
-    const [teacherPage, setTeacherPage] = useState(1);
-    const [studentPage, setStudentPage] = useState(1);
-    const [showDeletedUsers, setShowDeletedUsers] = useState(false);
-    const [deletedUsers, setDeletedUsers] = useState({ teachers: [], students: [] });
-    const [showAddStudentForm, setShowAddStudentForm] = useState(false);
-    const [demoStudentForm, setDemoStudentForm] = useState({
-        name: '',
-        email: '',
-        classCode: '',
-        score: 0,
-        levelReached: 'Era 1: Pre-Colonial',
-        password: 'Demo@1234'
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    React.useEffect(() => { setTeacherPage(1); setStudentPage(1); }, [searchTerm]);
-
-    const pagedTeachers = filteredTeachers.slice((teacherPage - 1) * PAGE_SIZE, teacherPage * PAGE_SIZE);
-    const pagedStudents = filteredStudents.slice((studentPage - 1) * PAGE_SIZE, studentPage * PAGE_SIZE);
-
-    const handleAddDemoStudent = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-        try {
-            const token = localStorage.getItem('teacherToken');
-
-            if (demoStudentForm.score < 0 || demoStudentForm.score > 100) {
-                toast.error('Score must be between 0 and 100');
-                setIsSubmitting(false);
-                return;
-            }
-
-            await axios.post(
-                `${API_BASE}/auth/register`,
-                {
-                    name: demoStudentForm.name.trim(),
-                    email: demoStudentForm.email.trim().toLowerCase(),
-                    classCode: demoStudentForm.classCode.trim(),
-                    password: demoStudentForm.password,
-                    score: parseInt(demoStudentForm.score),
-                    levelReached: demoStudentForm.levelReached
-                },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            toast.success('Demo student added successfully!');
-            setShowAddStudentForm(false);
-            setDemoStudentForm({
-                name: '',
-                email: '',
-                classCode: '',
-                score: 0,
-                levelReached: 'Era 1: Pre-Colonial',
-                password: 'Demo@1234'
-            });
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to add demo student');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    // Fetch deleted users
-    const handleShowDeletedUsers = async () => {
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.get(`${API_BASE}/admin/users/deleted`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setDeletedUsers(data);
-            setShowDeletedUsers(true);
-        } catch (error) {
-            toast.error('Failed to load deleted users');
-        }
-    };
-
-    // Restore user
-    const handleRestoreUser = async (userId, userType) => {
-        try {
-            const token = localStorage.getItem('teacherToken');
-            await axios.post(
-                `${API_BASE}/admin/users/restore`,
-                { userId, userType },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            toast.success('User restored successfully');
-            setShowDeletedUsers(false);
-            // Refresh deleted users list
-            handleShowDeletedUsers();
-        } catch (error) {
-            toast.error('Failed to restore user');
-        }
-    };
-
-    return (
-        <div className="space-y-8">
-            {/* ── Section header ── */}
-            <div className="flex-between">
-                <div>
-                    <h2 className="page-title">User Management</h2>
-                    <p className="page-subtitle">Manage instructors and learners across the platform</p>
-                </div>
-                <div className="header-actions">
-                    <input
-                        type="text"
-                        placeholder="Search by name, email, or class code..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="form-input-sm"
-                        style={{ width: '280px' }}
-                    />
-                    <button
-                        onClick={() => setShowAddStudentForm(!showAddStudentForm)}
-                        className="btn-demo-student"
-                    >
-                        {showAddStudentForm ? '✕ Close' : '➕ Add Demo Student'}
-                    </button>
-                    <button
-                        onClick={handleShowDeletedUsers}
-                        className="btn-demo-student"
-                        style={{ backgroundColor: '#94a3b8' }}
-                        onMouseOver={(e) => e.target.style.backgroundColor = '#64748b'}
-                        onMouseOut={(e) => e.target.style.backgroundColor = '#94a3b8'}
-                    >
-                        🗑️ Archived Users ({deletedUsers.teachers.length + deletedUsers.students.length})
-                    </button>
-                </div>
-            </div>
-
-            {/* ── Archived Users Modal ── */}
-            {showDeletedUsers && (
-                <div className="card" style={{ backgroundColor: '#fff5f5', borderLeft: '4px solid #dc2626' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                        <h3 style={{ color: '#991b1b', margin: 0, fontWeight: 700 }}>🗑️ Archived Users</h3>
-                        <button
-                            onClick={() => setShowDeletedUsers(false)}
-                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
-                        >
-                            <X size={18} color="#991b1b" />
-                        </button>
-                    </div>
-
-                    {/* Deleted Teachers */}
-                    {deletedUsers.teachers.length > 0 && (
-                        <div style={{ marginBottom: '20px' }}>
-                            <h4 style={{ color: '#991b1b', marginBottom: '8px', fontSize: '0.875rem', fontWeight: 700 }}>Instructors ({deletedUsers.teachers.length})</h4>
-                            <div style={{ overflowX: 'auto' }}>
-                                <table className="table" style={{ fontSize: '0.875rem' }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Deleted</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {deletedUsers.teachers.map(t => (
-                                            <tr key={t._id}>
-                                                <td className="table-cell-name">{t.name}</td>
-                                                <td className="table-cell-sub">{t.email}</td>
-                                                <td className="table-cell-sub">{new Date(t.deletedAt).toLocaleDateString()}</td>
-                                                <td>
-                                                    <button
-                                                        onClick={() => handleRestoreUser(t._id, 'teacher')}
-                                                        style={{
-                                                            padding: '6px 12px',
-                                                            backgroundColor: '#10b981',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '6px',
-                                                            cursor: 'pointer',
-                                                            fontSize: '0.75rem',
-                                                            fontWeight: 600,
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '4px'
-                                                        }}
-                                                    >
-                                                        <RotateCcw size={14} /> Restore
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Deleted Students */}
-                    {deletedUsers.students.length > 0 && (
-                        <div>
-                            <h4 style={{ color: '#991b1b', marginBottom: '8px', fontSize: '0.875rem', fontWeight: 700 }}>Learners ({deletedUsers.students.length})</h4>
-                            <div style={{ overflowX: 'auto' }}>
-                                <table className="table" style={{ fontSize: '0.875rem' }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Class Code</th>
-                                            <th>Deleted</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {deletedUsers.students.map(s => (
-                                            <tr key={s._id}>
-                                                <td className="table-cell-name">{s.name}</td>
-                                                <td className="table-cell-sub">{s.email}</td>
-                                                <td className="table-cell-mono">{s.classCode}</td>
-                                                <td className="table-cell-sub">{new Date(s.deletedAt).toLocaleDateString()}</td>
-                                                <td>
-                                                    <button
-                                                        onClick={() => handleRestoreUser(s._id, 'student')}
-                                                        style={{
-                                                            padding: '6px 12px',
-                                                            backgroundColor: '#10b981',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '6px',
-                                                            cursor: 'pointer',
-                                                            fontSize: '0.75rem',
-                                                            fontWeight: 600,
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            gap: '4px'
-                                                        }}
-                                                    >
-                                                        <RotateCcw size={14} /> Restore
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
-
-                    {deletedUsers.teachers.length === 0 && deletedUsers.students.length === 0 && (
-                        <p style={{ textAlign: 'center', color: '#991b1b', padding: '16px' }}>No archived users</p>
-                    )}
-                </div>
-            )}
-
-            {/* ── Demo Student Form ── */}
-            {showAddStudentForm && (
-                <div className="card demo-form-card">
-                    <div className="demo-form-header">
-                        <h3 className="demo-form-title">➕ Add Demo Student (Presentation)</h3>
-                        <button
-                            onClick={() => setShowAddStudentForm(false)}
-                            className="btn-close-icon"
-                        >
-                            <X size={18} color="#64748b" />
-                        </button>
-                    </div>
-                    <form onSubmit={handleAddDemoStudent} className="demo-form-grid">
-                        {/* Name */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Name *</label>
-                            <input
-                                type="text"
-                                placeholder="John Doe"
-                                value={demoStudentForm.name}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, name: e.target.value })}
-                                required
-                                className="demo-form-input"
-                            />
-                        </div>
-
-                        {/* Email */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Email *</label>
-                            <input
-                                type="email"
-                                placeholder="student@example.com"
-                                value={demoStudentForm.email}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, email: e.target.value })}
-                                required
-                                className="demo-form-input"
-                            />
-                        </div>
-
-                        {/* Class Code */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Class Code *</label>
-                            <input
-                                type="text"
-                                placeholder="ABC123"
-                                value={demoStudentForm.classCode}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, classCode: e.target.value })}
-                                required
-                                className="demo-form-input"
-                            />
-                        </div>
-
-                        {/* Score */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Score (0-100)</label>
-                            <input
-                                type="number"
-                                min="0"
-                                max="100"
-                                value={demoStudentForm.score}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, score: e.target.value })}
-                                className="demo-form-input"
-                            />
-                        </div>
-
-                        {/* Level Reached */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Level Reached</label>
-                            <select
-                                value={demoStudentForm.levelReached}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, levelReached: e.target.value })}
-                                className="demo-form-select"
-                            >
-                                {PERIODS.map(period => (
-                                    <option key={period} value={period}>{period}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Password */}
-                        <div className="demo-form-field">
-                            <label className="demo-form-label">Password</label>
-                            <input
-                                type="text"
-                                value={demoStudentForm.password}
-                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, password: e.target.value })}
-                                className="demo-form-input"
-                            />
-                        </div>
-
-                        {/* Actions */}
-                        <div className="demo-form-actions">
-                            <button
-                                type="button"
-                                onClick={() => setShowAddStudentForm(false)}
-                                className="btn-cancel"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="btn-submit"
-                            >
-                                {isSubmitting ? 'Creating...' : 'Create Demo Student'}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-
-            {/* ── Instructors table ── */}
-            <div className="card">
-                <div className="flex-between" style={{ marginBottom: '16px' }}>
-                    <h3 className="section-title">
-                        Instructors ({filteredTeachers.length}{searchTerm ? ` of ${users.teachers?.length || 0}` : ''})
-                    </h3>
-                </div>
-                <div className="table-wrapper" style={{ overflowY: 'auto', maxHeight: '440px' }}>
-                    <table className="table">
-                        <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Classes</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pagedTeachers.length === 0 ? (
-                                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No instructors match your search</td></tr>
-                            ) : pagedTeachers.map(t => (
-                                <tr key={t._id}>
-                                    <td className="table-cell-name">{t.name}</td>
-                                    <td className="table-cell-sub">{t.email}</td>
-                                    <td className="table-cell-sub">{t.totalSections}</td>
-                                    <td>
-                                        <span className={`badge ${t.isActive ? 'badge-active' : 'badge-inactive'}`}>
-                                            {t.isActive ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className="table-actions">
-                                            <button onClick={() => handleEditUser(t, 'teacher')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
-                                            <button onClick={() => handleDeactivateUser(t._id, 'teacher')} className="btn-icon btn-icon-yellow" title="Deactivate"><AlertCircle size={16} /></button>
-                                            <button onClick={() => handleDeleteUser(t._id, 'teacher')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <Pagination total={filteredTeachers.length} page={teacherPage} onPage={setTeacherPage} />
-            </div>
-
-            {/* ── Learners table ── */}
-            <div className="card">
-                <div className="flex-between" style={{ marginBottom: '16px' }}>
-                    <h3 className="section-title">
-                        Learners ({filteredStudents.length}{searchTerm ? ` of ${users.students?.length || 0}` : ''})
-                    </h3>
-                </div>
-                <div className="table-wrapper" style={{ overflowY: 'auto', maxHeight: '440px' }}>
-                    <table className="table">
-                        <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Class Code</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pagedStudents.length === 0 ? (
-                                <tr><td colSpan={4} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No learners match your search</td></tr>
-                            ) : pagedStudents.map(s => (
-                                <tr key={s._id}>
-                                    <td className="table-cell-name">{s.name}</td>
-                                    <td className="table-cell-sub">{s.email}</td>
-                                    <td className="table-cell-mono">{s.classCode}</td>
-                                    <td>
-                                        <div className="table-actions">
-                                            <button onClick={() => handleEditUser(s, 'student')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
-                                            <button onClick={() => handleDeleteUser(s._id, 'student')} className="btn-icon btn-icon-red" title="Delete"><Trash2 size={16} /></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <Pagination total={filteredStudents.length} page={studentPage} onPage={setStudentPage} />
-            </div>
-        </div>
-    );
-};
-
-export default UsersList;
-````
-
 ## File: chrono-dashboard/src/components/AdminSidebar.js
 ````javascript
 import React, { useContext } from 'react';
@@ -8129,84 +7645,6 @@ const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
 export default AdminSidebar;
 ````
 
-## File: chrono-dashboard/src/components/TeacherSidebar.js
-````javascript
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, BarChart3, LogOut, Settings, MessageSquare, Shield, X } from 'lucide-react';
-
-const TeacherSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
-    const { teacher } = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    const navBtn = (id) =>
-        `sidebar-btn${activeTab === id ? ' active' : ''}`;
-
-    return (
-        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
-
-            {/* Close button — only visible on mobile via CSS */}
-            <button
-                className="sidebar-close-btn"
-                onClick={onClose}
-                aria-label="Close menu"
-            >
-                <X size={18} />
-            </button>
-
-            <h1 className="sidebar-title">Instructor</h1>
-
-            <nav className="sidebar-nav">
-                <div>
-                    <p className="sidebar-section-label">Main</p>
-                    <div className="sidebar-nav-group">
-                        <button onClick={() => setActiveTab('overview')} className={navBtn('overview')}>
-                            <LayoutDashboard size={16} /> Overview
-                        </button>
-                        <button onClick={() => setActiveTab('results')} className={navBtn('results')}>
-                            <BarChart3 size={16} /> Class Results
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <p className="sidebar-section-label">Account</p>
-                    <div className="sidebar-nav-group">
-                        <button onClick={() => setActiveTab('settings')} className={navBtn('settings')}>
-                            <Settings size={16} /> Profile Settings
-                        </button>
-                        <button onClick={() => setActiveTab('feedback')} className={navBtn('feedback')}>
-                            <MessageSquare size={16} /> Send Feedback
-                        </button>
-                    </div>
-                </div>
-
-                {teacher?.role === 'admin' && (
-                    <div>
-                        <p className="sidebar-section-label">Administration</p>
-                        <div className="sidebar-nav-group">
-                            <button onClick={() => navigate('/admin')} className="sidebar-btn-admin">
-                                <Shield size={16} /> Admin Portal
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </nav>
-
-            <button
-                onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
-                className="sidebar-logout-btn"
-            >
-                <LogOut size={16} /> Sign Out
-            </button>
-        </aside>
-    );
-};
-
-export default TeacherSidebar;
-````
-
 ## File: chrono-dashboard/src/pages/LoginPage.js
 ````javascript
 import React, { useState, useContext, useEffect } from 'react';
@@ -8279,8 +7717,8 @@ const LoginPage = () => {
             const response = await axios.post(`${API_BASE}/auth/login`, payload);
 
             const data = response.data;
-            if (data.token && (data.teacher || data.name)) {
-                const teacherData = data.teacher || data;
+            if (data.token && (data.user || data.teacher || data.name)) {
+                const teacherData = data.user || data.teacher || data;
                 login(teacherData, data.token);
                 toast.success("Login Successful!");
                 navigate('/dashboard');
@@ -8841,6 +8279,850 @@ const systemSettingsSchema = new mongoose.Schema({
 module.exports = mongoose.model('SystemSettings', systemSettingsSchema);
 ````
 
+## File: chronoquest-api/vercel.json
+````json
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "server.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "server.js"
+        }
+    ]
+}
+````
+
+## File: chrono-dashboard/src/components/admin/UsersList.js
+````javascript
+import React, { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { Archive, Edit2, ChevronLeft, ChevronRight, X, RotateCcw } from 'lucide-react';
+
+const PAGE_SIZE = 10;
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const PERIODS = [
+    "Era 1: Pre-Colonial",
+    "Era 2: Spanish Colonization",
+    "Era 3: Revolutionary",
+    "Era 4: American/Japanese",
+    "Era 5: Post-war"
+];
+
+const Pagination = ({ total, page, onPage }) => {
+    const pages = Math.ceil(total / PAGE_SIZE);
+    if (pages <= 1) return null;
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px', marginTop: '16px' }}>
+            <button
+                onClick={() => onPage(page - 1)}
+                disabled={page === 1}
+                style={{ padding: '4px 8px', border: '1px solid #e2e8f0', borderRadius: '8px', background: 'none', cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.4 : 1, display: 'flex', alignItems: 'center' }}
+            ><ChevronLeft size={14} /></button>
+            {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
+                <button
+                    key={p}
+                    onClick={() => onPage(p)}
+                    style={{
+                        padding: '4px 10px', border: '1px solid', borderRadius: '8px', cursor: 'pointer',
+                        fontWeight: 700, fontSize: '0.75rem',
+                        borderColor: p === page ? '#0f172a' : '#e2e8f0',
+                        background: p === page ? '#0f172a' : 'none',
+                        color: p === page ? '#fff' : '#475569',
+                    }}
+                >{p}</button>
+            ))}
+            <button
+                onClick={() => onPage(page + 1)}
+                disabled={page === pages}
+                style={{ padding: '4px 8px', border: '1px solid #e2e8f0', borderRadius: '8px', background: 'none', cursor: page === pages ? 'not-allowed' : 'pointer', opacity: page === pages ? 0.4 : 1, display: 'flex', alignItems: 'center' }}
+            ><ChevronRight size={14} /></button>
+        </div>
+    );
+};
+
+const UsersList = ({
+    searchTerm,
+    setSearchTerm,
+    users,
+    filteredTeachers,
+    filteredStudents,
+    handleEditUser,
+    handleDeactivateUser,
+    handleArchiveUser,
+    fetchAllUsers
+}) => {
+    const [teacherPage, setTeacherPage] = useState(1);
+    const [studentPage, setStudentPage] = useState(1);
+    const [showDeletedUsers, setShowDeletedUsers] = useState(false);
+    const [deletedUsers, setDeletedUsers] = useState({ teachers: [], students: [] });
+    const [showAddStudentForm, setShowAddStudentForm] = useState(false);
+    const [demoStudentForm, setDemoStudentForm] = useState({
+        name: '',
+        email: '',
+        classCode: '',
+        score: 0,
+        levelReached: 'Era 1: Pre-Colonial',
+        password: 'Demo@1234'
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    React.useEffect(() => { setTeacherPage(1); setStudentPage(1); }, [searchTerm]);
+
+    const pagedTeachers = filteredTeachers.slice((teacherPage - 1) * PAGE_SIZE, teacherPage * PAGE_SIZE);
+    const pagedStudents = filteredStudents.slice((studentPage - 1) * PAGE_SIZE, studentPage * PAGE_SIZE);
+
+    const handleAddDemoStudent = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const token = localStorage.getItem('teacherToken');
+
+            if (demoStudentForm.score < 0 || demoStudentForm.score > 100) {
+                toast.error('Score must be between 0 and 100');
+                setIsSubmitting(false);
+                return;
+            }
+
+            await axios.post(
+                `${API_BASE}/auth/register`,
+                {
+                    name: demoStudentForm.name.trim(),
+                    email: demoStudentForm.email.trim().toLowerCase(),
+                    classCode: demoStudentForm.classCode.trim(),
+                    password: demoStudentForm.password,
+                    score: parseInt(demoStudentForm.score),
+                    levelReached: demoStudentForm.levelReached,
+                    userType: 'student'  // Add this line
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success('Demo student added successfully!');
+            setShowAddStudentForm(false);
+            setDemoStudentForm({
+                name: '',
+                email: '',
+                classCode: '',
+                score: 0,
+                levelReached: 'Era 1: Pre-Colonial',
+                password: 'Demo@1234'
+            });
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to add demo student');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Fetch deleted users
+    const handleShowDeletedUsers = async () => {
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.get(`${API_BASE}/admin/users/deleted`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setDeletedUsers(data);
+            setShowDeletedUsers(true);
+        } catch (error) {
+            toast.error('Failed to load deleted users');
+        }
+    };
+
+    // Restore user
+    const handleRestoreUser = async (userId, userType) => {
+        try {
+            const token = localStorage.getItem('teacherToken');
+            await axios.post(
+                `${API_BASE}/admin/users/restore`,
+                { userId, userType },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success('User restored successfully');
+            setShowDeletedUsers(false);
+            // Refresh both deleted and main users lists
+            await fetchAllUsers();
+            await handleShowDeletedUsers();
+        } catch (error) {
+            toast.error('Failed to restore user');
+        }
+    };
+
+    // Archive user with confirmation
+    const handleArchiveUserWithConfirm = (userId, userType) => {
+        handleArchiveUser(userId, userType);
+    };
+
+
+
+    return (
+        <div className="space-y-8">
+            {/* ── Section header ── */}
+            <div className="flex-between">
+                <div>
+                    <h2 className="page-title">User Management</h2>
+                    <p className="page-subtitle">Manage teachers and learners across the platform</p>
+                </div>
+                <div className="header-actions">
+                    <input
+                        type="text"
+                        placeholder="Search by name, email, or class code..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="form-input-sm"
+                        style={{ width: '280px' }}
+                    />
+                    <button
+                        onClick={() => setShowAddStudentForm(!showAddStudentForm)}
+                        className="btn-indigo"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        {showAddStudentForm ? 'Close' : 'Add Demo Student'}
+                    </button>
+                    <button
+                        onClick={handleShowDeletedUsers}
+                        className="btn-indigo"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        Archived Users ({deletedUsers.teachers.length + deletedUsers.students.length})
+                    </button>
+                </div>
+            </div>
+
+            {/* ── Archived Users Modal ── */}
+            {showDeletedUsers && (
+                <div className="card" style={{ backgroundColor: '#fff5f5', borderLeft: '4px solid #dc2626' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                        <h3 style={{ color: '#991b1b', margin: 0, fontWeight: 700 }}>Archived Users</h3>
+                        <button
+                            onClick={() => setShowDeletedUsers(false)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+                        >
+                            <X size={18} color="#991b1b" />
+                        </button>
+                    </div>
+
+                    {/* Deleted Teachers */}
+                    {deletedUsers.teachers.length > 0 && (
+                        <div style={{ marginBottom: '20px' }}>
+                            <h4 style={{ color: '#991b1b', marginBottom: '8px', fontSize: '0.875rem', fontWeight: 700 }}>Teachers ({deletedUsers.teachers.length})</h4>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table className="table" style={{ fontSize: '0.875rem' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Deleted</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {deletedUsers.teachers.map(t => (
+                                            <tr key={t._id}>
+                                                <td className="table-cell-name">{t.name}</td>
+                                                <td className="table-cell-sub">{t.email}</td>
+                                                <td className="table-cell-sub">{new Date(t.deletedAt).toLocaleDateString()}</td>
+                                                <td>
+                                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                                        <button
+                                                            onClick={() => handleRestoreUser(t._id, 'teacher')}
+                                                            style={{
+                                                                padding: '6px 12px',
+                                                                backgroundColor: '#10b981',
+                                                                color: 'white',
+                                                                border: 'none',
+                                                                borderRadius: '6px',
+                                                                cursor: 'pointer',
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: 600,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '4px'
+                                                            }}
+                                                        >
+                                                            <RotateCcw size={14} /> Restore
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Deleted Students */}
+                    {deletedUsers.students.length > 0 && (
+                        <div>
+                            <h4 style={{ color: '#991b1b', marginBottom: '8px', fontSize: '0.875rem', fontWeight: 700 }}>Learners ({deletedUsers.students.length})</h4>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table className="table" style={{ fontSize: '0.875rem' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Class Code</th>
+                                            <th>Deleted</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {deletedUsers.students.map(s => (
+                                            <tr key={s._id}>
+                                                <td className="table-cell-name">{s.name}</td>
+                                                <td className="table-cell-sub">{s.email}</td>
+                                                <td className="table-cell-mono">{s.classCode}</td>
+                                                <td className="table-cell-sub">{new Date(s.deletedAt).toLocaleDateString()}</td>
+                                                <td>
+                                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                                        <button
+                                                            onClick={() => handleRestoreUser(s._id, 'student')}
+                                                            style={{
+                                                                padding: '6px 12px',
+                                                                backgroundColor: '#10b981',
+                                                                color: 'white',
+                                                                border: 'none',
+                                                                borderRadius: '6px',
+                                                                cursor: 'pointer',
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: 600,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '4px'
+                                                            }}
+                                                        >
+                                                            <RotateCcw size={14} /> Restore
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {deletedUsers.teachers.length === 0 && deletedUsers.students.length === 0 && (
+                        <p style={{ textAlign: 'center', color: '#991b1b', padding: '16px' }}>No archived users</p>
+                    )}
+                </div>
+            )}
+
+            {/* ── Demo Student Form ── */}
+            {showAddStudentForm && (
+                <div className="card demo-form-card">
+                    <div className="demo-form-header">
+                        <h3 className="demo-form-title">➕ Add Demo Student (Presentation)</h3>
+                        <button
+                            onClick={() => setShowAddStudentForm(false)}
+                            className="btn-close-icon"
+                        >
+                            <X size={18} color="#64748b" />
+                        </button>
+                    </div>
+                    <form onSubmit={handleAddDemoStudent} className="demo-form-grid">
+                        {/* Name */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Name *</label>
+                            <input
+                                type="text"
+                                placeholder="John Doe"
+                                value={demoStudentForm.name}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, name: e.target.value })}
+                                required
+                                className="demo-form-input"
+                            />
+                        </div>
+
+                        {/* Email */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Email *</label>
+                            <input
+                                type="email"
+                                placeholder="student@example.com"
+                                value={demoStudentForm.email}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, email: e.target.value })}
+                                required
+                                className="demo-form-input"
+                            />
+                        </div>
+
+                        {/* Class Code */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Class Code *</label>
+                            <input
+                                type="text"
+                                placeholder="ABC123"
+                                value={demoStudentForm.classCode}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, classCode: e.target.value })}
+                                required
+                                className="demo-form-input"
+                            />
+                        </div>
+
+                        {/* Score */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Score (0-100)</label>
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                value={demoStudentForm.score}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, score: e.target.value })}
+                                className="demo-form-input"
+                            />
+                        </div>
+
+                        {/* Level Reached */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Level Reached</label>
+                            <select
+                                value={demoStudentForm.levelReached}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, levelReached: e.target.value })}
+                                className="demo-form-select"
+                            >
+                                {PERIODS.map(period => (
+                                    <option key={period} value={period}>{period}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Password */}
+                        <div className="demo-form-field">
+                            <label className="demo-form-label">Password</label>
+                            <input
+                                type="text"
+                                value={demoStudentForm.password}
+                                onChange={(e) => setDemoStudentForm({ ...demoStudentForm, password: e.target.value })}
+                                className="demo-form-input"
+                            />
+                        </div>
+
+                        {/* Actions */}
+                        <div className="demo-form-actions">
+                            <button
+                                type="button"
+                                onClick={() => setShowAddStudentForm(false)}
+                                className="btn-cancel"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="btn-submit"
+                            >
+                                {isSubmitting ? 'Creating...' : 'Create Demo Student'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            {/* ── Teachers table ── */}
+            <div className="card">
+                <div className="flex-between" style={{ marginBottom: '16px' }}>
+                    <h3 className="section-title">
+                        Teachers ({filteredTeachers.length}{searchTerm ? ` of ${users.teachers?.length || 0}` : ''})
+                    </h3>
+                </div>
+                <div className="table-wrapper" style={{ overflowY: 'auto', maxHeight: '440px' }}>
+                    <table className="table">
+                        <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Classes</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pagedTeachers.length === 0 ? (
+                                <tr><td colSpan={5} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No teachers match your search</td></tr>
+                            ) : pagedTeachers.map(t => (
+                                <tr key={t._id}>
+                                    <td className="table-cell-name">{t.name}</td>
+                                    <td className="table-cell-sub">{t.email}</td>
+                                    <td className="table-cell-sub">{t.totalSections}</td>
+                                    <td>
+                                        <span className={`badge ${t.isActive ? 'badge-active' : 'badge-inactive'}`}>
+                                            {t.isActive ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div className="table-actions">
+                                            <button onClick={() => handleEditUser(t, 'teacher')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleArchiveUserWithConfirm(t._id, 'teacher')} className="btn-icon btn-icon-yellow" title="Archive"><Archive size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination total={filteredTeachers.length} page={teacherPage} onPage={setTeacherPage} />
+            </div>
+
+            {/* ── Learners table ── */}
+            <div className="card">
+                <div className="flex-between" style={{ marginBottom: '16px' }}>
+                    <h3 className="section-title">
+                        Learners ({filteredStudents.length}{searchTerm ? ` of ${users.students?.length || 0}` : ''})
+                    </h3>
+                </div>
+                <div className="table-wrapper" style={{ overflowY: 'auto', maxHeight: '440px' }}>
+                    <table className="table">
+                        <thead style={{ position: 'sticky', top: 0, zIndex: 1, background: '#f8fafc' }}>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Class Code</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pagedStudents.length === 0 ? (
+                                <tr><td colSpan={4} style={{ textAlign: 'center', color: '#94a3b8', padding: '24px' }}>No learners match your search</td></tr>
+                            ) : pagedStudents.map(s => (
+                                <tr key={s._id}>
+                                    <td className="table-cell-name">{s.name}</td>
+                                    <td className="table-cell-sub">{s.email}</td>
+                                    <td className="table-cell-mono">{s.classCode}</td>
+                                    <td>
+                                        <div className="table-actions">
+                                            <button onClick={() => handleEditUser(s, 'student')} className="btn-icon btn-icon-blue" title="Edit"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleArchiveUserWithConfirm(s._id, 'student')} className="btn-icon btn-icon-yellow" title="Archive"><Archive size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <Pagination total={filteredStudents.length} page={studentPage} onPage={setStudentPage} />
+            </div>
+        </div>
+    );
+};
+
+export default UsersList;
+````
+
+## File: chrono-dashboard/src/components/TeacherSidebar.js
+````javascript
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { LayoutDashboard, BarChart3, LogOut, Settings, MessageSquare, Shield, X } from 'lucide-react';
+
+const TeacherSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
+    const { teacher } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const navBtn = (id) =>
+        `sidebar-btn${activeTab === id ? ' active' : ''}`;
+
+    return (
+        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
+
+            {/* Close button — only visible on mobile via CSS */}
+            <button
+                className="sidebar-close-btn"
+                onClick={onClose}
+                aria-label="Close menu"
+            >
+                <X size={18} />
+            </button>
+
+            <h1 className="sidebar-title">Teacher</h1>
+
+            <nav className="sidebar-nav">
+                <div>
+                    <p className="sidebar-section-label">Main</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('overview')} className={navBtn('overview')}>
+                            <LayoutDashboard size={16} /> Overview
+                        </button>
+                        <button onClick={() => setActiveTab('results')} className={navBtn('results')}>
+                            <BarChart3 size={16} /> Class Results
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="sidebar-section-label">Account</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('settings')} className={navBtn('settings')}>
+                            <Settings size={16} /> Profile Settings
+                        </button>
+                        <button onClick={() => setActiveTab('feedback')} className={navBtn('feedback')}>
+                            <MessageSquare size={16} /> Send Feedback
+                        </button>
+                    </div>
+                </div>
+
+                {teacher?.role === 'admin' && (
+                    <div>
+                        <p className="sidebar-section-label">Administration</p>
+                        <div className="sidebar-nav-group">
+                            <button onClick={() => navigate('/admin')} className="sidebar-btn-admin">
+                                <Shield size={16} /> Admin Portal
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </nav>
+
+            <button
+                onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+                className="sidebar-logout-btn"
+            >
+                <LogOut size={16} /> Sign Out
+            </button>
+        </aside>
+    );
+};
+
+export default TeacherSidebar;
+````
+
+## File: chrono-dashboard/src/pages/ProfileSettings.js
+````javascript
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import { Save, Eye, EyeOff, Lock } from 'lucide-react';
+
+const ProfileSettings = ({ onProfileUpdate }) => {
+    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+    const { teacher, setTeacher } = useContext(AuthContext);
+
+    const [name, setName] = useState(teacher?.name || '');
+    const [email, setEmail] = useState(teacher?.email || '');
+    const [accountLoading, setAccountLoading] = useState(false);
+
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordLoading, setPasswordLoading] = useState(false);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const token = localStorage.getItem('teacherToken');
+
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        setAccountLoading(true);
+        try {
+            const { data } = await axios.put(`${API_BASE}/auth/profile`,
+                { name, email },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const updatedTeacher = { ...teacher, name: data.name, email: data.email };
+            setTeacher(updatedTeacher);
+            localStorage.setItem('teacherData', JSON.stringify(updatedTeacher));
+            toast.success("Account information updated.");
+            if (onProfileUpdate) onProfileUpdate();
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to update profile.");
+        } finally {
+            setAccountLoading(false);
+        }
+    };
+
+    const handleChangePassword = async (e) => {
+        e.preventDefault();
+        if (newPassword !== confirmPassword) {
+            toast.error("New passwords do not match.");
+            return;
+        }
+        if (newPassword.length < 6) {
+            toast.error("Password must be at least 6 characters long.");
+            return;
+        }
+        setPasswordLoading(true);
+        try {
+            await axios.put(`${API_BASE}/auth/change-password`,
+                { currentPassword, newPassword },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            toast.success("Password changed successfully.");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to change password.");
+        } finally {
+            setPasswordLoading(false);
+        }
+    };
+
+    return (
+        <div style={{ width: '100%', paddingTop: '48px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
+            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+                <div style={{ marginBottom: '48px' }}>
+                    <h1 className="page-title">Profile Settings</h1>
+                    <p className="page-subtitle">Manage your account information and security preferences.</p>
+                </div>
+
+                <div className="space-y-8">
+                    <div className="card">
+                        <div className="section-header-icon-row">
+                            <div className="profile-section-icon profile-section-icon-default">
+                                <Lock size={20} style={{ color: '#475569' }} />
+                            </div>
+                            <div>
+                                <h2 className="section-title">Account Information</h2>
+                                <p className="section-subtitle">Update your professional identity</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleUpdateProfile} className="space-y-6">
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label className="form-label">Full Name</label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Email Address</label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="divider" style={{ paddingTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+                                <button type="submit" disabled={accountLoading} className="btn-save">
+                                    <Save size={16} />
+                                    {accountLoading ? "Saving..." : "Save Changes"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="card">
+                        <div className="section-header-icon-row">
+                            <div className="profile-section-icon profile-section-icon-danger">
+                                <Lock size={20} style={{ color: '#dc2626' }} />
+                            </div>
+                            <div>
+                                <h2 className="section-title">Security</h2>
+                                <p className="section-subtitle">Change your password regularly for security</p>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleChangePassword} className="space-y-6">
+                            <div className="form-group">
+                                <label className="form-label">Current Password</label>
+                                <div className="input-password-wrapper">
+                                    <input
+                                        type={showCurrentPassword ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        className="form-input"
+                                        required
+                                    />
+                                    <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-toggle">
+                                        {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="grid-2">
+                                <div className="form-group">
+                                    <label className="form-label">New Password</label>
+                                    <div className="input-password-wrapper">
+                                        <input
+                                            type={showNewPassword ? "text" : "password"}
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            className="form-input"
+                                            required
+                                        />
+                                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="password-toggle">
+                                            {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Confirm Password</label>
+                                    <div className="input-password-wrapper">
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="form-input"
+                                            required
+                                        />
+                                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
+                                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ paddingTop: '24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end' }}>
+                                <button type="submit" disabled={passwordLoading} className="btn-red">
+                                    <Lock size={16} />
+                                    {passwordLoading ? "Updating..." : "Change Password"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="alert-info">
+                        <span style={{ color: '#2563eb' }}>Security Note:</span> All changes are automatically encrypted and securely stored in the ChronoQuest system. Your account security is monitored continuously. Never share your password with anyone, including administrators.
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProfileSettings;
+````
+
+## File: chronoquest-api/src/routes/authRoutes.js
+````javascript
+const express = require('express');
+const router = express.Router();
+const authController = require('../controllers/authController');
+const { protect } = require('../middleware/authMiddleware');
+const { loginLimiter } = require('../middleware/rateLimiter');
+
+
+router.post('/register', loginLimiter, authController.registerUser || authController.register);
+router.post('/login', loginLimiter, authController.loginUser || authController.login);
+router.get('/validate', protect, authController.validateToken);
+router.get('/profile', protect, authController.getTeacherProfile);
+router.put('/profile', protect, authController.updateTeacherProfile || authController.updateProfile);
+router.put('/change-password', protect, authController.changePassword);
+router.post('/feedback', protect, authController.submitFeedback);
+
+module.exports = router;
+````
+
 ## File: chronoquest-api/src/routes/questionRoutes.js
 ````javascript
 const express = require('express');
@@ -8868,25 +9150,6 @@ router.post('/:questionId/restore', protect, adminOnly, restoreQuestion);
 router.post('/:questionId/toggle', protect, toggleQuestionStatus);
 
 module.exports = router;
-````
-
-## File: chronoquest-api/vercel.json
-````json
-{
-    "version": 2,
-    "builds": [
-        {
-            "src": "server.js",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "server.js"
-        }
-    ]
-}
 ````
 
 ## File: chrono-dashboard/src/context/AuthContext.js
@@ -11769,212 +12032,53 @@ body {
 }
 ````
 
-## File: chrono-dashboard/src/pages/ProfileSettings.js
-````javascript
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import toast from 'react-hot-toast';
-import { Save, Eye, EyeOff, Lock } from 'lucide-react';
-
-const ProfileSettings = ({ onProfileUpdate }) => {
-    const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-    const { teacher, setTeacher } = useContext(AuthContext);
-
-    const [name, setName] = useState(teacher?.name || '');
-    const [email, setEmail] = useState(teacher?.email || '');
-    const [accountLoading, setAccountLoading] = useState(false);
-
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordLoading, setPasswordLoading] = useState(false);
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const token = localStorage.getItem('teacherToken');
-
-    const handleUpdateProfile = async (e) => {
-        e.preventDefault();
-        setAccountLoading(true);
-        try {
-            const { data } = await axios.put(`${API_BASE}/auth/profile`,
-                { name, email },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            const updatedTeacher = { ...teacher, name: data.name, email: data.email };
-            setTeacher(updatedTeacher);
-            localStorage.setItem('teacherData', JSON.stringify(updatedTeacher));
-            toast.success("Account information updated.");
-            if (onProfileUpdate) onProfileUpdate();
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to update profile.");
-        } finally {
-            setAccountLoading(false);
+## File: chronoquest-api/package.json
+````json
+{
+  "name": "chronoquest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test:ci": "jest --forceExit",
+    "dev": "nodemon server.js",
+    "test": "jest --watchAll --verbose"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.4.1"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "jest-junit": "^16.0.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2",
+    "tslib": "^2.8.1"
+  },
+  "jest": {
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "reports",
+          "outputName": "jest-results.xml"
         }
-    };
-
-    const handleChangePassword = async (e) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) {
-            toast.error("New passwords do not match.");
-            return;
-        }
-        if (newPassword.length < 6) {
-            toast.error("Password must be at least 6 characters long.");
-            return;
-        }
-        setPasswordLoading(true);
-        try {
-            await axios.put(`${API_BASE}/auth/change-password`,
-                { currentPassword, newPassword },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-            toast.success("Password changed successfully.");
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to change password.");
-        } finally {
-            setPasswordLoading(false);
-        }
-    };
-
-    return (
-        <div style={{ width: '100%', paddingTop: '48px', paddingBottom: '48px', paddingLeft: '24px', paddingRight: '24px' }}>
-            <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-                <div style={{ marginBottom: '48px' }}>
-                    <h1 className="page-title">Profile Settings</h1>
-                    <p className="page-subtitle">Manage your account information and security preferences.</p>
-                </div>
-
-                <div className="space-y-8">
-                    <div className="card">
-                        <div className="section-header-icon-row">
-                            <div className="profile-section-icon profile-section-icon-default">
-                                <Lock size={20} style={{ color: '#475569' }} />
-                            </div>
-                            <div>
-                                <h2 className="section-title">Account Information</h2>
-                                <p className="section-subtitle">Update your professional identity</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleUpdateProfile} className="space-y-6">
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">Full Name</label>
-                                    <input
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Email Address</label>
-                                    <input
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="divider" style={{ paddingTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-                                <button type="submit" disabled={accountLoading} className="btn-save">
-                                    <Save size={16} />
-                                    {accountLoading ? "Saving..." : "Save Changes"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="card">
-                        <div className="section-header-icon-row">
-                            <div className="profile-section-icon profile-section-icon-danger">
-                                <Lock size={20} style={{ color: '#dc2626' }} />
-                            </div>
-                            <div>
-                                <h2 className="section-title">Security</h2>
-                                <p className="section-subtitle">Change your password regularly for security</p>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleChangePassword} className="space-y-6">
-                            <div className="form-group">
-                                <label className="form-label">Current Password</label>
-                                <div className="input-password-wrapper">
-                                    <input
-                                        type={showCurrentPassword ? "text" : "password"}
-                                        value={currentPassword}
-                                        onChange={(e) => setCurrentPassword(e.target.value)}
-                                        className="form-input"
-                                        required
-                                    />
-                                    <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="password-toggle">
-                                        {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">New Password</label>
-                                    <div className="input-password-wrapper">
-                                        <input
-                                            type={showNewPassword ? "text" : "password"}
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            className="form-input"
-                                            required
-                                        />
-                                        <button type="button" onClick={() => setShowNewPassword(!showNewPassword)} className="password-toggle">
-                                            {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Confirm Password</label>
-                                    <div className="input-password-wrapper">
-                                        <input
-                                            type={showConfirmPassword ? "text" : "password"}
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="form-input"
-                                            required
-                                        />
-                                        <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="password-toggle">
-                                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div style={{ paddingTop: '24px', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'flex-end' }}>
-                                <button type="submit" disabled={passwordLoading} className="btn-red">
-                                    <Lock size={16} />
-                                    {passwordLoading ? "Updating..." : "Change Password"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="alert-info">
-                        <span style={{ color: '#2563eb' }}>Security Note:</span> All changes are automatically encrypted and securely stored in the ChronoQuest system. Your account security is monitored continuously. Never share your password with anyone, including administrators.
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default ProfileSettings;
+      ]
+    ]
+  }
+}
 ````
 
 ## File: chronoquest-api/src/controllers/questionController.js
@@ -12117,7 +12221,7 @@ exports.updateQuestion = async (req, res) => {
         }
 
         // Verify ownership (only creator or admin can edit)
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to update this question' });
         }
 
@@ -12164,7 +12268,7 @@ exports.deleteQuestion = async (req, res) => {
         }
 
         // Verify ownership (only creator or admin can delete)
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to delete this question' });
         }
 
@@ -12205,7 +12309,7 @@ exports.toggleQuestionStatus = async (req, res) => {
         }
 
         // Verify ownership
-        if (question.createdBy.toString() !== req.user._id && req.user.role !== 'admin') {
+        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Not authorized to modify this question' });
         }
 
@@ -12460,12 +12564,11 @@ module.exports = mongoose.model('Student', studentSchema);
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
-const { protect, adminOnly, checkPermission } = require('../middleware/adminMiddleware');
-
+const { protect, adminOnly, checkPermission } = require('../middleware/authMiddleware');
 
 router.use(protect);
 router.use(adminOnly);
-router.post('/users/restore', protect, adminOnly, adminController.restoreUser);
+router.post('/users/restore', adminController.restoreUser);
 
 router.get('/users', adminController.getAllUsers);
 router.get('/users/deleted', adminController.getDeletedUsers);
@@ -12485,73 +12588,20 @@ router.post('/settings', checkPermission('manage_settings'), adminController.upd
 module.exports = router;
 ````
 
-## File: chronoquest-api/src/routes/authRoutes.js
-````javascript
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
-const { loginLimiter } = require('../middleware/rateLimiter');
+## File: README.md
+````markdown
+PROJECT TITLE: ChronoQuest Admin and Instructor Portal: A Web-Based Management and Analytics System for the ChronoQuest Mobile Game-Based Learning Application 
+Proponent(s): 
+Anoche, Rodel L. 
+Fuerte, Yuan Wilson M. 
+Manqueria, Andrea Pearl A.
+Rey, Jhonn Carlo M.
+ 
+Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.app/login
 
+Link to the Live Backend API: https://web2finalchronobackend.vercel.app/api/v1/debug
 
-router.post('/register', loginLimiter, authController.registerUser || authController.register);
-router.post('/login', loginLimiter, authController.loginUser || authController.login);
-router.get('/validate', protect, authController.validateToken);
-router.get('/profile', protect, authController.getTeacherProfile);
-router.put('/profile', protect, authController.updateTeacherProfile || authController.updateProfile);
-router.put('/change-password', protect, authController.changePassword);
-router.post('/feedback', protect, authController.submitFeedback);
-
-module.exports = router;
-````
-
-## File: chronoquest-api/package.json
-````json
-{
-  "name": "chronoquest-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "test:ci": "jest --forceExit",
-    "dev": "nodemon server.js",
-    "test": "jest --watchAll --verbose"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.0",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.3.2",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.4.1"
-  },
-  "devDependencies": {
-    "jest": "^30.3.0",
-    "jest-junit": "^16.0.0",
-    "mongodb-memory-server": "^11.0.1",
-    "nodemon": "^3.1.14",
-    "supertest": "^7.2.2",
-    "tslib": "^2.8.1"
-  },
-  "jest": {
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "reports",
-          "outputName": "jest-results.xml"
-        }
-      ]
-    ]
-  }
-}
+Link to API Documentation: [https://drive.google.com/drive/folders/19ar8SURnIK2FUqo6wHIIQQVLmmp3PIYr?usp=sharing](https://drive.google.com/drive/folders/1qPph8k0-xLOwKcI_M9P0zb_TJH-0bp__?usp=sharing)
 ````
 
 ## File: chronoquest-api/src/models/teacherModel.js
@@ -12744,7 +12794,7 @@ router.post('/teacher/archive-section/:classCode', protect, async (req, res) => 
         const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
 
         if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
+            return res.status(404).json({ message: 'Section not found in your classes' });
         }
 
         teacher.sections[sectionIndex].isArchived = true;
@@ -12774,7 +12824,7 @@ router.post('/teacher/unarchive-section/:classCode', protect, async (req, res) =
         const sectionIndex = teacher.sections.findIndex(s => s.classCode === classCode);
 
         if (sectionIndex === -1) {
-            return res.status(403).json({ message: 'Section not found in your classes' });
+            return res.status(404).json({ message: 'Section not found in your classes' });
         }
 
         teacher.sections[sectionIndex].isArchived = false;
@@ -12809,7 +12859,9 @@ router.get('/analytics/overall', protect, async (req, res) => {
         const codes = activeSections.map(s => s.classCode);
 
         const students = await Student.find({
-            classCode: { $in: codes }
+            classCode: { $in: codes },
+            isActive: true,
+            isDeleted: false   // ← ADD THIS
         }).select('name score classCode levelReached');
 
         const formattedScores = students.map(s => ({
@@ -12835,7 +12887,7 @@ router.post('/students', protect, async (req, res) => {
             return res.status(403).json({ message: 'You can only add students to your own sections' });
         }
 
-        const existingStudent = await Student.findOne({ email });
+        const existingStudent = await Student.findOne({ email, isDeleted: false });
         if (existingStudent) {
             return res.status(400).json({ message: 'Student with this email already exists' });
         }
@@ -12927,7 +12979,8 @@ router.delete('/students/:id', protect, async (req, res) => {
             return res.status(403).json({ message: 'You can only delete students in your sections' });
         }
 
-        await Student.findByIdAndDelete(studentId);
+
+        await Student.findByIdAndUpdate(studentId, { isDeleted: true, isActive: false, deletedAt: new Date() });
         res.json({ message: 'Student deleted successfully' });
     } catch (error) {
         console.error("Delete Student Error:", error);
@@ -12939,22 +12992,6 @@ router.delete('/students/:id', protect, async (req, res) => {
 router.post('/student/sync', studentController.simulateSync);
 
 module.exports = router;
-````
-
-## File: README.md
-````markdown
-PROJECT TITLE: ChronoQuest Admin and Instructor Portal: A Web-Based Management and Analytics System for the ChronoQuest Mobile Game-Based Learning Application 
-Proponent(s): 
-Anoche, Rodel L. 
-Fuerte, Yuan Wilson M. 
-Manqueria, Andrea Pearl A.
-Rey, Jhonn Carlo M.
- 
-Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.app/login
-
-Link to the Live Backend API: https://web2finalchronobackend.vercel.app/api/v1/debug
-
-Link to API Documentation: [https://drive.google.com/drive/folders/19ar8SURnIK2FUqo6wHIIQQVLmmp3PIYr?usp=sharing](https://drive.google.com/drive/folders/1qPph8k0-xLOwKcI_M9P0zb_TJH-0bp__?usp=sharing)
 ````
 
 ## File: chrono-dashboard/src/pages/Dashboard.js
@@ -13000,7 +13037,7 @@ const Dashboard = () => {
             const { data } = await axios.get(`${API_BASE}/auth/profile?t=${Date.now()}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setTeacher(data);
+            setTeacher(data.teacher);
         } catch (err) {
             console.error("Session expired or sync failed");
         }
@@ -13220,9 +13257,7 @@ const Dashboard = () => {
                                             <button onClick={(e) => handleArchiveSection(sec.classCode, e)} title="Archive" className="section-chip-icon-btn">
                                                 <Archive size={14} />
                                             </button>
-                                            <button onClick={(e) => handleDeleteSection(sec.classCode, e)} title="Delete" className="section-chip-icon-btn section-chip-icon-btn-danger">
-                                                <Trash size={14} />
-                                            </button>
+
                                         </div>
                                     )) : (
                                         <p className="no-results">No active sections created yet.</p>
@@ -13431,958 +13466,6 @@ const Dashboard = () => {
 export default Dashboard;
 ````
 
-## File: chronoquest-api/src/controllers/adminController.js
-````javascript
-const Teacher = require('../models/teacherModel');
-const Student = require('../models/studentModel');
-const ActivityLog = require('../models/activityLogModel');
-const Feedback = require('../models/feedbackModel');
-const SystemSettings = require('../models/systemSettingsModel');
-
-exports.getAllUsers = async (req, res) => {
-    try {
-        // Filter out deleted users
-        const teachers = await Teacher.find({ isDeleted: false }).select('-password');
-        const students = await Student.find({ isDeleted: false }).select('-password');
-
-        const formattedTeachers = teachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = students.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            totalUsers: formattedTeachers.length + formattedStudents.length,
-            totalTeachers: formattedTeachers.length,
-            totalStudents: formattedStudents.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error: error.message });
-    }
-};
-
-exports.getDeletedUsers = async (req, res) => {
-    try {
-        const deletedTeachers = await Teacher.find({ isDeleted: true }).select('-password');
-        const deletedStudents = await Student.find({ isDeleted: true }).select('-password');
-
-        const formattedTeachers = deletedTeachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = deletedStudents.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Deleted users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            total: formattedTeachers.length + formattedStudents.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
-    }
-};
-
-exports.deactivateUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (userType === 'teacher') {
-            await Teacher.findByIdAndUpdate(userId, { isActive: false });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_TEACHER',
-                resourceId: userId,
-                status: 'success'
-            });
-        } else if (userType === 'student') {
-            await Student.findByIdAndUpdate(userId, { isActive: false });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_STUDENT',
-                resourceId: userId,
-                status: 'success'
-            });
-        }
-
-        res.json({ message: `User deactivated successfully` });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deactivating user', error: error.message });
-    }
-};
-
-exports.deleteUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({
-                message: 'Invalid userType. Use "teacher" or "student".',
-                errorCode: 'INVALID_USER_TYPE'
-            });
-        }
-
-        let deletedUser;
-
-        if (userType === 'teacher') {
-            const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
-            const userToDelete = await Teacher.findById(userId);
-
-            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
-                return res.status(400).json({ message: 'Cannot delete the last admin account' });
-            }
-
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: true,
-                    deletedAt: new Date()
-                },
-                { new: true }
-            );
-        } else if (userType === 'student') {
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Student.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: true,
-                    deletedAt: new Date()
-                },
-                { new: true }
-            );
-        }
-
-        if (!deletedUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'DELETE_USER',
-            resource: userType,
-            resourceId: userId,
-            status: 'success'
-        });
-
-        res.json({ message: 'User deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting user', error: error.message });
-    }
-};
-
-// NEW: Restore a deleted user
-exports.restoreUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({ message: 'Invalid userType' });
-        }
-
-        let restoredUser;
-
-        if (userType === 'teacher') {
-            restoredUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null
-                },
-                { new: true }
-            ).select('-password');
-        } else if (userType === 'student') {
-            restoredUser = await Student.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null
-                },
-                { new: true }
-            ).select('-password');
-        }
-
-        if (!restoredUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'RESTORE_USER',
-            resource: userType,
-            resourceId: userId,
-            status: 'success'
-        });
-
-        res.json({ message: 'User restored successfully', user: restoredUser });
-    } catch (error) {
-        res.status(500).json({ message: 'Error restoring user', error: error.message });
-    }
-};
-
-exports.updateUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.params;
-        const { name, email, role } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({ message: 'Invalid userType' });
-        }
-
-        if (name && (name.trim().length < 2 || name.trim().length > 100)) {
-            return res.status(400).json({ message: 'Name must be between 2-100 characters' });
-        }
-
-        if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            return res.status(400).json({ message: 'Invalid email format' });
-        }
-
-        if (userType === 'teacher') {
-            if (email) {
-                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId }, isDeleted: false });
-                if (existingTeacher) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            if (role && !['teacher', 'admin'].includes(role)) {
-                return res.status(400).json({ message: 'Invalid role' });
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name.trim();
-            if (email) updateData.email = email.toLowerCase();
-            if (role) updateData.role = role;
-
-            const updatedTeacher = await Teacher.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            if (!updatedTeacher) {
-                return res.status(404).json({ message: 'Teacher not found' });
-            }
-
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'teacher',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
-
-            res.json({ message: 'User updated successfully', user: updatedTeacher });
-        } else if (userType === 'student') {
-            if (email) {
-                const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
-                if (existingStudent) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name.trim();
-            if (email) updateData.email = email.toLowerCase();
-
-            const updatedStudent = await Student.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            if (!updatedStudent) {
-                return res.status(404).json({ message: 'Student not found' });
-            }
-
-            res.json({ message: 'User updated successfully', user: updatedStudent });
-        }
-    } catch (error) {
-        console.error('Update User Error:', error);
-        res.status(500).json({ message: 'Error updating user', error: error.message });
-    }
-};
-
-exports.getSystemAnalytics = async (req, res) => {
-    try {
-        const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
-        const totalStudents = await Student.countDocuments({ isDeleted: false });
-        const totalSections = await Teacher.aggregate([
-            { $match: { isDeleted: false } },
-            { $unwind: '$sections' },
-            { $count: 'total' }
-        ]);
-
-        const recentUsers = await Teacher.find({ isDeleted: false })
-            .sort({ createdAt: -1 })
-            .limit(10)
-            .select('name email createdAt');
-
-        const platformStats = {
-            totalTeachers,
-            totalStudents,
-            totalSections: totalSections[0]?.total || 0,
-            totalUsers: totalTeachers + totalStudents,
-            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
-            recentUsers
-        };
-
-        res.json({
-            message: 'System analytics retrieved successfully',
-            ...platformStats
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
-    }
-};
-
-exports.getRecentActivityLogs = async (req, res) => {
-    try {
-        const limit = req.query.limit || 50;
-        const logs = await ActivityLog.find()
-            .sort({ createdAt: -1 })
-            .limit(parseInt(limit))
-            .select('-__v');
-
-        res.json({
-            message: 'Activity logs retrieved successfully',
-            logs
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
-    }
-};
-
-exports.getAllFeedback = async (req, res) => {
-    try {
-        const feedback = await Feedback.find()
-            .sort({ createdAt: -1 })
-            .select('-__v');
-
-        res.json({
-            message: 'Feedback retrieved successfully',
-            feedback,
-            total: feedback.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
-    }
-};
-
-exports.respondToFeedback = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { response } = req.body;
-
-        const feedback = await Feedback.findByIdAndUpdate(
-            id,
-            {
-                response,
-                respondedAt: new Date(),
-                respondedBy: req.user._id
-            },
-            { new: true }
-        );
-
-        if (!feedback) {
-            return res.status(404).json({ message: 'Feedback not found' });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'RESPOND_FEEDBACK',
-            resource: 'feedback',
-            resourceId: id,
-            status: 'success'
-        });
-
-        res.json({ message: 'Feedback response submitted', feedback });
-    } catch (error) {
-        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
-    }
-};
-
-exports.getSystemSettings = async (req, res) => {
-    try {
-        let settings = await SystemSettings.findOne();
-
-        if (!settings) {
-            settings = new SystemSettings({
-                max_learning_groups_per_instructor: 10,
-                max_learners_per_group: 30
-            });
-            await settings.save();
-        }
-
-        res.json({
-            message: 'System settings retrieved successfully',
-            settings
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching settings', error: error.message });
-    }
-};
-
-exports.updateSystemSetting = async (req, res) => {
-    try {
-        const { key, value } = req.body;
-
-        let settings = await SystemSettings.findOne();
-
-        if (!settings) {
-            settings = new SystemSettings();
-        }
-
-        settings[key] = value;
-        await settings.save();
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'UPDATE_SETTINGS',
-            resource: 'settings',
-            resourceId: key,
-            status: 'success'
-        });
-
-        res.json({
-            message: 'Setting updated successfully',
-            settings
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating setting', error: error.message });
-    }
-};
-````
-
-## File: chrono-dashboard/src/pages/AdminPanel.js
-````javascript
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import AdminSidebar from '../components/AdminSidebar';
-import QuestionManagement from './QuestionManagement';
-import UsersList from '../components/admin/UsersList';
-import FeedbackSection from '../components/admin/FeedbackSection';
-import toast, { Toaster } from 'react-hot-toast';
-import { Users, BookOpen, Lock, Menu } from 'lucide-react';
-
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const StatCard = ({ title, value, icon }) => (
-    <div className="stat-card">
-        <p className="stat-card-label">{title}</p>
-        <div className="stat-card-icon-row">
-            <div className="text-slate-900">{icon}</div>
-            <p className="stat-card-value">{value}</p>
-        </div>
-    </div>
-);
-
-const AdminPanel = () => {
-    const { teacher, setTeacher, logout } = useContext(AuthContext);
-    const [activeTab, setActiveTab] = useState('dashboard');
-    const [loading, setLoading] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
-
-    const [users, setUsers] = useState({ teachers: [], students: [] });
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [editingUserType, setEditingUserType] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
-
-    const [analytics, setAnalytics] = useState(null);
-    const [activityLogs, setActivityLogs] = useState([]);
-    const [activityLogPage, setActivityLogPage] = useState(1);
-    const LOGS_PER_PAGE = 10;
-    const [feedback, setFeedback] = useState([]);
-    const [feedbackSearch, setFeedbackSearch] = useState('');
-    const [expandedFeedback, setExpandedFeedback] = useState(null);
-
-    const [settingsForm, setSettingsForm] = useState({
-        max_learning_groups_per_instructor: '',
-        max_learners_per_group: ''
-    });
-    const [settingsSaving, setSettingsSaving] = useState(false);
-
-    const token = localStorage.getItem('teacherToken');
-    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
-
-    // Close sidebar when switching tabs on mobile
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setSidebarOpen(false);
-    };
-
-    useEffect(() => {
-        if (teacher && teacher.role !== 'admin') {
-            toast.error('Admin access required');
-            logout();
-        }
-    }, [teacher, logout]);
-
-    const fetchAllUsers = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
-            setUsers(data);
-            toast.success('Users loaded');
-        } catch (error) {
-            toast.error('Failed to load users');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleDeactivateUser = async (userId, userType) => {
-        if (window.confirm('Are you sure you want to deactivate this user?')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
-                toast.success('User deactivated');
-                fetchAllUsers();
-            } catch (error) {
-                toast.error('Failed to deactivate user');
-            }
-        }
-    };
-
-    const handleDeleteUser = async (userId, userType) => {
-        if (window.confirm('Confirm deletion? This action cannot be undone!')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
-                toast.success('User deleted');
-                fetchAllUsers();
-            } catch (error) {
-                toast.error('Failed to delete user');
-            }
-        }
-    };
-
-    const handleEditUser = (user, userType) => {
-        setEditingUser(user);
-        setEditingUserType(userType);
-        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
-        setEditModalOpen(true);
-    };
-
-    const handleUpdateUser = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
-            toast.success('User updated successfully');
-
-            // If updating current user's role, refresh their auth data
-            if (editingUser._id === teacher._id) {
-                const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
-                localStorage.setItem('teacherData', JSON.stringify(data.teacher));
-                setTeacher(data.teacher); // ← Add this
-                window.location.reload(); // Force UI update
-            }
-
-            setEditModalOpen(false);
-            fetchAllUsers();
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update user');
-        }
-    };
-
-    const fetchAnalytics = useCallback(async () => {
-        setLoading(true);
-        try {
-            const [analyticsRes, activityRes] = await Promise.all([
-                axios.get(`${API_BASE}/admin/analytics`, { headers }),
-                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
-            ]);
-            setAnalytics(analyticsRes.data);
-            setActivityLogs(activityRes.data.logs || []);
-        } catch (error) {
-            toast.error('Failed to load analytics');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const fetchFeedback = useCallback(async () => {
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
-            setFeedback(data.feedback || []);
-        } catch (error) {
-            toast.error('Failed to load feedback');
-        }
-    }, [headers]);
-
-    const fetchSettings = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
-            setSettingsForm(prev => ({
-                ...prev,
-                max_learning_groups_per_instructor: data.max_learning_groups_per_instructor?.value || 5,
-                max_learners_per_group: data.max_learners_per_group?.value || 50
-            }));
-        } catch (error) {
-            toast.error('Failed to load settings');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleSaveSettings = async () => {
-        setSettingsSaving(true);
-        try {
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learning_groups_per_instructor',
-                value: parseInt(settingsForm.max_learning_groups_per_instructor),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learners_per_group',
-                value: parseInt(settingsForm.max_learners_per_group),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            toast.success('Settings saved successfully');
-            fetchSettings();
-        } catch (error) {
-            toast.error('Failed to save settings');
-        }
-        setSettingsSaving(false);
-    };
-
-    useEffect(() => {
-        if (activeTab === 'users') fetchAllUsers();
-        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
-        else if (activeTab === 'feedback') fetchFeedback();
-        else if (activeTab === 'settings') fetchSettings();
-    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
-
-    const filteredTeachers = users.teachers?.filter(t =>
-        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.email.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredStudents = users.students?.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredFeedback = feedback.filter(fb => {
-        if (!feedbackSearch) return true;
-        const q = feedbackSearch.toLowerCase();
-        return (
-            fb.title?.toLowerCase().includes(q) ||
-            fb.description?.toLowerCase().includes(q) ||
-            fb.submittedBy?.email?.toLowerCase().includes(q) ||
-            fb.submittedBy?.name?.toLowerCase().includes(q) ||
-            fb.type?.toLowerCase().includes(q) ||
-            fb.status?.toLowerCase().includes(q)
-        );
-    });
-
-    const AnalyticsDashboard = () => {
-        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
-        const totalPages = Math.ceil(activityLogs.length / LOGS_PER_PAGE);
-        const pagedLogs = activityLogs.slice((activityLogPage - 1) * LOGS_PER_PAGE, activityLogPage * LOGS_PER_PAGE);
-
-        return (
-            <div className="space-y-8">
-                <div className="flex-between">
-                    <div>
-                        <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
-                        <p className="page-subtitle">System-wide overview and statistics</p>
-                    </div>
-                </div>
-
-                <div className="grid-4">
-                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
-                    <StatCard title="Instructors" value={users.teachers?.length || 0} icon={<Users size={20} />} />
-                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
-                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
-                </div>
-
-                {activityLogs.length > 0 && (
-                    <div className="card">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
-                            <div>
-                                <h3 className="section-title">Recent Activity</h3>
-                                <p className="section-subtitle">{activityLogs.length} total log entries</p>
-                            </div>
-                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
-                                Page {activityLogPage} of {totalPages}
-                            </span>
-                        </div>
-                        <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '420px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
-                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
-                                            <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {pagedLogs.map(log => (
-                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
-                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.userEmail}</p>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                                                    {log.action?.replace(/_/g, ' ')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                                                {new Date(log.createdAt).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <span style={{
-                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
-                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
-                                                    padding: '3px 7px', borderRadius: '4px', fontWeight: 600
-                                                }}>
-                                                    {log.status?.toUpperCase()}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {log.details ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        {totalPages > 1 && (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
-                                <button
-                                    onClick={() => setActivityLogPage(p => Math.max(1, p - 1))}
-                                    disabled={activityLogPage === 1}
-                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === 1 ? '#f8fafc' : '#fff', color: activityLogPage === 1 ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === 1 ? 'not-allowed' : 'pointer' }}
-                                >
-                                    ← Prev
-                                </button>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                    <button
-                                        key={page}
-                                        onClick={() => setActivityLogPage(page)}
-                                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === page ? '#0f172a' : '#fff', color: activityLogPage === page ? '#fff' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}
-                                    >
-                                        {page}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => setActivityLogPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={activityLogPage === totalPages}
-                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === totalPages ? '#f8fafc' : '#fff', color: activityLogPage === totalPages ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === totalPages ? 'not-allowed' : 'pointer' }}
-                                >
-                                    Next →
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        );
-    };
-
-    const SettingsSection = () => (
-        <div className="space-y-6">
-            <div className="flex-between">
-                <div>
-                    <h2 className="page-title">System Settings</h2>
-                    <p className="page-subtitle">Configure platform-wide limits and security rules</p>
-                </div>
-            </div>
-
-            <div className="card">
-                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
-                </h3>
-                {loading ? (
-                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
-                ) : (
-                    <div className="space-y-6">
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
-                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learning_groups_per_instructor}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learners Per Learning Group</p>
-                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learners_per_group}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
-                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
-                                {settingsSaving ? 'Saving...' : 'Save Settings'}
-                            </button>
-                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-
-    return (
-        <div className="page">
-            <Toaster position="top-right" />
-
-            {/* ── Mobile hamburger button ── */}
-            <button
-                className="mobile-menu-btn"
-                onClick={() => setSidebarOpen(true)}
-                aria-label="Open menu"
-            >
-                <Menu size={20} />
-            </button>
-
-            {/* ── Backdrop overlay (mobile only) ── */}
-            <div
-                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
-                onClick={() => setSidebarOpen(false)}
-            />
-
-            <AdminSidebar
-                activeTab={activeTab}
-                setActiveTab={handleTabChange}
-                sidebarOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-            />
-
-            <main className="main-padded" style={{ marginLeft: '256px' }}>
-                <div style={{ padding: '32px 40px' }}>
-                    {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
-                    {activeTab === 'dashboard' && <AnalyticsDashboard />}
-                    {activeTab === 'users' && (
-                        <UsersList
-                            searchTerm={searchTerm}
-                            setSearchTerm={setSearchTerm}
-                            users={users}
-                            filteredTeachers={filteredTeachers}
-                            filteredStudents={filteredStudents}
-                            handleEditUser={handleEditUser}
-                            handleDeactivateUser={handleDeactivateUser}
-                            handleDeleteUser={handleDeleteUser}
-                        />
-                    )}
-                    {activeTab === 'questions' && <QuestionManagement />}
-                    {activeTab === 'feedback' && (
-                        <FeedbackSection
-                            feedbackSearch={feedbackSearch}
-                            setFeedbackSearch={setFeedbackSearch}
-                            filteredFeedback={filteredFeedback}
-                            feedback={feedback}
-                            expandedFeedback={expandedFeedback}
-                            setExpandedFeedback={setExpandedFeedback}
-                        />
-                    )}
-                    {activeTab === 'settings' && <SettingsSection />}
-                </div>
-            </main>
-
-            {editModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-md">
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
-                        <form onSubmit={handleUpdateUser} className="space-y-6">
-                            <div className="form-group">
-                                <label className="form-label-sm">Name</label>
-                                <input
-                                    type="text"
-                                    value={editFormData.name}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="User name"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label-sm">Email</label>
-                                <input
-                                    type="email"
-                                    value={editFormData.email}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="user@example.com"
-                                />
-                            </div>
-                            {editingUserType === 'teacher' && (
-                                <>
-                                    <div className="form-group">
-                                        <label className="form-label-sm">Role</label>
-                                        <select
-                                            value={editFormData.role}
-                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
-                                            className="form-select"
-                                        >
-                                            <option value="teacher">Teacher</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
-                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
-                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
-                                <button type="submit" className="btn-indigo">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default AdminPanel;
-````
-
 ## File: chronoquest-api/reports/jest-results.xml
 ````xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -14586,6 +13669,978 @@ export default AdminPanel;
 </testsuites>
 ````
 
+## File: chronoquest-api/src/controllers/adminController.js
+````javascript
+const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+const ActivityLog = require('../models/activityLogModel');
+const Feedback = require('../models/feedbackModel');
+const SystemSettings = require('../models/systemSettingsModel');
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        // Filter out deleted users
+        const teachers = await Teacher.find({ isDeleted: false }).select('-password');
+        const students = await Student.find({ isDeleted: false, isActive: true }).select('-password');
+
+        const formattedTeachers = teachers.map(t => ({
+            ...t.toObject(),
+            userType: 'teacher',
+            totalSections: t.sections?.length || 0
+        }));
+
+        const formattedStudents = students.map(s => ({
+            ...s.toObject(),
+            userType: 'student'
+        }));
+
+        res.json({
+            message: 'Users retrieved successfully',
+            teachers: formattedTeachers,
+            students: formattedStudents,
+            totalUsers: formattedTeachers.length + formattedStudents.length,
+            totalTeachers: formattedTeachers.length,
+            totalStudents: formattedStudents.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+exports.getDeletedUsers = async (req, res) => {
+    try {
+        const deletedTeachers = await Teacher.find({ isDeleted: true }).select('-password');
+        const deletedStudents = await Student.find({ isDeleted: true }).select('-password');
+
+        const formattedTeachers = deletedTeachers.map(t => ({
+            ...t.toObject(),
+            userType: 'teacher',
+            totalSections: t.sections?.length || 0
+        }));
+
+        const formattedStudents = deletedStudents.map(s => ({
+            ...s.toObject(),
+            userType: 'student'
+        }));
+
+        res.json({
+            message: 'Deleted users retrieved successfully',
+            teachers: formattedTeachers,
+            students: formattedStudents,
+            total: formattedTeachers.length + formattedStudents.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
+    }
+};
+
+exports.deactivateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (userType === 'teacher') {
+            await Teacher.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
+            await ActivityLog.create({
+                userId: req.user._id,
+                userModel: 'Teacher',
+                userRole: req.user.role,
+                action: 'DEACTIVATE_TEACHER',
+                resource: 'teacher',
+                resourceId: userId,
+                status: 'success'
+            });
+        } else if (userType === 'student') {
+            await Student.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
+            await ActivityLog.create({
+                userId: req.user._id,
+                userModel: 'Teacher',
+                userRole: req.user.role,
+                action: 'DEACTIVATE_STUDENT',
+                resource: 'student',
+                resourceId: userId,
+                status: 'success'
+            });
+        }
+
+        res.json({ message: `User deactivated successfully` });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deactivating user', error: error.message });
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({
+                message: 'Invalid userType. Use "teacher" or "student".',
+                errorCode: 'INVALID_USER_TYPE'
+            });
+        }
+
+        let deletedUser;
+
+        if (userType === 'teacher') {
+            const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
+            const userToDelete = await Teacher.findById(userId);
+
+            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
+                return res.status(400).json({ message: 'Cannot delete the last admin account' });
+            }
+
+            // SOFT DELETE: Mark as deleted instead of removing
+            deletedUser = await Teacher.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: true,
+                    deletedAt: new Date()
+                },
+                { new: true }
+            );
+        } else if (userType === 'student') {
+            // SOFT DELETE: Mark as deleted instead of removing
+            deletedUser = await Student.findByIdAndUpdate(
+                userId,
+                { isDeleted: true, deletedAt: new Date(), isActive: false },  // ← ADD isActive: false
+                { new: true }
+            );
+        }
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'DELETE_USER',
+            resource: userType,
+            resourceId: userId,
+            status: 'success'
+        });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+};
+
+// NEW: Restore a deleted user
+exports.restoreUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        let restoredUser;
+
+        if (userType === 'teacher') {
+            restoredUser = await Teacher.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: false,
+                    deletedAt: null,
+                    isActive: true
+                },
+                { new: true }
+            ).select('-password');
+        } else if (userType === 'student') {
+            restoredUser = await Student.findByIdAndUpdate(
+                userId,
+                {
+                    isDeleted: false,
+                    deletedAt: null,
+                    isActive: true   // ← ADD THIS
+                },
+                { new: true }
+            ).select('-password');
+        }
+
+        if (!restoredUser) {
+            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'RESTORE_USER',
+            resource: userType,
+            resourceId: userId,
+            status: 'success'
+        });
+
+        res.json({ message: 'User restored successfully', user: restoredUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Error restoring user', error: error.message });
+    }
+};
+
+exports.updateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.params;
+        const { name, email, role } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        if (name && (name.trim().length < 2 || name.trim().length > 100)) {
+            return res.status(400).json({ message: 'Name must be between 2-100 characters' });
+        }
+
+        if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+
+        if (userType === 'teacher') {
+            if (email) {
+                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId }, isDeleted: false });
+                if (existingTeacher) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            if (role && !['teacher', 'admin'].includes(role)) {
+                return res.status(400).json({ message: 'Invalid role' });
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
+            if (role) updateData.role = role;
+
+            const updatedTeacher = await Teacher.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            if (!updatedTeacher) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
+
+            await ActivityLog.create({
+                userId: req.user._id,
+                userModel: 'Teacher',
+                userRole: req.user.role,
+                action: 'UPDATE_USER',
+                resource: 'teacher',
+                resourceId: userId,
+                details: { changedFields: Object.keys(updateData) },
+                status: 'success'
+            });
+
+            res.json({ message: 'User updated successfully', user: updatedTeacher });
+        } else if (userType === 'student') {
+            if (email) {
+                const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
+                if (existingStudent) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
+
+            const updatedStudent = await Student.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            if (!updatedStudent) {
+                return res.status(404).json({ message: 'Student not found' });
+            }
+
+            res.json({ message: 'User updated successfully', user: updatedStudent });
+        }
+    } catch (error) {
+        console.error('Update User Error:', error);
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+};
+
+exports.getSystemAnalytics = async (req, res) => {
+    try {
+        const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
+        const totalStudents = await Student.countDocuments({ isDeleted: false });
+        const totalSections = await Teacher.aggregate([
+            { $match: { isDeleted: false } },
+            { $unwind: '$sections' },
+            { $count: 'total' }
+        ]);
+
+        const recentUsers = await Teacher.find({ isDeleted: false })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select('name email createdAt');
+
+        const platformStats = {
+            totalTeachers,
+            totalStudents,
+            totalSections: totalSections[0]?.total || 0,
+            totalUsers: totalTeachers + totalStudents,
+            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
+            recentUsers
+        };
+
+        res.json({
+            message: 'System analytics retrieved successfully',
+            ...platformStats
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
+    }
+};
+
+exports.getRecentActivityLogs = async (req, res) => {
+    try {
+        const limit = req.query.limit || 50;
+        const logs = await ActivityLog.find()
+            .populate('userId', 'name')
+            .sort({ createdAt: -1 })
+            .limit(parseInt(limit))
+            .select('-__v');
+
+        // Transform logs to include userName
+        const transformedLogs = logs.map(log => ({
+            ...log.toObject(),
+            userName: log.userId?.name || 'Unknown'
+        }));
+
+        res.json({
+            message: 'Activity logs retrieved successfully',
+            logs: transformedLogs
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
+    }
+};
+
+exports.getAllFeedback = async (req, res) => {
+    try {
+        const feedback = await Feedback.find()
+            .populate('submittedBy', 'name email')
+            .sort({ createdAt: -1 })
+            .select('-__v');
+
+        res.json({
+            message: 'Feedback retrieved successfully',
+            feedback,
+            total: feedback.length
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
+    }
+};
+
+exports.respondToFeedback = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { response } = req.body;
+
+        const feedback = await Feedback.findByIdAndUpdate(
+            id,
+            {
+                response,
+                respondedAt: new Date(),
+                respondedBy: req.user._id
+            },
+            { new: true }
+        );
+
+        if (!feedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+        }
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'RESPOND_FEEDBACK',
+            resource: 'feedback',
+            resourceId: id,
+            status: 'success'
+        });
+
+        res.json({ message: 'Feedback response submitted', feedback });
+    } catch (error) {
+        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
+    }
+};
+
+exports.getSystemSettings = async (req, res) => {
+    try {
+        // Find all settings
+        let settings = await SystemSettings.find();
+
+        // Convert array to object keyed by setting name
+        const settingsObj = {};
+        settings.forEach(setting => {
+            settingsObj[setting.key] = setting.value;
+        });
+
+        // If no settings exist, create defaults
+        if (Object.keys(settingsObj).length === 0) {
+            const defaults = [
+                { key: 'max_learning_groups_per_instructor', value: 10, type: 'number', category: 'security' },
+                { key: 'max_learners_per_group', value: 30, type: 'number', category: 'security' }
+            ];
+            await SystemSettings.insertMany(defaults);
+            defaults.forEach(d => {
+                settingsObj[d.key] = d.value;
+            });
+        }
+
+        res.json({
+            message: 'System settings retrieved successfully',
+            settings: settingsObj
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching settings', error: error.message });
+    }
+};
+exports.updateSystemSetting = async (req, res) => {
+    try {
+        const { key, value } = req.body;
+
+        const settings = await SystemSettings.findOneAndUpdate(
+            { key },
+            { value, updatedBy: req.user._id, updatedAt: new Date() },
+            { new: true, upsert: true, runValidators: true }
+        );
+
+        await ActivityLog.create({
+            userId: req.user._id,
+            userModel: 'Teacher',
+            userRole: req.user.role,
+            action: 'UPDATE_SETTINGS',
+            resource: 'settings',
+            resourceId: key,
+            status: 'success'
+        });
+
+        res.json({
+            message: 'Setting updated successfully',
+            settings
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating setting', error: error.message });
+    }
+};
+````
+
+## File: chrono-dashboard/src/pages/AdminPanel.js
+````javascript
+import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import AdminSidebar from '../components/AdminSidebar';
+import QuestionManagement from './QuestionManagement';
+import UsersList from '../components/admin/UsersList';
+import FeedbackSection from '../components/admin/FeedbackSection';
+import toast, { Toaster } from 'react-hot-toast';
+import { Users, BookOpen, Lock, Menu } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+const StatCard = ({ title, value, icon }) => (
+    <div className="stat-card">
+        <p className="stat-card-label">{title}</p>
+        <div className="stat-card-icon-row">
+            <div className="text-slate-900">{icon}</div>
+            <p className="stat-card-value">{value}</p>
+        </div>
+    </div>
+);
+
+const AdminPanel = () => {
+    const { teacher, setTeacher, logout } = useContext(AuthContext);
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [loading, setLoading] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
+
+    const [users, setUsers] = useState({ teachers: [], students: [] });
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [editingUserType, setEditingUserType] = useState(null);
+    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
+
+    const [analytics, setAnalytics] = useState(null);
+    const [activityLogs, setActivityLogs] = useState([]);
+    const [activityLogPage, setActivityLogPage] = useState(1);
+    const LOGS_PER_PAGE = 10;
+    const [feedback, setFeedback] = useState([]);
+    const [feedbackSearch, setFeedbackSearch] = useState('');
+    const [expandedFeedback, setExpandedFeedback] = useState(null);
+
+    const [settingsForm, setSettingsForm] = useState({
+        max_learning_groups_per_instructor: '',
+        max_learners_per_group: ''
+    });
+    const [settingsSaving, setSettingsSaving] = useState(false);
+
+    const token = localStorage.getItem('teacherToken');
+    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
+
+    // Close sidebar when switching tabs on mobile
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSidebarOpen(false);
+    };
+
+    useEffect(() => {
+        if (teacher && teacher.role !== 'admin') {
+            toast.error('Admin access required');
+            logout();
+        }
+    }, [teacher, logout]);
+
+    const fetchAllUsers = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
+            setUsers(data);
+        } catch (error) {
+            toast.error('Failed to load users');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleDeactivateUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to deactivate this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
+                toast.success('User deactivated successfully');
+                await fetchAllUsers();
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to deactivate user');
+            }
+        }
+    };
+
+    const handleArchiveUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to archive this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
+                toast.success('User archived successfully');
+                await fetchAllUsers();
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to archive user');
+            }
+        }
+    };
+
+
+
+    const handleEditUser = (user, userType) => {
+        setEditingUser(user);
+        setEditingUserType(userType);
+        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
+        setEditModalOpen(true);
+    };
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
+            toast.success('User updated successfully');
+
+            // If updating current user's role, refresh their auth data
+            if (editingUser._id === teacher._id) {
+                const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
+                localStorage.setItem('teacherData', JSON.stringify(data.teacher));
+                setTeacher(data.teacher);
+            }
+
+            setEditModalOpen(false);
+            fetchAllUsers();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update user');
+        }
+    };
+
+    const fetchAnalytics = useCallback(async () => {
+        setLoading(true);
+        try {
+            const [analyticsRes, activityRes] = await Promise.all([
+                axios.get(`${API_BASE}/admin/analytics`, { headers }),
+                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
+            ]);
+            setAnalytics(analyticsRes.data);
+            setActivityLogs(activityRes.data.logs || []);
+        } catch (error) {
+            toast.error('Failed to load analytics');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const fetchFeedback = useCallback(async () => {
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
+            setFeedback(data.feedback || []);
+        } catch (error) {
+            toast.error('Failed to load feedback');
+        }
+    }, [headers]);
+
+    const fetchSettings = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
+            console.log('Settings response:', data); // ← Add this for debugging
+
+            setSettingsForm(prev => ({
+                ...prev,
+                max_learning_groups_per_instructor: data.settings?.max_learning_groups_per_instructor || 10,
+                max_learners_per_group: data.settings?.max_learners_per_group || 30
+            }));
+        } catch (error) {
+            console.error('Settings fetch error:', error.response?.data || error.message); // ← Add this
+            toast.error('Failed to load settings: ' + (error.response?.data?.message || error.message));
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleSaveSettings = async () => {
+        setSettingsSaving(true);
+        try {
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learning_groups_per_instructor',
+                value: parseInt(settingsForm.max_learning_groups_per_instructor),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learners_per_group',
+                value: parseInt(settingsForm.max_learners_per_group),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            toast.success('Settings saved successfully');
+            fetchSettings();
+        } catch (error) {
+            toast.error('Failed to save settings');
+        }
+        setSettingsSaving(false);
+    };
+
+    useEffect(() => {
+        if (activeTab === 'users') fetchAllUsers();
+        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
+        else if (activeTab === 'feedback') fetchFeedback();
+        else if (activeTab === 'settings') fetchSettings();
+    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
+
+    const filteredTeachers = users.teachers?.filter(t =>
+        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.email.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredStudents = users.students?.filter(s =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredFeedback = feedback.filter(fb => {
+        if (!feedbackSearch) return true;
+        const q = feedbackSearch.toLowerCase();
+        return (
+            fb.title?.toLowerCase().includes(q) ||
+            fb.description?.toLowerCase().includes(q) ||
+            fb.submittedBy?.email?.toLowerCase().includes(q) ||
+            fb.submittedBy?.name?.toLowerCase().includes(q) ||
+            fb.type?.toLowerCase().includes(q) ||
+            fb.status?.toLowerCase().includes(q)
+        );
+    });
+
+    const AnalyticsDashboard = () => {
+        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
+        const totalPages = Math.ceil(activityLogs.length / LOGS_PER_PAGE);
+        const pagedLogs = activityLogs.slice((activityLogPage - 1) * LOGS_PER_PAGE, activityLogPage * LOGS_PER_PAGE);
+
+        return (
+            <div className="space-y-8">
+                <div className="flex-between">
+                    <div>
+                        <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
+                        <p className="page-subtitle">System-wide overview and statistics</p>
+                    </div>
+                </div>
+
+                <div className="grid-4">
+                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
+                    <StatCard title="Teachers" value={users.teachers?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
+                </div>
+
+                {activityLogs.length > 0 && (
+                    <div className="card">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
+                            <div>
+                                <h3 className="section-title">Recent Activity</h3>
+                                <p className="section-subtitle">{activityLogs.length} total log entries</p>
+                            </div>
+                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
+                                Page {activityLogPage} of {totalPages}
+                            </span>
+                        </div>
+                        <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '420px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
+                                            <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {pagedLogs.map(log => (
+                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
+                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.userEmail}</p>
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                                    {log.action?.replace(/_/g, ' ')}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                                {new Date(log.createdAt).toLocaleString()}
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <span style={{
+                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
+                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
+                                                    padding: '3px 7px', borderRadius: '4px', fontWeight: 600
+                                                }}>
+                                                    {log.status?.toUpperCase()}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                {log.details && Object.keys(log.details).length > 0 ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.max(1, p - 1))}
+                                    disabled={activityLogPage === 1}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === 1 ? '#f8fafc' : '#fff', color: activityLogPage === 1 ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === 1 ? 'not-allowed' : 'pointer' }}
+                                >
+                                    ← Prev
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setActivityLogPage(page)}
+                                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === page ? '#0f172a' : '#fff', color: activityLogPage === page ? '#fff' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={activityLogPage === totalPages}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === totalPages ? '#f8fafc' : '#fff', color: activityLogPage === totalPages ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === totalPages ? 'not-allowed' : 'pointer' }}
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const SettingsSection = () => (
+        <div className="space-y-6">
+            <div className="flex-between">
+                <div>
+                    <h2 className="page-title">System Settings</h2>
+                    <p className="page-subtitle">Configure platform-wide limits and security rules</p>
+                </div>
+            </div>
+
+            <div className="card">
+                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
+                </h3>
+                {loading ? (
+                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
+                ) : (
+                    <div className="space-y-6">
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
+                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learning_groups_per_instructor}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learners Per Learning Group</p>
+                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learners_per_group}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
+                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
+                                {settingsSaving ? 'Saving...' : 'Save Settings'}
+                            </button>
+                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="page">
+            <Toaster position="top-right" />
+
+            {/* ── Mobile hamburger button ── */}
+            <button
+                className="mobile-menu-btn"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+            >
+                <Menu size={20} />
+            </button>
+
+            {/* ── Backdrop overlay (mobile only) ── */}
+            <div
+                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            <AdminSidebar
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+                sidebarOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
+
+            <main className="main-padded" style={{ marginLeft: '256px' }}>
+                <div style={{ padding: '32px 40px' }}>
+                    {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
+                    {activeTab === 'dashboard' && <AnalyticsDashboard />}
+                    {activeTab === 'users' && (
+                        <UsersList
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            users={users}
+                            filteredTeachers={filteredTeachers}
+                            filteredStudents={filteredStudents}
+                            handleEditUser={handleEditUser}
+                            handleDeactivateUser={handleDeactivateUser}
+                            handleArchiveUser={handleArchiveUser}
+                            fetchAllUsers={fetchAllUsers}
+                        />
+                    )}
+                    {activeTab === 'questions' && <QuestionManagement />}
+                    {activeTab === 'feedback' && (
+                        <FeedbackSection
+                            feedbackSearch={feedbackSearch}
+                            setFeedbackSearch={setFeedbackSearch}
+                            filteredFeedback={filteredFeedback}
+                            feedback={feedback}
+                            expandedFeedback={expandedFeedback}
+                            setExpandedFeedback={setExpandedFeedback}
+                        />
+                    )}
+                    {activeTab === 'settings' && <SettingsSection />}
+                </div>
+            </main>
+
+            {editModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-md">
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
+                        <form onSubmit={handleUpdateUser} className="space-y-6">
+                            <div className="form-group">
+                                <label className="form-label-sm">Name</label>
+                                <input
+                                    type="text"
+                                    value={editFormData.name}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="User name"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label-sm">Email</label>
+                                <input
+                                    type="email"
+                                    value={editFormData.email}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="user@example.com"
+                                />
+                            </div>
+                            {editingUserType === 'teacher' && (
+                                <>
+                                    <div className="form-group">
+                                        <label className="form-label-sm">Role</label>
+                                        <select
+                                            value={editFormData.role}
+                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
+                                            className="form-select"
+                                        >
+                                            <option value="teacher">Teacher</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </div>
+                                </>
+                            )}
+                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
+                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
+                                <button type="submit" className="btn-indigo">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default AdminPanel;
+````
+
 ## File: chronoquest-api/src/controllers/authController.js
 ````javascript
 const Teacher = require('../models/teacherModel');
@@ -14601,24 +14656,14 @@ const generateToken = (id, role) => {
 
 exports.registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, userType, classCode, score, levelReached } = req.body;
 
         // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({
                 message: 'Invalid email format',
                 errorCode: 'INVALID_EMAIL_FORMAT'
-            });
-        }
-
-        // Check for existing active teachers with this email
-        // Check for existing active teachers with this email
-        const teacherExists = await Teacher.findOne({ email, isDeleted: false });
-        if (teacherExists) {
-            return res.status(400).json({
-                message: 'Email already registered',
-                errorCode: 'EMAIL_ALREADY_EXISTS'
             });
         }
 
@@ -14627,6 +14672,72 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({
                 message: 'Password must be at least 6 characters',
                 errorCode: 'PASSWORD_TOO_WEAK'
+            });
+        }
+
+        // If registering as student
+        if (userType === 'student') {
+            // Check for existing active students with this email
+            const studentExists = await Student.findOne({ email, isDeleted: false });
+            if (studentExists) {
+                return res.status(400).json({
+                    message: 'Email already registered',
+                    errorCode: 'EMAIL_ALREADY_EXISTS'
+                });
+            }
+
+            // Validate classCode
+            if (!classCode) {
+                return res.status(400).json({
+                    message: 'Class code is required for student registration',
+                    errorCode: 'CLASS_CODE_REQUIRED'
+                });
+            }
+
+            const student = await Student.create({
+                name,
+                email,
+                password,
+                classCode,
+                score: score || 0,
+                levelReached: levelReached || 'Era 1: Pre-Colonial',
+                isDeleted: false
+            });
+
+            await ActivityLog.create({
+                userId: student._id,
+                userModel: 'Student',
+                userRole: 'student',
+                action: 'REGISTER',
+                resource: 'student',
+                status: 'success',
+                details: {
+                    email: student.email,
+                    name: student.name,
+                    classCode: student.classCode,
+                    timestamp: new Date()
+                }
+            });
+
+            return res.status(201).json({
+                message: 'Student registered successfully',
+                _id: student._id,
+                name: student.name,
+                email: student.email,
+                classCode: student.classCode,
+                score: student.score,
+                levelReached: student.levelReached,
+                role: 'student',
+                token: generateToken(student._id, 'student')
+            });
+        }
+
+        // Default: Register as teacher
+        const teacherExists = await Teacher.findOne({ email, isDeleted: false });
+        if (teacherExists) {
+            return res.status(400).json({
+                message: 'Email already registered',
+                errorCode: 'EMAIL_ALREADY_EXISTS'
             });
         }
 
@@ -14712,14 +14823,15 @@ exports.loginUser = async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             token: generateToken(user._id, user.role || userType),
-            teacher: {
+            user: {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role || userType,
                 sections: user.sections || [],
                 classCode: user.classCode || null
-            }
+            },
+            userType: userType
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -14728,15 +14840,17 @@ exports.loginUser = async (req, res) => {
 
 exports.validateToken = async (req, res) => {
     try {
-        const user = await Teacher.findOne({ _id: req.user._id, isDeleted: false }).select('-password');
-        if (!user) {
-            return res.status(401).json({ message: 'User not found or has been deleted' });
+        const userModel = req.user.classCode ? 'Student' : (req.user.role ? 'Teacher' : null);
+
+        if (!userModel) {
+            return res.status(401).json({ message: 'Invalid user type' });
         }
 
         res.status(200).json({
             message: 'Token is valid',
             isValid: true,
-            user: user  // ← Return FULL user object with sections
+            user: req.user,
+            userType: userModel === 'Student' ? 'student' : 'teacher'
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -14836,13 +14950,21 @@ exports.changePassword = async (req, res) => {
 
 exports.submitFeedback = async (req, res) => {
     try {
-        const { title, description, type } = req.body;
+        const { title, description, type, priority } = req.body;
+
+        // Get the teacher's email
+        const teacher = await Teacher.findById(req.user._id);
+        if (!teacher) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
 
         const feedback = await Feedback.create({
             title,
             description,
             type,
-            submittedBy: req.user._id
+            priority: priority || 'medium',
+            submittedBy: req.user._id,
+            email: teacher.email
         });
 
         res.status(201).json({ message: 'Feedback submitted successfully', feedback });

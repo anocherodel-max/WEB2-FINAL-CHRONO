@@ -70,7 +70,6 @@ const AdminPanel = () => {
         try {
             const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
             setUsers(data);
-            toast.success('Users loaded');
         } catch (error) {
             toast.error('Failed to load users');
         }
@@ -81,23 +80,27 @@ const AdminPanel = () => {
         if (window.confirm('Are you sure you want to deactivate this user?')) {
             try {
                 await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
-                toast.success('User deactivated');
-                fetchAllUsers();
+                toast.success('User deactivated successfully');
+                await fetchAllUsers();
             } catch (error) {
-                toast.error('Failed to deactivate user');
+                toast.error(error.response?.data?.message || 'Failed to deactivate user');
             }
         }
     };
 
-    const handleDeleteUser = async (userId, userType) => {
-        try {
-            await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
-            toast.success('User deleted');
-            fetchAllUsers();
-        } catch (error) {
-            toast.error('Failed to delete user');
+    const handleArchiveUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to archive this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
+                toast.success('User archived successfully');
+                await fetchAllUsers();
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to archive user');
+            }
         }
     };
+
+
 
     const handleEditUser = (user, userType) => {
         setEditingUser(user);
@@ -116,8 +119,7 @@ const AdminPanel = () => {
             if (editingUser._id === teacher._id) {
                 const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
                 localStorage.setItem('teacherData', JSON.stringify(data.teacher));
-                setTeacher(data.teacher); // ← Add this
-                window.location.reload(); // Force UI update
+                setTeacher(data.teacher);
             }
 
             setEditModalOpen(false);
@@ -290,7 +292,7 @@ const AdminPanel = () => {
                                                 </span>
                                             </td>
                                             <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {log.details ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
+                                                {log.details && Object.keys(log.details).length > 0 ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
                                             </td>
                                         </tr>
                                     ))}
@@ -426,7 +428,8 @@ const AdminPanel = () => {
                             filteredStudents={filteredStudents}
                             handleEditUser={handleEditUser}
                             handleDeactivateUser={handleDeactivateUser}
-                            handleDeleteUser={handleDeleteUser}
+                            handleArchiveUser={handleArchiveUser}
+                            fetchAllUsers={fetchAllUsers}
                         />
                     )}
                     {activeTab === 'questions' && <QuestionManagement />}

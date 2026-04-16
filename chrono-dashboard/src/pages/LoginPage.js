@@ -68,8 +68,8 @@ const LoginPage = () => {
             const response = await axios.post(`${API_BASE}/auth/login`, payload);
 
             const data = response.data;
-            if (data.token && (data.teacher || data.name)) {
-                const teacherData = data.teacher || data;
+            if (data.token && (data.user || data.teacher || data.name)) {
+                const teacherData = data.user || data.teacher || data;
                 login(teacherData, data.token);
                 toast.success("Login Successful!");
                 navigate('/dashboard');
