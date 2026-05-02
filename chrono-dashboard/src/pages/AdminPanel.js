@@ -3,7 +3,6 @@ import React, { useState, useContext, useEffect, useCallback, useMemo } from 're
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
-import QuestionManagement from './QuestionManagement';
 import UsersList from '../components/admin/UsersList';
 import FeedbackSection from '../components/admin/FeedbackSection';
 import toast, { Toaster } from 'react-hot-toast';
@@ -432,7 +431,6 @@ const AdminPanel = () => {
                             fetchAllUsers={fetchAllUsers}
                         />
                     )}
-                    {activeTab === 'questions' && <QuestionManagement />}
                     {activeTab === 'feedback' && (
                         <FeedbackSection
                             feedbackSearch={feedbackSearch}

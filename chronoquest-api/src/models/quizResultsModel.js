@@ -19,10 +19,6 @@ const quizResultSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    questionsAsked: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question'
-    }],
     answers: [Number],
     correctAnswersCount: {
         type: Number,

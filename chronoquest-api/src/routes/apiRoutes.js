@@ -8,7 +8,6 @@ const generateClassCode = require('../utils/generateCode');
 
 const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
-const questionRoutes = require('./questionRoutes');
 
 const studentController = require('../controllers/studentController');
 
@@ -17,7 +16,6 @@ router.get('/test', (req, res) => res.json({ message: "API is working on Port 50
 
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
-router.use('/questions', questionRoutes);
 
 router.post('/teacher/add-section', protect, async (req, res) => {
     const { sectionName } = req.body;

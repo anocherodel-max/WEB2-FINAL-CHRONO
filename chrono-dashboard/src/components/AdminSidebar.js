@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, BookOpen, X } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, X } from 'lucide-react';
 
 const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
     const { logout } = useContext(AuthContext);
@@ -10,7 +10,6 @@ const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
     const menuItems = [
         { id: 'dashboard', name: 'Dashboard', icon: <LayoutDashboard size={16} /> },
         { id: 'users', name: 'Users Management', icon: <Users size={16} /> },
-        { id: 'questions', name: 'Questions', icon: <BookOpen size={16} /> },
         { id: 'feedback', name: 'Feedback', icon: <MessageSquare size={16} /> },
         { id: 'settings', name: 'Settings', icon: <Settings size={16} /> },
     ];
@@ -50,7 +49,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
                 </div>
 
                 <div>
-                    <p className="sidebar-section-label">Content</p>
+                    <p className="sidebar-section-label">Communication</p>
                     <div className="sidebar-nav-group">
                         {menuItems.slice(2, 3).map(item => (
                             <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
@@ -61,20 +60,9 @@ const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
                 </div>
 
                 <div>
-                    <p className="sidebar-section-label">Communication</p>
-                    <div className="sidebar-nav-group">
-                        {menuItems.slice(3, 4).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div>
                     <p className="sidebar-section-label">System</p>
                     <div className="sidebar-nav-group">
-                        {menuItems.slice(4).map(item => (
+                        {menuItems.slice(3).map(item => (
                             <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
                                 {item.icon} {item.name}
                             </button>

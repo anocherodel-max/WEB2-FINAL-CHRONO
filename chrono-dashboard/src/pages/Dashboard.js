@@ -69,10 +69,7 @@ const Dashboard = () => {
         try {
             const token = localStorage.getItem('teacherToken');
             const headers = { Authorization: `Bearer ${token}` };
-            const [scoresRes, questRes] = await Promise.all([
-                axios.get(`${API_BASE}/analytics/overall`, { headers }),
-                axios.get(`${API_BASE}/questions`, { headers })
-            ]);
+            const scoresRes = await axios.get(`${API_BASE}/analytics/overall`, { headers });
             const filtered = scoresRes.data.filter(s => s.classCode === selectedSection);
 
             const sortedStudents = filtered
@@ -90,7 +87,7 @@ const Dashboard = () => {
                 avgScore: filtered.length > 0
                     ? (filtered.reduce((acc, curr) => acc + (curr.score || 0), 0) / filtered.length).toFixed(1)
                     : 0,
-                totalAssessments: questRes.data.length
+                totalAssessments: 0
             });
             setLeaderboardData(sortedStudents);
         } catch (err) {
