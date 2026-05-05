@@ -8,6 +8,9 @@ const { generalLimiter } = require('./src/middleware/rateLimiter');
 dotenv.config();
 const app = express();
 
+app.set('trust proxy', 1);
+
+
 app.use(generalLimiter);
 
 // 1. IMPROVED CORS (This stops the "Unsafe attempt" errors)

@@ -1,31 +1,26 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, X } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, X, ShieldCheck } from 'lucide-react';
 
 const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const menuItems = [
-        { id: 'dashboard', name: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-        { id: 'users', name: 'Users Management', icon: <Users size={16} /> },
-        { id: 'feedback', name: 'Feedback', icon: <MessageSquare size={16} /> },
-        { id: 'settings', name: 'Settings', icon: <Settings size={16} /> },
+        { id: 'dashboard',  name: 'Dashboard',        icon: <LayoutDashboard size={16} /> },
+        { id: 'users',      name: 'Users Management',  icon: <Users size={16} /> },
+        { id: 'feedback',   name: 'Feedback',          icon: <MessageSquare size={16} /> },
+        { id: 'audit',      name: 'Audit Log',         icon: <ShieldCheck size={16} /> },
+        { id: 'settings',   name: 'Settings',          icon: <Settings size={16} /> },
     ];
 
-    const navBtn = (id) =>
-        `sidebar-btn${activeTab === id ? ' active' : ''}`;
+    const navBtn = (id) => `sidebar-btn${activeTab === id ? ' active' : ''}`;
 
     return (
         <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
 
-            {/* Close button — only visible on mobile via CSS */}
-            <button
-                className="sidebar-close-btn"
-                onClick={onClose}
-                aria-label="Close menu"
-            >
+            <button className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
                 <X size={18} />
             </button>
 
@@ -51,22 +46,27 @@ const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
                 <div>
                     <p className="sidebar-section-label">Communication</p>
                     <div className="sidebar-nav-group">
-                        {menuItems.slice(2, 3).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
+                        <button onClick={() => setActiveTab('feedback')} className={navBtn('feedback')}>
+                            <MessageSquare size={16} /> Feedback
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="sidebar-section-label">Security</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('audit')} className={navBtn('audit')}>
+                            <ShieldCheck size={16} /> Audit Log
+                        </button>
                     </div>
                 </div>
 
                 <div>
                     <p className="sidebar-section-label">System</p>
                     <div className="sidebar-nav-group">
-                        {menuItems.slice(3).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
+                        <button onClick={() => setActiveTab('settings')} className={navBtn('settings')}>
+                            <Settings size={16} /> Settings
+                        </button>
                     </div>
                 </div>
             </nav>

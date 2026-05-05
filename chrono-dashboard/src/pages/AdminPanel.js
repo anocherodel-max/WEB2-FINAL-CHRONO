@@ -1,57 +1,42 @@
-
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useContext, useMemo } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import AdminSidebar from '../components/AdminSidebar';
 import UsersList from '../components/admin/UsersList';
 import FeedbackSection from '../components/admin/FeedbackSection';
+import AuditLogs from './AuditLogs';
 import toast, { Toaster } from 'react-hot-toast';
 import { Users, BookOpen, Lock, Menu } from 'lucide-react';
 
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const StatCard = ({ title, value, icon }) => (
-    <div className="stat-card">
-        <p className="stat-card-label">{title}</p>
-        <div className="stat-card-icon-row">
-            <div className="text-slate-900">{icon}</div>
-            <p className="stat-card-value">{value}</p>
-        </div>
-    </div>
-);
+const LOGS_PER_PAGE = 10;
 
 const AdminPanel = () => {
-    const { teacher, setTeacher, logout } = useContext(AuthContext);
+    const { teacher, logout, setTeacher } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('dashboard');
-    const [loading, setLoading] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
-
     const [users, setUsers] = useState({ teachers: [], students: [] });
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [editingUserType, setEditingUserType] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
-
     const [analytics, setAnalytics] = useState(null);
     const [activityLogs, setActivityLogs] = useState([]);
     const [activityLogPage, setActivityLogPage] = useState(1);
-    const LOGS_PER_PAGE = 10;
     const [feedback, setFeedback] = useState([]);
     const [feedbackSearch, setFeedbackSearch] = useState('');
     const [expandedFeedback, setExpandedFeedback] = useState(null);
-
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [editingUserType, setEditingUserType] = useState('');
+    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: '' });
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [settingsForm, setSettingsForm] = useState({
-        max_learning_groups_per_instructor: '',
-        max_learners_per_group: ''
+        max_learning_groups_per_instructor: 10,
+        max_learners_per_group: 30
     });
     const [settingsSaving, setSettingsSaving] = useState(false);
 
     const token = localStorage.getItem('teacherToken');
     const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
 
-    // Close sidebar when switching tabs on mobile
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSidebarOpen(false);
@@ -99,8 +84,6 @@ const AdminPanel = () => {
         }
     };
 
-
-
     const handleEditUser = (user, userType) => {
         setEditingUser(user);
         setEditingUserType(userType);
@@ -114,7 +97,6 @@ const AdminPanel = () => {
             await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
             toast.success('User updated successfully');
 
-            // If updating current user's role, refresh their auth data
             if (editingUser._id === teacher._id) {
                 const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
                 localStorage.setItem('teacherData', JSON.stringify(data.teacher));
@@ -133,7 +115,7 @@ const AdminPanel = () => {
         try {
             const [analyticsRes, activityRes] = await Promise.all([
                 axios.get(`${API_BASE}/admin/analytics`, { headers }),
-                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
+                axios.get(`${API_BASE}/admin/audit-logs?limit=50`, { headers })
             ]);
             setAnalytics(analyticsRes.data);
             setActivityLogs(activityRes.data.logs || []);
@@ -156,15 +138,12 @@ const AdminPanel = () => {
         setLoading(true);
         try {
             const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
-            console.log('Settings response:', data); // ← Add this for debugging
-
             setSettingsForm(prev => ({
                 ...prev,
                 max_learning_groups_per_instructor: data.settings?.max_learning_groups_per_instructor || 10,
                 max_learners_per_group: data.settings?.max_learners_per_group || 30
             }));
         } catch (error) {
-            console.error('Settings fetch error:', error.response?.data || error.message); // ← Add this
             toast.error('Failed to load settings: ' + (error.response?.data?.message || error.message));
         }
         setLoading(false);
@@ -198,6 +177,7 @@ const AdminPanel = () => {
         else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
         else if (activeTab === 'feedback') fetchFeedback();
         else if (activeTab === 'settings') fetchSettings();
+        // 'audit' tab fetches its own data internally via AuditLogs component
     }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
 
     const filteredTeachers = users.teachers?.filter(t =>
@@ -223,6 +203,18 @@ const AdminPanel = () => {
             fb.status?.toLowerCase().includes(q)
         );
     });
+
+    const StatCard = ({ title, value, icon }) => (
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ background: '#f1f5f9', borderRadius: '10px', padding: '10px', color: '#475569' }}>
+                {icon}
+            </div>
+            <div>
+                <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>{title}</p>
+                <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{value}</p>
+            </div>
+        </div>
+    );
 
     const AnalyticsDashboard = () => {
         const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
@@ -260,7 +252,9 @@ const AdminPanel = () => {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
                                     <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
+                                        {['Admin', 'Action',
+                                        
+                                        'Timestamp', 'Status'].map(h => (
                                             <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
                                         ))}
                                     </tr>
@@ -269,15 +263,14 @@ const AdminPanel = () => {
                                     {pagedLogs.map(log => (
                                         <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                                             <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
-                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.userEmail}</p>
+                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.performedBy?.name || 'Unknown'}</p>
+                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.performedByRole}</p>
                                             </td>
                                             <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
                                                 <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                                     {log.action?.replace(/_/g, ' ')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
                                             <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
                                                 {new Date(log.createdAt).toLocaleString()}
                                             </td>
@@ -289,9 +282,6 @@ const AdminPanel = () => {
                                                 }}>
                                                     {log.status?.toUpperCase()}
                                                 </span>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {log.details && Object.keys(log.details).length > 0 ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
                                             </td>
                                         </tr>
                                     ))}
@@ -392,7 +382,6 @@ const AdminPanel = () => {
         <div className="page">
             <Toaster position="top-right" />
 
-            {/* ── Mobile hamburger button ── */}
             <button
                 className="mobile-menu-btn"
                 onClick={() => setSidebarOpen(true)}
@@ -401,7 +390,6 @@ const AdminPanel = () => {
                 <Menu size={20} />
             </button>
 
-            {/* ── Backdrop overlay (mobile only) ── */}
             <div
                 className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
                 onClick={() => setSidebarOpen(false)}
@@ -441,6 +429,7 @@ const AdminPanel = () => {
                             setExpandedFeedback={setExpandedFeedback}
                         />
                     )}
+                    {activeTab === 'audit' && <AuditLogs />}
                     {activeTab === 'settings' && <SettingsSection />}
                 </div>
             </main>

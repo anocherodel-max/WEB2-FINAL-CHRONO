@@ -1,160 +1,151 @@
 const Teacher = require('../models/teacherModel');
 const Student = require('../models/studentModel');
-const ActivityLog = require('../models/activityLogModel');
+const AuditLog = require('../models/activityLogModel');
 const Feedback = require('../models/feedbackModel');
 const SystemSettings = require('../models/systemSettingsModel');
 
+// ---------------------------------------------------------------------------
+// Helper: extract the client's IP address from the request.
+// Handles the X-Forwarded-For header that Vercel and most proxies set.
+// ---------------------------------------------------------------------------
+function getIpAddress(req) {
+    const forwarded = req.headers['x-forwarded-for'];
+    if (forwarded) return forwarded.split(',')[0].trim();
+    return req.socket?.remoteAddress || req.ip || 'unknown';
+}
+
+// ---------------------------------------------------------------------------
+// Helper: diff two plain objects and return only the keys that changed.
+// Returns { oldValue, newValue } containing only the differing fields.
+// ---------------------------------------------------------------------------
+function diffObjects(before, after) {
+    const oldValue = {};
+    const newValue = {};
+    const watchedFields = ['name', 'email', 'role'];
+
+    for (const field of watchedFields) {
+        if (after[field] !== undefined && String(before[field] ?? '') !== String(after[field] ?? '')) {
+            oldValue[field] = before[field];
+            newValue[field] = after[field];
+        }
+    }
+
+    return { oldValue, newValue };
+}
+
+// ---------------------------------------------------------------------------
+// GET /admin/users
+// ---------------------------------------------------------------------------
 exports.getAllUsers = async (req, res) => {
     try {
-        // Filter out deleted users
-        const teachers = await Teacher.find({ isDeleted: false }).select('-password');
-        const students = await Student.find({ isDeleted: false, isActive: true }).select('-password');
-
-        const formattedTeachers = teachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = students.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            totalUsers: formattedTeachers.length + formattedStudents.length,
-            totalTeachers: formattedTeachers.length,
-            totalStudents: formattedStudents.length
-        });
+        const teachers = await Teacher.find({ isDeleted: false }).select('-password').lean();
+        const students = await Student.find({ isDeleted: false }).select('-password').lean();
+        res.json({ message: 'Users retrieved successfully', teachers, students });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// GET /admin/users/deleted
+// ---------------------------------------------------------------------------
 exports.getDeletedUsers = async (req, res) => {
     try {
-        const deletedTeachers = await Teacher.find({ isDeleted: true }).select('-password');
-        const deletedStudents = await Student.find({ isDeleted: true }).select('-password');
-
-        const formattedTeachers = deletedTeachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = deletedStudents.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Deleted users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            total: formattedTeachers.length + formattedStudents.length
-        });
+        const teachers = await Teacher.find({ isDeleted: true }).select('-password').lean();
+        const students = await Student.find({ isDeleted: true }).select('-password').lean();
+        res.json({ message: 'Deleted users retrieved', teachers, students });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// POST /admin/users/deactivate
+// ---------------------------------------------------------------------------
 exports.deactivateUser = async (req, res) => {
     try {
         const { userId, userType } = req.body;
 
-        if (userType === 'teacher') {
-            await Teacher.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_TEACHER',
-                resource: 'teacher',
-                resourceId: userId,
-                status: 'success'
-            });
-        } else if (userType === 'student') {
-            await Student.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_STUDENT',
-                resource: 'student',
-                resourceId: userId,
-                status: 'success'
-            });
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
         }
 
-        res.json({ message: `User deactivated successfully` });
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const user = await Model.findByIdAndUpdate(
+            userId,
+            { isActive: false },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'DEACTIVATE_USER',
+            resource: userType,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'User deactivated successfully', user });
     } catch (error) {
         res.status(500).json({ message: 'Error deactivating user', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// POST /admin/users/delete  (soft delete)
+// ---------------------------------------------------------------------------
 exports.deleteUser = async (req, res) => {
     try {
         const { userId, userType } = req.body;
 
         if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({
-                message: 'Invalid userType. Use "teacher" or "student".',
-                errorCode: 'INVALID_USER_TYPE'
-            });
+            return res.status(400).json({ message: 'Invalid userType' });
         }
-
-        let deletedUser;
 
         if (userType === 'teacher') {
             const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
-            const userToDelete = await Teacher.findById(userId);
-
-            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
+            const targetTeacher = await Teacher.findById(userId);
+            if (targetTeacher?.role === 'admin' && adminCount <= 1) {
                 return res.status(400).json({ message: 'Cannot delete the last admin account' });
             }
-
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: true,
-                    deletedAt: new Date()
-                },
-                { new: true }
-            );
-        } else if (userType === 'student') {
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Student.findByIdAndUpdate(
-                userId,
-                { isDeleted: true, deletedAt: new Date(), isActive: false },  // ← ADD isActive: false
-                { new: true }
-            );
         }
 
-        if (!deletedUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const user = await Model.findByIdAndUpdate(
+            userId,
+            { isDeleted: true, deletedAt: new Date(), isActive: false },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'DELETE_USER',
             resource: userType,
-            resourceId: userId,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
             status: 'success'
         });
 
-        res.json({ message: 'User deleted successfully' });
+        res.json({ message: 'User deleted successfully', user });
     } catch (error) {
         res.status(500).json({ message: 'Error deleting user', error: error.message });
     }
 };
 
-// NEW: Restore a deleted user
+// ---------------------------------------------------------------------------
+// POST /admin/users/restore
+// ---------------------------------------------------------------------------
 exports.restoreUser = async (req, res) => {
     try {
         const { userId, userType } = req.body;
@@ -163,41 +154,24 @@ exports.restoreUser = async (req, res) => {
             return res.status(400).json({ message: 'Invalid userType' });
         }
 
-        let restoredUser;
-
-        if (userType === 'teacher') {
-            restoredUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null,
-                    isActive: true
-                },
-                { new: true }
-            ).select('-password');
-        } else if (userType === 'student') {
-            restoredUser = await Student.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null,
-                    isActive: true   // ← ADD THIS
-                },
-                { new: true }
-            ).select('-password');
-        }
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const restoredUser = await Model.findByIdAndUpdate(
+            userId,
+            { isDeleted: false, deletedAt: null, isActive: true },
+            { new: true }
+        ).select('-password');
 
         if (!restoredUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'RESTORE_USER',
             resource: userType,
-            resourceId: userId,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
             status: 'success'
         });
 
@@ -207,6 +181,11 @@ exports.restoreUser = async (req, res) => {
     }
 };
 
+// ---------------------------------------------------------------------------
+// PATCH /admin/users/:userId/:userType
+// Full audit trail: captures only fields that actually changed.
+// Security: admins cannot change their own role or email.
+// ---------------------------------------------------------------------------
 exports.updateUser = async (req, res) => {
     try {
         const { userId, userType } = req.params;
@@ -214,6 +193,24 @@ exports.updateUser = async (req, res) => {
 
         if (!['teacher', 'student'].includes(userType)) {
             return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        // --- Self-escalation guard ---
+        // An admin cannot change their own role or email. This prevents a
+        // compromised account from silently granting itself new privileges or
+        // switching to an unmonitored email address.
+        const isSelf = String(req.user._id) === String(userId);
+        if (isSelf) {
+            if (role && role !== req.user.role) {
+                return res.status(403).json({
+                    message: 'Admins cannot change their own role. Ask another admin to do it.'
+                });
+            }
+            if (email && email.toLowerCase() !== req.user.email) {
+                return res.status(403).json({
+                    message: 'Admins cannot change their own email. Ask another admin to do it.'
+                });
+            }
         }
 
         if (name && (name.trim().length < 2 || name.trim().length > 100)) {
@@ -236,6 +233,13 @@ exports.updateUser = async (req, res) => {
                 return res.status(400).json({ message: 'Invalid role' });
             }
 
+            // Step 1: Fetch the current document before making any changes.
+            const oldDoc = await Teacher.findById(userId).select('name email role').lean();
+            if (!oldDoc) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
+
+            // Step 2: Build the update payload with only the provided fields.
             const updateData = {};
             if (name) updateData.name = name.trim();
             if (email) updateData.email = email.toLowerCase();
@@ -247,28 +251,39 @@ exports.updateUser = async (req, res) => {
                 { new: true }
             ).select('-password');
 
-            if (!updatedTeacher) {
-                return res.status(404).json({ message: 'Teacher not found' });
+            // Step 3: Compute the diff — only log fields that actually changed.
+            const { oldValue, newValue } = diffObjects(oldDoc, updateData);
+            const hasChanges = Object.keys(oldValue).length > 0;
+
+            if (hasChanges) {
+                await AuditLog.create({
+                    performedBy: req.user._id,
+                    performedByRole: req.user.role,
+                    action: 'UPDATE_USER',
+                    resource: 'teacher',
+                    targetId: userId,
+                    oldValue,
+                    newValue,
+                    ipAddress: getIpAddress(req),
+                    status: 'success'
+                });
             }
 
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'teacher',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
+            return res.json({ message: 'User updated successfully', user: updatedTeacher });
+        }
 
-            res.json({ message: 'User updated successfully', user: updatedTeacher });
-        } else if (userType === 'student') {
+        if (userType === 'student') {
             if (email) {
                 const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
                 if (existingStudent) {
                     return res.status(400).json({ message: 'Email already in use' });
                 }
+            }
+
+            // Step 1: Fetch current document.
+            const oldDoc = await Student.findById(userId).select('name email').lean();
+            if (!oldDoc) {
+                return res.status(404).json({ message: 'Student not found' });
             }
 
             const updateData = {};
@@ -281,11 +296,25 @@ exports.updateUser = async (req, res) => {
                 { new: true }
             ).select('-password');
 
-            if (!updatedStudent) {
-                return res.status(404).json({ message: 'Student not found' });
+            // Step 2: Diff and log.
+            const { oldValue, newValue } = diffObjects(oldDoc, updateData);
+            const hasChanges = Object.keys(oldValue).length > 0;
+
+            if (hasChanges) {
+                await AuditLog.create({
+                    performedBy: req.user._id,
+                    performedByRole: req.user.role,
+                    action: 'UPDATE_USER',
+                    resource: 'student',
+                    targetId: userId,
+                    oldValue,
+                    newValue,
+                    ipAddress: getIpAddress(req),
+                    status: 'success'
+                });
             }
 
-            res.json({ message: 'User updated successfully', user: updatedStudent });
+            return res.json({ message: 'User updated successfully', user: updatedStudent });
         }
     } catch (error) {
         console.error('Update User Error:', error);
@@ -293,6 +322,9 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// ---------------------------------------------------------------------------
+// GET /admin/analytics
+// ---------------------------------------------------------------------------
 exports.getSystemAnalytics = async (req, res) => {
     try {
         const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
@@ -308,48 +340,46 @@ exports.getSystemAnalytics = async (req, res) => {
             .limit(10)
             .select('name email createdAt');
 
-        const platformStats = {
+        res.json({
+            message: 'System analytics retrieved successfully',
             totalTeachers,
             totalStudents,
             totalSections: totalSections[0]?.total || 0,
             totalUsers: totalTeachers + totalStudents,
             avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
             recentUsers
-        };
-
-        res.json({
-            message: 'System analytics retrieved successfully',
-            ...platformStats
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching analytics', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// GET /admin/activity-logs-detailed
+// Now queries AuditLog instead of the old ActivityLog collection.
+// ---------------------------------------------------------------------------
 exports.getRecentActivityLogs = async (req, res) => {
     try {
-        const limit = req.query.limit || 50;
-        const logs = await ActivityLog.find()
-            .populate('userId', 'name')
+        const limit = parseInt(req.query.limit) || 50;
+        const logs = await AuditLog.find()
+            .populate('performedBy', 'name email')
             .sort({ createdAt: -1 })
-            .limit(parseInt(limit))
-            .select('-__v');
-
-        // Transform logs to include userName
-        const transformedLogs = logs.map(log => ({
-            ...log.toObject(),
-            userName: log.userId?.name || 'Unknown'
-        }));
+            .limit(limit)
+            .select('-__v')
+            .lean();
 
         res.json({
-            message: 'Activity logs retrieved successfully',
-            logs: transformedLogs
+            message: 'Audit logs retrieved successfully',
+            logs
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
+        res.status(500).json({ message: 'Error fetching audit logs', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// GET /admin/feedback
+// ---------------------------------------------------------------------------
 exports.getAllFeedback = async (req, res) => {
     try {
         const feedback = await Feedback.find()
@@ -357,16 +387,15 @@ exports.getAllFeedback = async (req, res) => {
             .sort({ createdAt: -1 })
             .select('-__v');
 
-        res.json({
-            message: 'Feedback retrieved successfully',
-            feedback,
-            total: feedback.length
-        });
+        res.json({ message: 'Feedback retrieved successfully', feedback, total: feedback.length });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching feedback', error: error.message });
     }
 };
 
+// ---------------------------------------------------------------------------
+// POST /admin/feedback/:id/respond
+// ---------------------------------------------------------------------------
 exports.respondToFeedback = async (req, res) => {
     try {
         const { id } = req.params;
@@ -374,11 +403,7 @@ exports.respondToFeedback = async (req, res) => {
 
         const feedback = await Feedback.findByIdAndUpdate(
             id,
-            {
-                response,
-                respondedAt: new Date(),
-                respondedBy: req.user._id
-            },
+            { response, respondedAt: new Date(), respondedBy: req.user._id },
             { new: true }
         );
 
@@ -386,13 +411,13 @@ exports.respondToFeedback = async (req, res) => {
             return res.status(404).json({ message: 'Feedback not found' });
         }
 
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'RESPOND_FEEDBACK',
             resource: 'feedback',
-            resourceId: id,
+            targetId: id,
+            ipAddress: getIpAddress(req),
             status: 'success'
         });
 
@@ -402,37 +427,33 @@ exports.respondToFeedback = async (req, res) => {
     }
 };
 
+// ---------------------------------------------------------------------------
+// GET /admin/settings
+// ---------------------------------------------------------------------------
 exports.getSystemSettings = async (req, res) => {
     try {
-        // Find all settings
         let settings = await SystemSettings.find();
-
-        // Convert array to object keyed by setting name
         const settingsObj = {};
-        settings.forEach(setting => {
-            settingsObj[setting.key] = setting.value;
-        });
+        settings.forEach(setting => { settingsObj[setting.key] = setting.value; });
 
-        // If no settings exist, create defaults
         if (Object.keys(settingsObj).length === 0) {
             const defaults = [
                 { key: 'max_learning_groups_per_instructor', value: 10, type: 'number', category: 'security' },
                 { key: 'max_learners_per_group', value: 30, type: 'number', category: 'security' }
             ];
             await SystemSettings.insertMany(defaults);
-            defaults.forEach(d => {
-                settingsObj[d.key] = d.value;
-            });
+            defaults.forEach(d => { settingsObj[d.key] = d.value; });
         }
 
-        res.json({
-            message: 'System settings retrieved successfully',
-            settings: settingsObj
-        });
+        res.json({ message: 'System settings retrieved successfully', settings: settingsObj });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching settings', error: error.message });
     }
 };
+
+// ---------------------------------------------------------------------------
+// POST /admin/settings
+// ---------------------------------------------------------------------------
 exports.updateSystemSetting = async (req, res) => {
     try {
         const { key, value } = req.body;
@@ -443,20 +464,17 @@ exports.updateSystemSetting = async (req, res) => {
             { new: true, upsert: true, runValidators: true }
         );
 
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'UPDATE_SETTINGS',
             resource: 'settings',
-            resourceId: key,
+            details: { key, value },
+            ipAddress: getIpAddress(req),
             status: 'success'
         });
 
-        res.json({
-            message: 'Setting updated successfully',
-            settings
-        });
+        res.json({ message: 'Setting updated successfully', settings });
     } catch (error) {
         res.status(500).json({ message: 'Error updating setting', error: error.message });
     }

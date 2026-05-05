@@ -12,9 +12,11 @@ const generalLimiter = rateLimit({
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5, 
+    max: 10, 
     message: 'Too many login attempts, please try again after 15 minutes.',
     skipSuccessfulRequests: true, 
+    standardHeaders: true,  // ADD THIS — returns rate limit info in headers
+    legacyHeaders: false,   // ADD THIS
 });
 
 module.exports = { generalLimiter, loginLimiter };

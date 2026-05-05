@@ -60,11 +60,9 @@ exports.registerUser = async (req, res) => {
             });
 
             await ActivityLog.create({
-                userId: student._id,
-                userModel: 'Student',
-                userRole: 'student',
+                performedBy: student._id,
+                performedByRole: 'student',
                 action: 'REGISTER',
-                resource: 'student',
                 status: 'success',
                 details: {
                     email: student.email,
@@ -105,11 +103,9 @@ exports.registerUser = async (req, res) => {
         });
 
         await ActivityLog.create({
-            userId: teacher._id,
-            userModel: 'Teacher',
-            userRole: 'teacher',
+            performedBy: teacher._id,
+            performedByRole: 'teacher',
             action: 'REGISTER',
-            resource: 'teacher',
             status: 'success',
             details: {
                 email: teacher.email,
@@ -167,11 +163,9 @@ exports.loginUser = async (req, res) => {
         await user.updateOne({ lastLogin: new Date() });
 
         await ActivityLog.create({
-            userId: user._id,
-            userModel: userType === 'teacher' ? 'Teacher' : 'Student',
-            userRole: user.role || 'student',
+            performedBy: user._id,
+            performedByRole: user.role || userType,
             action: 'LOGIN',
-            resource: userType,
             status: 'success'
         });
 
@@ -256,12 +250,9 @@ exports.updateTeacherProfile = async (req, res) => {
         }
 
         await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'UPDATE_PROFILE',
-            resource: 'teacher',
-            resourceId: req.user._id,
             status: 'success'
         });
 
@@ -289,11 +280,9 @@ exports.changePassword = async (req, res) => {
         await teacher.save();
 
         await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
             action: 'CHANGE_PASSWORD',
-            resource: 'teacher',
             status: 'success'
         });
 

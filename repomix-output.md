@@ -55,11 +55,11 @@ chrono-dashboard/src/index.css
 chrono-dashboard/src/index.js
 chrono-dashboard/src/logo.svg
 chrono-dashboard/src/pages/AdminPanel.js
+chrono-dashboard/src/pages/AuditLogs.js
 chrono-dashboard/src/pages/ClassResults.js
 chrono-dashboard/src/pages/Dashboard.js
 chrono-dashboard/src/pages/LoginPage.js
 chrono-dashboard/src/pages/ProfileSettings.js
-chrono-dashboard/src/pages/QuestionManagement.js
 chrono-dashboard/src/pages/RegisterPage.js
 chrono-dashboard/src/reportWebVitals.js
 chrono-dashboard/src/setupTests.js
@@ -70,14 +70,12 @@ chronoquest-api/src/config/db.js
 chronoquest-api/src/controllers/adminController.js
 chronoquest-api/src/controllers/analyticsController.js
 chronoquest-api/src/controllers/authController.js
-chronoquest-api/src/controllers/questionController.js
 chronoquest-api/src/controllers/studentController.js
 chronoquest-api/src/middleware/adminMiddleware.js
 chronoquest-api/src/middleware/authMiddleware.js
 chronoquest-api/src/middleware/rateLimiter.js
 chronoquest-api/src/models/activityLogModel.js
 chronoquest-api/src/models/feedbackModel.js
-chronoquest-api/src/models/questionModel.js
 chronoquest-api/src/models/quizResultsModel.js
 chronoquest-api/src/models/scoreModel.js
 chronoquest-api/src/models/studentModel.js
@@ -86,7 +84,6 @@ chronoquest-api/src/models/teacherModel.js
 chronoquest-api/src/routes/adminRoutes.js
 chronoquest-api/src/routes/apiRoutes.js
 chronoquest-api/src/routes/authRoutes.js
-chronoquest-api/src/routes/questionRoutes.js
 chronoquest-api/src/tests/admin.test.js
 chronoquest-api/src/tests/auth.test.js
 chronoquest-api/src/tests/generateCode.test.js
@@ -98,6 +95,331 @@ README.md
 ```
 
 # Files
+
+## File: chrono-dashboard/src/pages/AuditLogs.js
+```javascript
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import { Shield, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return d.toLocaleString('en-PH', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+function actionBadgeStyle(action) {
+    const map = {
+        UPDATE_USER:      { background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE' },
+        DELETE_USER:      { background: '#FEF2F2', color: '#B91C1C', border: '1px solid #FECACA' },
+        DEACTIVATE_USER:  { background: '#FFF7ED', color: '#C2410C', border: '1px solid #FED7AA' },
+        RESTORE_USER:     { background: '#F0FDF4', color: '#15803D', border: '1px solid #BBF7D0' },
+        UPDATE_SETTINGS:  { background: '#FAF5FF', color: '#7E22CE', border: '1px solid #E9D5FF' },
+        RESPOND_FEEDBACK: { background: '#F0F9FF', color: '#0369A1', border: '1px solid #BAE6FD' },
+    };
+    return map[action] || { background: '#F8FAFC', color: '#475569', border: '1px solid #E2E8F0' };
+}
+
+// Renders the "Changes" column content.
+// Shows each changed field as: fieldName: "old" → "new"
+function ChangesCell({ oldValue, newValue }) {
+    if (!oldValue || !newValue || Object.keys(oldValue).length === 0) {
+        return <span style={{ color: '#94A3B8', fontSize: '0.75rem' }}>No field changes recorded</span>;
+    }
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {Object.keys(oldValue).map(field => (
+                <div key={field} style={{ fontSize: '0.78rem', lineHeight: 1.5 }}>
+                    <span style={{ fontWeight: 700, color: '#475569', textTransform: 'capitalize' }}>
+                        {field}:
+                    </span>{' '}
+                    <span style={{
+                        background: '#FEF2F2',
+                        color: '#991B1B',
+                        padding: '1px 5px',
+                        borderRadius: '4px',
+                        fontFamily: 'monospace'
+                    }}>
+                        "{String(oldValue[field])}"
+                    </span>
+                    <span style={{ margin: '0 4px', color: '#94A3B8' }}>→</span>
+                    <span style={{
+                        background: '#F0FDF4',
+                        color: '#166534',
+                        padding: '1px 5px',
+                        borderRadius: '4px',
+                        fontFamily: 'monospace'
+                    }}>
+                        "{String(newValue[field])}"
+                    </span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
+const AuditLogs = () => {
+    const [logs, setLogs]       = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError]     = useState('');
+    const [limit, setLimit]     = useState(50);
+    const [sortDir, setSortDir] = useState('desc'); // 'desc' = newest first
+
+    const fetchLogs = useCallback(async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const token = localStorage.getItem('teacherToken');
+            const { data } = await axios.get(`${API_BASE}/admin/audit-logs?limit=${limit}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setLogs(data.logs || []);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to load audit logs.');
+        } finally {
+            setLoading(false);
+        }
+    }, [limit]);
+
+    useEffect(() => { fetchLogs(); }, [fetchLogs]);
+
+    const sortedLogs = [...logs].sort((a, b) => {
+        const diff = new Date(b.createdAt) - new Date(a.createdAt);
+        return sortDir === 'desc' ? diff : -diff;
+    });
+
+    const toggleSort = () => setSortDir(prev => prev === 'desc' ? 'asc' : 'desc');
+
+    // --- Styles (inline, matching the existing AdminPanel aesthetic) ---
+    const tableStyle = {
+        width: '100%',
+        borderCollapse: 'collapse',
+        fontSize: '0.875rem',
+        fontFamily: 'Nunito, sans-serif'
+    };
+
+    const thStyle = {
+        padding: '10px 14px',
+        textAlign: 'left',
+        fontWeight: 800,
+        fontSize: '0.7rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.07em',
+        color: '#64748B',
+        borderBottom: '2px solid #E2E8F0',
+        background: '#F8FAFC',
+        whiteSpace: 'nowrap'
+    };
+
+    const tdStyle = {
+        padding: '12px 14px',
+        borderBottom: '1px solid #F1F5F9',
+        verticalAlign: 'top',
+        color: '#1E293B'
+    };
+
+    return (
+        <div>
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Shield size={20} color="#4F46E5" />
+                    <div>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+                            Audit Log
+                        </h2>
+                        <p style={{ fontSize: '0.78rem', color: '#64748B', margin: 0, marginTop: '2px' }}>
+                            Permanent record of admin actions. Records cannot be edited or deleted.
+                        </p>
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <select
+                        value={limit}
+                        onChange={e => setLimit(Number(e.target.value))}
+                        className="form-select"
+                        style={{ width: 'auto' }}
+                    >
+                        <option value={25}>Last 25</option>
+                        <option value={50}>Last 50</option>
+                        <option value={100}>Last 100</option>
+                        <option value={200}>Last 200</option>
+                    </select>
+                    <button
+                        onClick={fetchLogs}
+                        disabled={loading}
+                        className="btn-outline-dark"
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                        <RefreshCw size={14} className={loading ? 'spin' : ''} />
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
+            {/* Error state */}
+            {error && (
+                <div style={{
+                    background: '#FEF2F2',
+                    border: '1px solid #FECACA',
+                    borderRadius: '10px',
+                    padding: '12px 16px',
+                    color: '#B91C1C',
+                    fontSize: '0.875rem',
+                    marginBottom: '16px'
+                }}>
+                    {error}
+                </div>
+            )}
+
+            {/* Table */}
+            <div style={{
+                background: '#ffffff',
+                border: '2px solid #E2E8F0',
+                borderRadius: '14px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            }}>
+                {loading ? (
+                    <div style={{ padding: '48px', textAlign: 'center', color: '#94A3B8', fontWeight: 700 }}>
+                        Loading audit logs…
+                    </div>
+                ) : sortedLogs.length === 0 ? (
+                    <div style={{ padding: '48px', textAlign: 'center', color: '#94A3B8', fontWeight: 700 }}>
+                        No audit log entries yet.
+                    </div>
+                ) : (
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={tableStyle}>
+                            <thead>
+                                <tr>
+                                    <th style={thStyle}>
+                                        <button
+                                            onClick={toggleSort}
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '4px',
+                                                fontWeight: 800,
+                                                fontSize: '0.7rem',
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.07em',
+                                                color: '#64748B',
+                                                padding: 0,
+                                                fontFamily: 'Nunito, sans-serif'
+                                            }}
+                                        >
+                                            Timestamp
+                                            {sortDir === 'desc' ? <ChevronDown size={12} /> : <ChevronUp size={12} />}
+                                        </button>
+                                    </th>
+                                    <th style={thStyle}>Admin</th>
+                                    <th style={thStyle}>Action</th>
+                                    <th style={thStyle}>Target</th>
+                                    <th style={thStyle}>Changes</th>
+                                    <th style={thStyle}>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {sortedLogs.map((log, i) => (
+                                    <tr
+                                        key={log._id}
+                                        style={{ background: i % 2 === 0 ? '#ffffff' : '#FAFAFA' }}
+                                    >
+                                        {/* Timestamp */}
+                                        <td style={{ ...tdStyle, whiteSpace: 'nowrap', color: '#475569', fontSize: '0.8rem' }}>
+                                            {formatDate(log.createdAt)}
+                                        </td>
+
+                                        {/* Admin name + role */}
+                                        <td style={tdStyle}>
+                                            <div style={{ fontWeight: 700 }}>
+                                                {log.performedBy?.name || 'Unknown'}
+                                            </div>
+                                            <div style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '2px' }}>
+                                                {log.performedByRole}
+                                            </div>
+                                        </td>
+
+                                        {/* Action badge */}
+                                        <td style={tdStyle}>
+                                            <span style={{
+                                                display: 'inline-block',
+                                                padding: '3px 8px',
+                                                borderRadius: '6px',
+                                                fontSize: '0.72rem',
+                                                fontWeight: 800,
+                                                letterSpacing: '0.04em',
+                                                ...actionBadgeStyle(log.action)
+                                            }}>
+                                                {log.action}
+                                            </span>
+                                            {log.resource && (
+                                                <div style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '3px' }}>
+                                                    {log.resource}
+                                                </div>
+                                            )}
+                                        </td>
+
+                                        {/* Target user ID */}
+                                        <td style={{ ...tdStyle, fontSize: '0.75rem', color: '#64748B', fontFamily: 'monospace' }}>
+                                            {log.targetId
+                                                ? String(log.targetId).slice(-8)
+                                                : '—'
+                                            }
+                                        </td>
+
+                                        {/* Changes column */}
+                                        <td style={{ ...tdStyle, minWidth: '260px' }}>
+                                            <ChangesCell
+                                                oldValue={log.oldValue}
+                                                newValue={log.newValue}
+                                            />
+                                        </td>
+
+                                        {/* IP address */}
+                                        <td style={{ ...tdStyle, fontSize: '0.75rem', color: '#94A3B8', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+                                            {log.ipAddress || '—'}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
+            <p style={{ fontSize: '0.72rem', color: '#94A3B8', marginTop: '10px', textAlign: 'right' }}>
+                Showing {sortedLogs.length} of {sortedLogs.length} records · Read-only
+            </p>
+        </div>
+    );
+};
+
+export default AuditLogs;
+```
 
 ## File: .gitignore
 ```
@@ -684,62 +1006,6 @@ const loginLimiter = rateLimit({
 });
 
 module.exports = { generalLimiter, loginLimiter };
-```
-
-## File: chronoquest-api/src/models/quizResultsModel.js
-```javascript
-const mongoose = require('mongoose');
-
-const quizResultSchema = new mongoose.Schema({
-    studentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
-        required: true,
-        index: true
-    },
-    studentName: {
-        type: String,
-        required: true
-    },
-    classCode: {
-        type: String,
-        required: true
-    },
-    testDate: {
-        type: Date,
-        default: Date.now
-    },
-    questionsAsked: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question'
-    }],
-    answers: [Number],
-    correctAnswersCount: {
-        type: Number,
-        default: 0
-    },
-    totalQuestions: {
-        type: Number,
-        required: true
-    },
-    score: {
-        type: Number,
-        required: true
-    },
-    percentage: {
-        type: Number
-    },
-    levelReached: {
-        type: String
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        index: true
-    }
-}, { timestamps: true });
-
-module.exports = mongoose.model('QuizResult', quizResultSchema);
 ```
 
 ## File: chronoquest-api/src/models/scoreModel.js
@@ -1520,506 +1786,6 @@ const FeedbackSection = ({
 export default FeedbackSection;
 ```
 
-## File: chrono-dashboard/src/components/AdminSidebar.js
-```javascript
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, BookOpen, X } from 'lucide-react';
-
-const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
-    const { logout } = useContext(AuthContext);
-    const navigate = useNavigate();
-
-    const menuItems = [
-        { id: 'dashboard', name: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-        { id: 'users', name: 'Users Management', icon: <Users size={16} /> },
-        { id: 'questions', name: 'Questions', icon: <BookOpen size={16} /> },
-        { id: 'feedback', name: 'Feedback', icon: <MessageSquare size={16} /> },
-        { id: 'settings', name: 'Settings', icon: <Settings size={16} /> },
-    ];
-
-    const navBtn = (id) =>
-        `sidebar-btn${activeTab === id ? ' active' : ''}`;
-
-    return (
-        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
-
-            {/* Close button — only visible on mobile via CSS */}
-            <button
-                className="sidebar-close-btn"
-                onClick={onClose}
-                aria-label="Close menu"
-            >
-                <X size={18} />
-            </button>
-
-            <button onClick={() => navigate('/dashboard')} className="sidebar-back-btn">
-                <ArrowLeft size={14} />
-                <span>Back</span>
-            </button>
-
-            <h1 className="sidebar-title">Admin</h1>
-
-            <nav className="sidebar-nav">
-                <div>
-                    <p className="sidebar-section-label">Main</p>
-                    <div className="sidebar-nav-group">
-                        {menuItems.slice(0, 2).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div>
-                    <p className="sidebar-section-label">Content</p>
-                    <div className="sidebar-nav-group">
-                        {menuItems.slice(2, 3).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div>
-                    <p className="sidebar-section-label">Communication</p>
-                    <div className="sidebar-nav-group">
-                        {menuItems.slice(3, 4).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                <div>
-                    <p className="sidebar-section-label">System</p>
-                    <div className="sidebar-nav-group">
-                        {menuItems.slice(4).map(item => (
-                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
-                                {item.icon} {item.name}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </nav>
-
-            <button onClick={logout} className="sidebar-logout-btn">
-                <LogOut size={16} /> Sign Out
-            </button>
-        </aside>
-    );
-};
-
-export default AdminSidebar;
-```
-
-## File: chrono-dashboard/src/pages/QuestionManagement.js
-```javascript
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
-import { Plus, Edit2, Trash2, X, CheckCircle, Circle } from 'lucide-react';
-
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const PERIODS = [
-    'Pre-colonial',
-    'Spanish Colonization',
-    'Revolutionary',
-    'American/Japanese',
-    'Post-war',
-];
-
-const OPTION_LABELS = ['A', 'B', 'C', 'D'];
-
-const EMPTY_FORM = {
-    title: '',
-    description: '',
-    topic: '',
-    period: '',
-    difficultyLevel: 'Medium',
-    options: ['', '', '', ''],
-    correctAnswer: 0,
-};
-
-const getDifficultyClass = (level) => {
-    switch (level) {
-        case 'Easy': return 'difficulty-badge-easy';
-        case 'Medium': return 'difficulty-badge-medium';
-        case 'Hard': return 'difficulty-badge-hard';
-        default: return 'difficulty-badge-default';
-    }
-};
-
-const getPeriodClass = (period) => {
-    const map = {
-        'Pre-colonial': 'period-badge-precolonial',
-        'Spanish Colonization': 'period-badge-spanish',
-        'Revolutionary': 'period-badge-revolutionary',
-        'American/Japanese': 'period-badge-american',
-        'Post-war': 'period-badge-postwar',
-    };
-    return map[period] || 'period-badge-default';
-};
-
-const QuestionManagement = () => {
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterDifficulty, setFilterDifficulty] = useState('');
-    const [filterPeriod, setFilterPeriod] = useState('');
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [editingId, setEditingId] = useState(null);
-    const [formData, setFormData] = useState(EMPTY_FORM);
-
-    const fetchQuestions = useCallback(async (pageNum = 1) => {
-        setLoading(true);
-        setError('');
-        try {
-            const params = new URLSearchParams();
-            if (searchTerm) params.append('topic', searchTerm);
-            if (filterDifficulty) params.append('difficulty', filterDifficulty);
-            if (filterPeriod) params.append('period', filterPeriod);
-            params.append('page', pageNum);
-            params.append('limit', 10);
-
-            const token = localStorage.getItem('teacherToken');
-            const { data } = await axios.get(
-                `${API_BASE}/questions?${params.toString()}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
-            setQuestions(data.questions);
-            setTotalPages(data.pagination.pages);
-            setPage(pageNum);
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error fetching questions');
-        } finally {
-            setLoading(false);
-        }
-    }, [searchTerm, filterDifficulty, filterPeriod]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => fetchQuestions(1), 300);
-        return () => clearTimeout(timer);
-    }, [searchTerm, filterDifficulty, filterPeriod, fetchQuestions]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleOptionChange = (index, value) => {
-        setFormData(prev => {
-            const options = [...prev.options];
-            options[index] = value;
-            return { ...prev, options };
-        });
-    };
-
-    const handleCorrectAnswer = (index) => {
-        setFormData(prev => ({ ...prev, correctAnswer: index }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-
-        if (!formData.title.trim()) return setError('Question title is required');
-        if (!formData.period) return setError('Please select a historical period');
-        if (formData.options.some(o => !o.trim())) return setError('All 4 answer options are required');
-
-        try {
-            const token = localStorage.getItem('teacherToken');
-            const payload = { ...formData };
-
-            if (editingId) {
-                await axios.patch(`${API_BASE}/questions/${editingId}`, payload, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                toast.success('Question updated successfully');
-            } else {
-                await axios.post(`${API_BASE}/questions`, payload, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                toast.success('Question created successfully');
-            }
-            closeModal();
-            fetchQuestions(page);
-        } catch (err) {
-            const errorMsg = err.response?.data?.message || 'Error saving question';
-            toast.error(errorMsg);
-            setError(errorMsg);
-        }
-    };
-
-    const handleEdit = (question) => {
-        setFormData({
-            title: question.title || '',
-            description: question.description || '',
-            topic: question.topic || '',
-            period: question.period || question.topic || '',
-            difficultyLevel: question.difficultyLevel || 'Medium',
-            options: question.options?.length === 4 ? question.options : ['', '', '', ''],
-            correctAnswer: question.correctAnswer ?? 0,
-        });
-        setEditingId(question._id);
-        setModalOpen(true);
-    };
-
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this question?')) return;
-        try {
-            const token = localStorage.getItem('teacherToken');
-            await axios.delete(`${API_BASE}/questions/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            toast.success('Question deleted successfully');
-            fetchQuestions(page);
-        } catch (err) {
-            const errorMsg = err.response?.data?.message || 'Error deleting question';
-            toast.error(errorMsg);
-        }
-    };
-
-    const handleNewQuestion = () => {
-        setFormData(EMPTY_FORM);
-        setEditingId(null);
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setEditingId(null);
-        setFormData(EMPTY_FORM);
-        setError('');
-    };
-
-    return (
-        <div className="content-area space-y-8">
-            <Toaster position="top-right" />
-            <header className="flex-between">
-                <h2 className="page-title">Question Management</h2>
-                <button onClick={handleNewQuestion} className="btn-dark" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Plus size={16} /> New Question
-                </button>
-            </header>
-
-            {error && <div className="alert-error">{error}</div>}
-
-            <div className="filter-bar">
-                <input
-                    type="text"
-                    placeholder="Search by topic or title..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="form-input-sm"
-                    style={{ flex: 1, minWidth: '180px' }}
-                />
-                <select value={filterPeriod} onChange={(e) => setFilterPeriod(e.target.value)} className="form-select">
-                    <option value="">All Periods</option>
-                    {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
-                <select value={filterDifficulty} onChange={(e) => setFilterDifficulty(e.target.value)} className="form-select">
-                    <option value="">All Difficulties</option>
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                </select>
-            </div>
-
-            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                {loading ? (
-                    <div className="empty-state"><p className="empty-state-text">Loading...</p></div>
-                ) : questions.length === 0 ? (
-                    <div className="empty-state"><p className="empty-state-text">No questions found</p></div>
-                ) : (
-                    <div style={{ overflowX: 'auto' }}>
-                        <table className="table" style={{ minWidth: 'unset', width: '100%' }}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '45%' }}>Question</th>
-                                    <th style={{ width: '20%' }}>Period</th>
-                                    <th style={{ width: '15%' }}>Difficulty</th>
-                                    <th style={{ width: '12%' }}>Created By</th>
-                                    <th style={{ width: '8%', textAlign: 'center' }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {questions.map((question) => (
-                                    <tr key={question._id}>
-                                        <td>
-                                            <p className="table-cell-name" style={{ fontSize: '0.875rem' }}>{question.title}</p>
-                                            {question.description && (
-                                                <p className="table-cell-meta" style={{ marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '320px' }}>
-                                                    {question.description}
-                                                </p>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <span className={getPeriodClass(question.period || question.topic)}>
-                                                {question.period || question.topic}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span className={getDifficultyClass(question.difficultyLevel)}>
-                                                {question.difficultyLevel}
-                                            </span>
-                                        </td>
-                                        <td className="table-cell-sub">{question.createdBy?.name}</td>
-                                        <td>
-                                            <div className="table-actions" style={{ justifyContent: 'center' }}>
-                                                <button onClick={() => handleEdit(question)} className="btn-icon btn-icon-slate" title="Edit">
-                                                    <Edit2 size={15} />
-                                                </button>
-                                                <button onClick={() => handleDelete(question._id)} className="btn-icon btn-icon-red" title="Delete">
-                                                    <Trash2 size={15} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </div>
-
-            {totalPages > 1 && (
-                <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-                        <button
-                            key={p}
-                            onClick={() => fetchQuestions(p)}
-                            className={`pagination-btn ${p === page ? 'active' : 'inactive'}`}
-                        >
-                            {p}
-                        </button>
-                    ))}
-                </div>
-            )}
-
-            {modalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-lg">
-                        <div className="modal-header">
-                            <h2 className="section-title">{editingId ? 'Edit Question' : 'New Question'}</h2>
-                            <button onClick={closeModal} className="btn-icon btn-icon-slate">
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="modal-body space-y-6" style={{ paddingTop: '24px', paddingBottom: '24px' }}>
-                            {error && <div className="alert-error">{error}</div>}
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Question <span style={{ color: '#f87171' }}>*</span>
-                                </label>
-                                <textarea
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    rows={2}
-                                    className="form-textarea-sm"
-                                    placeholder="Type your question here..."
-                                />
-                            </div>
-
-                            <div className="grid-2">
-                                <div className="form-group">
-                                    <label className="form-label">
-                                        Historical Period <span style={{ color: '#f87171' }}>*</span>
-                                    </label>
-                                    <select name="period" value={formData.period} onChange={handleInputChange} className="form-select">
-                                        <option value="">Select period...</option>
-                                        {PERIODS.map(p => <option key={p} value={p}>{p}</option>)}
-                                    </select>
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Difficulty</label>
-                                    <select name="difficultyLevel" value={formData.difficultyLevel} onChange={handleInputChange} className="form-select">
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Answer Options <span style={{ color: '#f87171' }}>*</span>
-                                    <span style={{ marginLeft: '8px', color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>
-                                        — click the circle to mark the correct answer
-                                    </span>
-                                </label>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {formData.options.map((opt, i) => {
-                                        const isCorrect = formData.correctAnswer === i;
-                                        return (
-                                            <div key={i} className={`question-answer-option ${isCorrect ? 'selected' : 'unselected'}`}>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleCorrectAnswer(i)}
-                                                    className={`option-selector-btn ${isCorrect ? 'selected' : 'unselected'}`}
-                                                    title="Mark as correct answer"
-                                                >
-                                                    {isCorrect ? <CheckCircle size={20} /> : <Circle size={20} />}
-                                                </button>
-                                                <span className={`option-prefix ${isCorrect ? 'selected' : 'unselected'}`}>
-                                                    {OPTION_LABELS[i]}.
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    value={opt}
-                                                    onChange={(e) => handleOptionChange(i, e.target.value)}
-                                                    className="option-text-input"
-                                                    placeholder={`Option ${OPTION_LABELS[i]}...`}
-                                                />
-                                                {isCorrect && <span className="option-correct-label">Correct</span>}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">
-                                    Additional Notes <span style={{ color: '#94a3b8', fontWeight: 600, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span>
-                                </label>
-                                <textarea
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
-                                    rows={2}
-                                    className="form-textarea-sm"
-                                    placeholder="Any extra context or explanation..."
-                                />
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', paddingTop: '8px' }}>
-                                <button type="button" onClick={closeModal} className="btn-outline">Cancel</button>
-                                <button type="submit" className="btn-dark">
-                                    {editingId ? 'Update Question' : 'Create Question'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default QuestionManagement;
-```
-
 ## File: chrono-dashboard/src/pages/RegisterPage.js
 ```javascript
 import React, { useState } from 'react';
@@ -2395,52 +2161,84 @@ exports.checkPermission = (requiredPermission) => {
 ```javascript
 const mongoose = require('mongoose');
 
-const activityLogSchema = new mongoose.Schema({
-    userId: {
+const auditLogSchema = new mongoose.Schema({
+    // Who performed the action
+    performedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'userModel',
+        ref: 'Teacher',
+        required: true
+    },
+    performedByRole: {
+        type: String,
+        enum: ['teacher', 'admin'],
         required: true
     },
 
-    userModel: {
-        type: String,
-        required: true,
-        enum: ['Teacher', 'Student'],
-        default: 'Teacher'
-    },
-    userRole: {
-        type: String,
-        enum: ['teacher', 'student', 'admin'],
-        required: true
-    },
+    // What action was taken
     action: {
         type: String,
-        required: true  // e.g., "LOGIN", "CREATE_SECTION", "DELETE_STUDENT"
+        required: true  // e.g., "UPDATE_USER", "LOGIN", "RESTORE_USER"
     },
     resource: {
-        type: String  // e.g., "Section", "Student", "Question"
+        type: String    // e.g., "teacher", "student", "settings"
     },
-    resourceId: {
+
+    // Which document was modified
+    targetId: {
         type: mongoose.Schema.Types.ObjectId
     },
+
+    // Snapshot of the data before the change (only changed fields)
+    oldValue: {
+        type: Object,
+        default: null
+    },
+
+    // Snapshot of the data after the change (only changed fields)
+    newValue: {
+        type: Object,
+        default: null
+    },
+
+    // Extra context that doesn't fit old/new structure
     details: {
         type: Object,
-        default: {}  // Store additional context
+        default: {}
     },
-    ipAddress: String,
+
+    ipAddress: {
+        type: String
+    },
+
     status: {
         type: String,
         enum: ['success', 'failure'],
         default: 'success'
     },
+
     createdAt: {
         type: Date,
         default: Date.now,
         index: true
     }
-}, { timestamps: false });
+}, {
+    timestamps: false,
+    // Disable Mongoose's built-in versioning — immutable records don't need it
+    versionKey: false
+});
 
-module.exports = mongoose.model('ActivityLog', activityLogSchema);
+// Immutability enforcement: block updates and deletes at the model level.
+// pre('updateOne') etc. catch calls made via Model.updateOne() / findByIdAndUpdate().
+// The route-level block in adminRoutes.js is the primary guard; this is a belt-and-suspenders backup.
+auditLogSchema.pre(['updateOne', 'findOneAndUpdate', 'findByIdAndUpdate', 'replaceOne'], function () {
+    throw new Error('Audit log records are immutable and cannot be modified.');
+});
+
+auditLogSchema.pre(['deleteOne', 'findOneAndDelete', 'findByIdAndDelete', 'deleteMany'], function () {
+    throw new Error('Audit log records are immutable and cannot be deleted.');
+});
+
+module.exports = mongoose.model('AuditLog', auditLogSchema);
 ```
 
 ## File: chronoquest-api/src/models/feedbackModel.js
@@ -2502,6 +2300,58 @@ const feedbackSchema = new mongoose.Schema({
 module.exports = mongoose.model('Feedback', feedbackSchema);
 ```
 
+## File: chronoquest-api/src/models/quizResultsModel.js
+```javascript
+const mongoose = require('mongoose');
+
+const quizResultSchema = new mongoose.Schema({
+    studentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student',
+        required: true,
+        index: true
+    },
+    studentName: {
+        type: String,
+        required: true
+    },
+    classCode: {
+        type: String,
+        required: true
+    },
+    testDate: {
+        type: Date,
+        default: Date.now
+    },
+    answers: [Number],
+    correctAnswersCount: {
+        type: Number,
+        default: 0
+    },
+    totalQuestions: {
+        type: Number,
+        required: true
+    },
+    score: {
+        type: Number,
+        required: true
+    },
+    percentage: {
+        type: Number
+    },
+    levelReached: {
+        type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        index: true
+    }
+}, { timestamps: true });
+
+module.exports = mongoose.model('QuizResult', quizResultSchema);
+```
+
 ## File: chronoquest-api/src/models/systemSettingsModel.js
 ```javascript
 const mongoose = require('mongoose');
@@ -2556,6 +2406,91 @@ module.exports = mongoose.model('SystemSettings', systemSettingsSchema);
         }
     ]
 }
+```
+
+## File: chrono-dashboard/src/components/AdminSidebar.js
+```javascript
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { LayoutDashboard, Users, LogOut, MessageSquare, Settings, ArrowLeft, X, ShieldCheck } from 'lucide-react';
+
+const AdminSidebar = ({ activeTab, setActiveTab, sidebarOpen, onClose }) => {
+    const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const menuItems = [
+        { id: 'dashboard',  name: 'Dashboard',        icon: <LayoutDashboard size={16} /> },
+        { id: 'users',      name: 'Users Management',  icon: <Users size={16} /> },
+        { id: 'feedback',   name: 'Feedback',          icon: <MessageSquare size={16} /> },
+        { id: 'audit',      name: 'Audit Log',         icon: <ShieldCheck size={16} /> },
+        { id: 'settings',   name: 'Settings',          icon: <Settings size={16} /> },
+    ];
+
+    const navBtn = (id) => `sidebar-btn${activeTab === id ? ' active' : ''}`;
+
+    return (
+        <aside className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
+
+            <button className="sidebar-close-btn" onClick={onClose} aria-label="Close menu">
+                <X size={18} />
+            </button>
+
+            <button onClick={() => navigate('/dashboard')} className="sidebar-back-btn">
+                <ArrowLeft size={14} />
+                <span>Back</span>
+            </button>
+
+            <h1 className="sidebar-title">Admin</h1>
+
+            <nav className="sidebar-nav">
+                <div>
+                    <p className="sidebar-section-label">Main</p>
+                    <div className="sidebar-nav-group">
+                        {menuItems.slice(0, 2).map(item => (
+                            <button key={item.id} onClick={() => setActiveTab(item.id)} className={navBtn(item.id)}>
+                                {item.icon} {item.name}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div>
+                    <p className="sidebar-section-label">Communication</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('feedback')} className={navBtn('feedback')}>
+                            <MessageSquare size={16} /> Feedback
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="sidebar-section-label">Security</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('audit')} className={navBtn('audit')}>
+                            <ShieldCheck size={16} /> Audit Log
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <p className="sidebar-section-label">System</p>
+                    <div className="sidebar-nav-group">
+                        <button onClick={() => setActiveTab('settings')} className={navBtn('settings')}>
+                            <Settings size={16} /> Settings
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <button onClick={logout} className="sidebar-logout-btn">
+                <LogOut size={16} /> Sign Out
+            </button>
+        </aside>
+    );
+};
+
+export default AdminSidebar;
 ```
 
 ## File: chrono-dashboard/src/components/TeacherSidebar.js
@@ -3037,35 +2972,6 @@ router.get('/profile', protect, authController.getTeacherProfile);
 router.put('/profile', protect, authController.updateTeacherProfile || authController.updateProfile);
 router.put('/change-password', protect, authController.changePassword);
 router.post('/feedback', protect, authController.submitFeedback);
-
-module.exports = router;
-```
-
-## File: chronoquest-api/src/routes/questionRoutes.js
-```javascript
-const express = require('express');
-const router = express.Router();
-const { protect, adminOnly } = require('../middleware/authMiddleware');
-const {
-    createQuestion,
-    getAllQuestions,
-    getQuestionsByTeacher,
-    updateQuestion,
-    deleteQuestion,
-    toggleQuestionStatus,
-    getDeletedQuestions,
-    restoreQuestion
-} = require('../controllers/questionController');
-
-
-router.post('/', protect, createQuestion);
-router.get('/', protect, getAllQuestions);
-router.get('/deleted', protect, adminOnly, getDeletedQuestions);
-router.get('/teacher/:teacherId', protect, getQuestionsByTeacher);
-router.patch('/:questionId', protect, updateQuestion);
-router.delete('/:questionId', protect, deleteQuestion);
-router.post('/:questionId/restore', protect, adminOnly, restoreQuestion);
-router.post('/:questionId/toggle', protect, toggleQuestionStatus);
 
 module.exports = router;
 ```
@@ -5521,269 +5427,6 @@ body {
 }
 
 /* ========================================
-   QUESTION MANAGEMENT
-   ======================================== */
-
-.filter-bar {
-    background-color: #ffffff;
-    border-radius: 14px;
-    border: 2px solid var(--color-green-light);
-    padding: 16px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    box-shadow: 0 3px 0 var(--color-green-light);
-}
-
-.difficulty-badge-easy {
-    background-color: var(--color-green-light);
-    color: var(--color-green-dark);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.difficulty-badge-medium {
-    background-color: var(--color-sun-light);
-    color: var(--color-sun-dark);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.difficulty-badge-hard {
-    background-color: var(--color-danger-bg);
-    color: var(--color-danger);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.difficulty-badge-default {
-    background-color: var(--color-surface);
-    color: var(--color-ink-mid);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-precolonial {
-    background-color: #F5F0EB;
-    color: #57534E;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-spanish {
-    background-color: var(--color-sun-light);
-    color: var(--color-sun-dark);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-revolutionary {
-    background-color: #FFF7ED;
-    color: #9A3412;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-american {
-    background-color: var(--color-sky-light);
-    color: var(--color-sky-dark);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-postwar {
-    background-color: var(--color-green-light);
-    color: var(--color-green-dark);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.period-badge-default {
-    background-color: var(--color-surface);
-    color: var(--color-ink-mid);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    display: inline-block;
-}
-
-.option-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-}
-
-.option-row-correct {
-    color: var(--color-green-mid);
-    font-weight: 900;
-}
-
-.option-row-default {
-    color: var(--color-ink-muted);
-    font-weight: 700;
-}
-
-.option-label {
-    width: 16px;
-    flex-shrink: 0;
-}
-
-.option-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 120px;
-}
-
-.question-answer-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 2px solid;
-    transition: border-color 0.2s, background-color 0.2s;
-}
-
-.question-answer-option.selected {
-    border-color: var(--color-green-main);
-    background-color: var(--color-green-pale);
-}
-
-.question-answer-option.unselected {
-    border-color: var(--color-ink-ghost);
-    background-color: var(--color-surface);
-}
-
-.option-selector-btn {
-    flex-shrink: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.option-selector-btn.selected {
-    color: var(--color-green-mid);
-}
-
-.option-selector-btn.unselected {
-    color: var(--color-ink-ghost);
-}
-
-.option-selector-btn.unselected:hover {
-    color: var(--color-ink-mid);
-}
-
-.option-prefix {
-    flex-shrink: 0;
-    width: 24px;
-    font-size: 0.75rem;
-    font-weight: 900;
-    text-transform: uppercase;
-}
-
-.option-prefix.selected {
-    color: var(--color-green-mid);
-}
-
-.option-prefix.unselected {
-    color: var(--color-ink-muted);
-}
-
-.option-text-input {
-    flex: 1;
-    background: transparent;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-ink);
-    border: none;
-    outline: none;
-    font-family: 'Nunito', sans-serif;
-}
-
-.option-text-input::placeholder {
-    color: var(--color-ink-ghost);
-}
-
-.option-correct-label {
-    flex-shrink: 0;
-    font-size: 0.75rem;
-    font-weight: 900;
-    color: var(--color-green-mid);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.pagination-btn {
-    padding: 8px 16px;
-    border: 2px solid var(--color-green-light);
-    border-radius: 10px;
-    background: #ffffff;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.75rem;
-    color: var(--color-ink-mid);
-    cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
-    box-shadow: 0 2px 0 var(--color-green-light);
-}
-
-.pagination-btn:hover {
-    background-color: var(--color-green-pale);
-    color: var(--color-ink);
-    transform: translateY(-1px);
-}
-
-.pagination-btn.active {
-    background-color: var(--color-green-dark);
-    color: #ffffff;
-    border-color: var(--color-green-dark);
-    box-shadow: 0 2px 0 #052E16;
-}
-
-.pagination-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-/* ========================================
    PROFILE SETTINGS
    ======================================== */
 
@@ -6518,100 +6161,6 @@ body {
 }
 ```
 
-## File: chronoquest-api/src/models/questionModel.js
-```javascript
-const mongoose = require('mongoose');
-
-const PERIODS = [
-    'Pre-colonial',
-    'Spanish Colonization',
-    'Revolutionary',
-    'American/Japanese',
-    'Post-war',
-];
-
-const questionSchema = new mongoose.Schema(
-    {
-        title: {
-            type: String,
-            required: true,
-            trim: true,
-            minlength: 5,
-            maxlength: 500
-        },
-        description: {
-            type: String,
-            trim: true,
-            maxlength: 1000
-        },
-
-        topic: {
-            type: String,
-            trim: true,
-            index: true
-        },
-        period: {
-            type: String,
-            enum: PERIODS,
-            required: true,
-            index: true
-        },
-        options: {
-            type: [String],
-            validate: {
-                validator: (arr) => arr.length === 4 && arr.every(s => s.trim().length > 0),
-                message: 'Exactly 4 non-empty options are required'
-            },
-            required: true
-        },
-
-        correctAnswer: {
-            type: Number,
-            enum: [0, 1, 2, 3],
-            required: true,
-            default: 0
-        },
-        difficultyLevel: {
-            type: String,
-            enum: ['Easy', 'Medium', 'Hard'],
-            default: 'Medium',
-            required: true
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Teacher',
-            required: true,
-            index: true
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false
-        },
-        deletedAt: {
-            type: Date,
-            default: null
-        }
-    },
-    {
-        timestamps: true
-    }
-);
-
-
-questionSchema.pre('save', function () {
-    if (this.period) this.topic = this.period;
-});
-
-questionSchema.index({ createdBy: 1, period: 1 });
-questionSchema.index({ createdBy: 1, isActive: 1 });
-
-module.exports = mongoose.model('Question', questionSchema);
-```
-
 ## File: chronoquest-api/src/models/studentModel.js
 ```javascript
 const mongoose = require('mongoose');
@@ -6691,325 +6240,6 @@ Link to Live Frontend Web Application: https://web2finalchronodashboard.vercel.a
 Link to the Live Backend API: https://web2finalchronobackend.vercel.app/api/v1/debug
 
 Link to API Documentation: [https://drive.google.com/drive/folders/19ar8SURnIK2FUqo6wHIIQQVLmmp3PIYr?usp=sharing](https://drive.google.com/drive/folders/1qPph8k0-xLOwKcI_M9P0zb_TJH-0bp__?usp=sharing)
-```
-
-## File: chronoquest-api/src/controllers/questionController.js
-```javascript
-const Question = require('../models/questionModel');
-const ActivityLog = require('../models/activityLogModel');
-
-// @desc    Create a new question
-// @access  Private/Admin
-exports.createQuestion = async (req, res) => {
-    try {
-        const { title, description, topic, period, difficultyLevel, options, correctAnswer } = req.body;
-
-        // Validation
-        if (!title || !period || !options || correctAnswer === undefined) {
-            return res.status(400).json({
-                message: 'Title, topic, period, options, and correctAnswer are required'
-            });
-        }
-
-        if (options.length !== 4) {
-            return res.status(400).json({
-                message: 'Exactly 4 options are required'
-            });
-        }
-
-        const newQuestion = new Question({
-            title,
-            description,
-            topic: topic || period,
-            period,
-            difficultyLevel: difficultyLevel || 'Medium',
-            options,
-            correctAnswer,
-            createdBy: req.user._id
-        });
-
-        await newQuestion.save();
-
-        // Log the action
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'CREATE_QUESTION',
-            resource: 'Question',
-            resourceId: newQuestion._id,
-            status: 'success'
-        });
-
-        res.status(201).json({
-            message: 'Question created successfully',
-            question: newQuestion
-        });
-    } catch (error) {
-        console.error('Create Question Error:', error);
-        res.status(500).json({ message: 'Error creating question', error: error.message });
-    }
-};
-
-// @desc    Get all questions with optional filters
-// @access  Private/Admin
-exports.getAllQuestions = async (req, res) => {
-    try {
-        const { topic, difficulty, isActive, page = 1, limit = 10 } = req.query;
-
-        const filters = { isDeleted: false };
-        if (topic) filters.topic = { $regex: topic, $options: 'i' };
-        if (difficulty) filters.difficultyLevel = difficulty;
-        if (isActive !== undefined) filters.isActive = isActive === 'true';
-
-        const skip = (page - 1) * limit;
-
-        const questions = await Question.find(filters)
-            .populate('createdBy', 'name email')
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await Question.countDocuments(filters);
-
-        res.json({
-            message: 'Questions retrieved successfully',
-            questions,
-            pagination: {
-                total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                pages: Math.ceil(total / limit)
-            }
-        });
-    } catch (error) {
-        console.error('Get All Questions Error:', error);
-        res.status(500).json({ message: 'Error fetching questions' });
-    }
-};
-
-// @desc    Get questions created by a specific teacher
-// @access  Private/Admin
-exports.getQuestionsByTeacher = async (req, res) => {
-    try {
-        const { teacherId } = req.params;
-        const { page = 1, limit = 10 } = req.query;
-
-        const skip = (page - 1) * limit;
-
-        const questions = await Question.find({ createdBy: teacherId, isDeleted: false })
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await Question.countDocuments({ createdBy: teacherId, isDeleted: false });
-
-        res.json({
-            questions,
-            pagination: {
-                total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                pages: Math.ceil(total / limit)
-            }
-        });
-    } catch (error) {
-        console.error('Get Questions by Teacher Error:', error);
-        res.status(500).json({ message: 'Error fetching teacher questions' });
-    }
-};
-
-// @desc    Update a question
-// @access  Private/Admin
-exports.updateQuestion = async (req, res) => {
-    try {
-        const { questionId } = req.params;
-        const { title, description, topic, difficultyLevel, isActive } = req.body;
-
-        const question = await Question.findById(questionId);
-
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
-        }
-
-        // Verify ownership (only creator or admin can edit)
-        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Not authorized to update this question' });
-        }
-
-        // Update fields
-        if (title) question.title = title;
-        if (description !== undefined) question.description = description;
-        if (topic) question.topic = topic;
-        if (difficultyLevel) question.difficultyLevel = difficultyLevel;
-        if (isActive !== undefined) question.isActive = isActive;
-
-        await question.save();
-
-        // Log the action
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'UPDATE_QUESTION',
-            resource: 'Question',
-            resourceId: questionId,
-            status: 'success'
-        });
-
-        res.json({
-            message: 'Question updated successfully',
-            question
-        });
-    } catch (error) {
-        console.error('Update Question Error:', error);
-        res.status(500).json({ message: 'Error updating question' });
-    }
-};
-
-// @desc    Delete a question (soft delete)
-// @access  Private/Admin
-exports.deleteQuestion = async (req, res) => {
-    try {
-        const { questionId } = req.params;
-
-        const question = await Question.findById(questionId);
-
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
-        }
-
-        // Verify ownership (only creator or admin can delete)
-        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Not authorized to delete this question' });
-        }
-
-        // Soft delete: mark as deleted instead of removing
-        await Question.findByIdAndUpdate(questionId, {
-            isDeleted: true,
-            deletedAt: new Date()
-        });
-
-        // Log the action
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'DELETE_QUESTION',
-            resource: 'Question',
-            resourceId: questionId,
-            status: 'success'
-        });
-
-        res.json({ message: 'Question deleted successfully' });
-    } catch (error) {
-        console.error('Delete Question Error:', error);
-        res.status(500).json({ message: 'Error deleting question' });
-    }
-};
-
-// @desc    Toggle question active status
-// @access  Private/Admin
-exports.toggleQuestionStatus = async (req, res) => {
-    try {
-        const { questionId } = req.params;
-
-        const question = await Question.findById(questionId);
-
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
-        }
-
-        // Verify ownership
-        if (question.createdBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Not authorized to modify this question' });
-        }
-
-        question.isActive = !question.isActive;
-        await question.save();
-
-        res.json({
-            message: `Question ${question.isActive ? 'activated' : 'deactivated'} successfully`,
-            question
-        });
-    } catch (error) {
-        console.error('Toggle Question Status Error:', error);
-        res.status(500).json({ message: 'Error toggling question status' });
-    }
-};
-
-// @desc    Get all deleted questions
-// @access  Private/Admin
-exports.getDeletedQuestions = async (req, res) => {
-    try {
-        const { page = 1, limit = 10 } = req.query;
-        const skip = (page - 1) * limit;
-
-        const deletedQuestions = await Question.find({ isDeleted: true })
-            .populate('createdBy', 'name email')
-            .sort({ deletedAt: -1 })
-            .skip(skip)
-            .limit(parseInt(limit));
-
-        const total = await Question.countDocuments({ isDeleted: true });
-
-        res.json({
-            message: 'Deleted questions retrieved successfully',
-            questions: deletedQuestions,
-            pagination: {
-                total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                pages: Math.ceil(total / limit)
-            }
-        });
-    } catch (error) {
-        console.error('Get Deleted Questions Error:', error);
-        res.status(500).json({ message: 'Error fetching deleted questions' });
-    }
-};
-
-// @desc    Restore a deleted question
-// @access  Private/Admin
-exports.restoreQuestion = async (req, res) => {
-    try {
-        const { questionId } = req.params;
-
-        const question = await Question.findById(questionId);
-
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
-        }
-
-        if (!question.isDeleted) {
-            return res.status(400).json({ message: 'Question is not deleted' });
-        }
-
-        // Restore the question
-        question.isDeleted = false;
-        question.deletedAt = null;
-        await question.save();
-
-        // Log the action
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'RESTORE_QUESTION',
-            resource: 'Question',
-            resourceId: questionId,
-            status: 'success'
-        });
-
-        res.json({
-            message: 'Question restored successfully',
-            question
-        });
-    } catch (error) {
-        console.error('Restore Question Error:', error);
-        res.status(500).json({ message: 'Error restoring question' });
-    }
-};
 ```
 
 ## File: chronoquest-api/src/models/teacherModel.js
@@ -7109,24 +6339,251 @@ const { protect, adminOnly, checkPermission } = require('../middleware/authMiddl
 
 router.use(protect);
 router.use(adminOnly);
-router.post('/users/restore', adminController.restoreUser);
 
+// User management
+router.post('/users/restore', adminController.restoreUser);
 router.get('/users', adminController.getAllUsers);
 router.get('/users/deleted', adminController.getDeletedUsers);
 router.post('/users/deactivate', adminController.deactivateUser);
 router.post('/users/delete', adminController.deleteUser);
 router.patch('/users/:userId/:userType', adminController.updateUser);
 
+// Audit logs — read-only.
+// PUT and DELETE are explicitly blocked here. The model itself also refuses
+// these operations, but rejecting them at the route level returns a clear 405
+// instead of a 500, and makes the intent visible in the routing layer.
+router.get('/audit-logs', adminController.getRecentActivityLogs);
+// Keep the old path working so the frontend doesn't break before it's updated.
 router.get('/activity-logs-detailed', adminController.getRecentActivityLogs);
+
+router.put('/audit-logs', (req, res) => {
+    res.status(405).json({ message: 'Audit logs are immutable. PUT is not allowed.' });
+});
+router.put('/audit-logs/:id', (req, res) => {
+    res.status(405).json({ message: 'Audit logs are immutable. PUT is not allowed.' });
+});
+router.delete('/audit-logs', (req, res) => {
+    res.status(405).json({ message: 'Audit logs are immutable. DELETE is not allowed.' });
+});
+router.delete('/audit-logs/:id', (req, res) => {
+    res.status(405).json({ message: 'Audit logs are immutable. DELETE is not allowed.' });
+});
+
+// Analytics
 router.get('/analytics', adminController.getSystemAnalytics);
 
+// Feedback
 router.get('/feedback', adminController.getAllFeedback);
 router.post('/feedback/:id/respond', checkPermission('manage_feedback'), adminController.respondToFeedback);
 
+// Settings
 router.get('/settings', adminController.getSystemSettings);
 router.post('/settings', checkPermission('manage_settings'), adminController.updateSystemSetting);
 
 module.exports = router;
+```
+
+## File: chronoquest-api/reports/jest-results.xml
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="21" failures="19" errors="0" time="6.341">
+  <testsuite name="Admin Routes - Auth Guards" errors="0" failures="11" skipped="0" timestamp="2026-04-13T16:31:49" time="3.32" tests="11">
+    <testcase classname="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" name="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" time="0.006">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin Routes - Auth Guards GET /api/v1/admin/users - 403 when caller is a regular teacher" name="Admin Routes - Auth Guards GET /api/v1/admin/users - 403 when caller is a regular teacher" time="0.001">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - GET /api/v1/admin/users 200 and returns teachers + students arrays" name="Admin - GET /api/v1/admin/users 200 and returns teachers + students arrays" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - GET /api/v1/admin/users passwords are excluded from the response" name="Admin - GET /api/v1/admin/users passwords are excluded from the response" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - GET /api/v1/admin/analytics 200 and returns platform stats" name="Admin - GET /api/v1/admin/analytics 200 and returns platform stats" time="0.001">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a teacher" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a teacher" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 400 when userType is invalid" name="Admin - POST /api/v1/admin/users/delete 400 when userType is invalid" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" name="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" time="0.001">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" name="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Admin - POST /api/v1/admin/users/delete 400 when trying to delete the last admin" name="Admin - POST /api/v1/admin/users/delete 400 when trying to delete the last admin" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Student Score Sync" errors="0" failures="3" skipped="0" timestamp="2026-04-13T16:31:49" time="3.563" tests="3">
+    <testcase classname="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" name="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" time="0.006">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
+    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
+    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
+    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
+    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
+    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
+    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
+    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
+    </testcase>
+    <testcase classname="Student Score Sync POST /api/v1/student/sync - 404 when class code does not exist" name="Student Score Sync POST /api/v1/student/sync - 404 when class code does not exist" time="0.001">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
+    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
+    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
+    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
+    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
+    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
+    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
+    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
+    </testcase>
+    <testcase classname="Student Score Sync POST /api/v1/student/sync - score is stored as provided" name="Student Score Sync POST /api/v1/student/sync - score is stored as provided" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
+    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
+    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
+    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
+    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
+    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
+    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
+    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Integration Test: Authentication" errors="0" failures="2" skipped="0" timestamp="2026-04-13T16:31:53" time="1.489" tests="2">
+    <testcase classname="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" name="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\auth.test.js:11:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" name="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\auth.test.js:11:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Unit Test: generateClassCode" errors="0" failures="0" skipped="0" timestamp="2026-04-13T16:31:54" time="0.06" tests="2">
+    <testcase classname="Unit Test: generateClassCode should generate a string of exactly 6 characters" name="Unit Test: generateClassCode should generate a string of exactly 6 characters" time="0.003">
+    </testcase>
+    <testcase classname="Unit Test: generateClassCode should only contain alphanumeric characters" name="Unit Test: generateClassCode should only contain alphanumeric characters" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Teacher Section Management" errors="0" failures="3" skipped="0" timestamp="2026-04-13T16:31:52" time="2.039" tests="3">
+    <testcase classname="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" name="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" time="0.001">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Teacher Section Management POST /api/v1/teacher/archive-section/:code - Should archive class" name="Teacher Section Management POST /api/v1/teacher/archive-section/:code - Should archive class" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Teacher Section Management DELETE /api/v1/teacher/delete-section/:code - Should delete class" name="Teacher Section Management DELETE /api/v1/teacher/delete-section/:code - Should delete class" time="0">
+      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
+    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
+    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
+    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
+    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
 ```
 
 ## File: chrono-dashboard/src/pages/Dashboard.js
@@ -7202,10 +6659,7 @@ const Dashboard = () => {
         try {
             const token = localStorage.getItem('teacherToken');
             const headers = { Authorization: `Bearer ${token}` };
-            const [scoresRes, questRes] = await Promise.all([
-                axios.get(`${API_BASE}/analytics/overall`, { headers }),
-                axios.get(`${API_BASE}/questions`, { headers })
-            ]);
+            const scoresRes = await axios.get(`${API_BASE}/analytics/overall`, { headers });
             const filtered = scoresRes.data.filter(s => s.classCode === selectedSection);
 
             const sortedStudents = filtered
@@ -7223,7 +6677,7 @@ const Dashboard = () => {
                 avgScore: filtered.length > 0
                     ? (filtered.reduce((acc, curr) => acc + (curr.score || 0), 0) / filtered.length).toFixed(1)
                     : 0,
-                totalAssessments: questRes.data.length
+                totalAssessments: 0
             });
             setLeaderboardData(sortedStudents);
         } catch (err) {
@@ -7601,207 +7055,489 @@ const Dashboard = () => {
 export default Dashboard;
 ```
 
-## File: chronoquest-api/reports/jest-results.xml
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="21" failures="19" errors="0" time="6.341">
-  <testsuite name="Admin Routes - Auth Guards" errors="0" failures="11" skipped="0" timestamp="2026-04-13T16:31:49" time="3.32" tests="11">
-    <testcase classname="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" name="Admin Routes - Auth Guards GET /api/v1/admin/users - 401 with no token" time="0.006">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin Routes - Auth Guards GET /api/v1/admin/users - 403 when caller is a regular teacher" name="Admin Routes - Auth Guards GET /api/v1/admin/users - 403 when caller is a regular teacher" time="0.001">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - GET /api/v1/admin/users 200 and returns teachers + students arrays" name="Admin - GET /api/v1/admin/users 200 and returns teachers + students arrays" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - GET /api/v1/admin/users passwords are excluded from the response" name="Admin - GET /api/v1/admin/users passwords are excluded from the response" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - GET /api/v1/admin/analytics 200 and returns platform stats" name="Admin - GET /api/v1/admin/analytics 200 and returns platform stats" time="0.001">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a student" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a teacher" name="Admin - POST /api/v1/admin/users/deactivate 200 when deactivating a teacher" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 400 when userType is invalid" name="Admin - POST /api/v1/admin/users/delete 400 when userType is invalid" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" name="Admin - POST /api/v1/admin/users/delete 404 when student id does not exist" time="0.001">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" name="Admin - POST /api/v1/admin/users/delete 200 when deleting a real student" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Admin - POST /api/v1/admin/users/delete 400 when trying to delete the last admin" name="Admin - POST /api/v1/admin/users/delete 400 when trying to delete the last admin" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\admin.test.js:14:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-  </testsuite>
-  <testsuite name="Student Score Sync" errors="0" failures="3" skipped="0" timestamp="2026-04-13T16:31:49" time="3.563" tests="3">
-    <testcase classname="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" name="Student Score Sync POST /api/v1/student/sync - 201 when class code is valid" time="0.006">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
-    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
-    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
-    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
-    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
-    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
-    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
-    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
-    </testcase>
-    <testcase classname="Student Score Sync POST /api/v1/student/sync - 404 when class code does not exist" name="Student Score Sync POST /api/v1/student/sync - 404 when class code does not exist" time="0.001">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
-    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
-    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
-    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
-    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
-    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
-    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
-    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
-    </testcase>
-    <testcase classname="Student Score Sync POST /api/v1/student/sync - score is stored as provided" name="Student Score Sync POST /api/v1/student/sync - score is stored as provided" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:10:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-      <failure>MongoServerError: E11000 duplicate key error collection: chronoquest.teachers index: email_1 dup key: { email: &quot;seed@chronoquest.edu&quot; }
-    at InsertOneOperation.handleOk (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\insert.ts:79:13)
-    at tryOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:295:26)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)
-    at executeOperation (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\operations\execute_operation.ts:123:12)
-    at Collection.insertOne (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongodb\src\collection.ts:294:12)
-    at model.$__save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:428:16)
-    at model.save (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:667:5)
-    at model.create (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\model.js:2754:5)
-    at Object.&lt;anonymous&gt; (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\student.test.js:24:25)</failure>
-    </testcase>
-  </testsuite>
-  <testsuite name="Integration Test: Authentication" errors="0" failures="2" skipped="0" timestamp="2026-04-13T16:31:53" time="1.489" tests="2">
-    <testcase classname="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" name="Integration Test: Authentication POST /api/v1/auth/register - Should create a new instructor" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\auth.test.js:11:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" name="Integration Test: Authentication POST /api/v1/auth/login - Should return a JWT token" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\auth.test.js:11:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-  </testsuite>
-  <testsuite name="Unit Test: generateClassCode" errors="0" failures="0" skipped="0" timestamp="2026-04-13T16:31:54" time="0.06" tests="2">
-    <testcase classname="Unit Test: generateClassCode should generate a string of exactly 6 characters" name="Unit Test: generateClassCode should generate a string of exactly 6 characters" time="0.003">
-    </testcase>
-    <testcase classname="Unit Test: generateClassCode should only contain alphanumeric characters" name="Unit Test: generateClassCode should only contain alphanumeric characters" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Teacher Section Management" errors="0" failures="3" skipped="0" timestamp="2026-04-13T16:31:52" time="2.039" tests="3">
-    <testcase classname="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" name="Teacher Section Management POST /api/v1/teacher/add-section - Adds a new class" time="0.001">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Teacher Section Management POST /api/v1/teacher/archive-section/:code - Should archive class" name="Teacher Section Management POST /api/v1/teacher/archive-section/:code - Should archive class" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-    <testcase classname="Teacher Section Management DELETE /api/v1/teacher/delete-section/:code - Should delete class" name="Teacher Section Management DELETE /api/v1/teacher/delete-section/:code - Should delete class" time="0">
-      <failure>MongooseError: Can&apos;t call `openUri()` on an active connection with different connection strings. Make sure you aren&apos;t calling `mongoose.connect()` multiple times. See: https://mongoosejs.com/docs/connections.html#multiple_connections
-    at NativeConnection.createClient (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\drivers\node-mongodb-native\connection.js:248:13)
-    at NativeConnection.openUri (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\connection.js:1086:34)
-    at Mongoose.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\node_modules\mongoose\lib\mongoose.js:475:15)
-    at Object.connect (C:\Users\PC\Documents\WEBDEV 2\ZZZ\CHRONO-API\chronoquest-api\src\tests\teacher.test.js:13:20)
-    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
-    </testcase>
-  </testsuite>
-</testsuites>
+## File: chronoquest-api/src/controllers/adminController.js
+```javascript
+const Teacher = require('../models/teacherModel');
+const Student = require('../models/studentModel');
+const AuditLog = require('../models/activityLogModel');
+const Feedback = require('../models/feedbackModel');
+const SystemSettings = require('../models/systemSettingsModel');
+
+// ---------------------------------------------------------------------------
+// Helper: extract the client's IP address from the request.
+// Handles the X-Forwarded-For header that Vercel and most proxies set.
+// ---------------------------------------------------------------------------
+function getIpAddress(req) {
+    const forwarded = req.headers['x-forwarded-for'];
+    if (forwarded) return forwarded.split(',')[0].trim();
+    return req.socket?.remoteAddress || req.ip || 'unknown';
+}
+
+// ---------------------------------------------------------------------------
+// Helper: diff two plain objects and return only the keys that changed.
+// Returns { oldValue, newValue } containing only the differing fields.
+// ---------------------------------------------------------------------------
+function diffObjects(before, after) {
+    const oldValue = {};
+    const newValue = {};
+    const watchedFields = ['name', 'email', 'role'];
+
+    for (const field of watchedFields) {
+        if (after[field] !== undefined && String(before[field] ?? '') !== String(after[field] ?? '')) {
+            oldValue[field] = before[field];
+            newValue[field] = after[field];
+        }
+    }
+
+    return { oldValue, newValue };
+}
+
+// ---------------------------------------------------------------------------
+// GET /admin/users
+// ---------------------------------------------------------------------------
+exports.getAllUsers = async (req, res) => {
+    try {
+        const teachers = await Teacher.find({ isDeleted: false }).select('-password').lean();
+        const students = await Student.find({ isDeleted: false }).select('-password').lean();
+        res.json({ message: 'Users retrieved successfully', teachers, students });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /admin/users/deleted
+// ---------------------------------------------------------------------------
+exports.getDeletedUsers = async (req, res) => {
+    try {
+        const teachers = await Teacher.find({ isDeleted: true }).select('-password').lean();
+        const students = await Student.find({ isDeleted: true }).select('-password').lean();
+        res.json({ message: 'Deleted users retrieved', teachers, students });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// POST /admin/users/deactivate
+// ---------------------------------------------------------------------------
+exports.deactivateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const user = await Model.findByIdAndUpdate(
+            userId,
+            { isActive: false },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'DEACTIVATE_USER',
+            resource: userType,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'User deactivated successfully', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deactivating user', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// POST /admin/users/delete  (soft delete)
+// ---------------------------------------------------------------------------
+exports.deleteUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        if (userType === 'teacher') {
+            const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
+            const targetTeacher = await Teacher.findById(userId);
+            if (targetTeacher?.role === 'admin' && adminCount <= 1) {
+                return res.status(400).json({ message: 'Cannot delete the last admin account' });
+            }
+        }
+
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const user = await Model.findByIdAndUpdate(
+            userId,
+            { isDeleted: true, deletedAt: new Date(), isActive: false },
+            { new: true }
+        ).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'DELETE_USER',
+            resource: userType,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'User deleted successfully', user });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// POST /admin/users/restore
+// ---------------------------------------------------------------------------
+exports.restoreUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        const Model = userType === 'teacher' ? Teacher : Student;
+        const restoredUser = await Model.findByIdAndUpdate(
+            userId,
+            { isDeleted: false, deletedAt: null, isActive: true },
+            { new: true }
+        ).select('-password');
+
+        if (!restoredUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'RESTORE_USER',
+            resource: userType,
+            targetId: userId,
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'User restored successfully', user: restoredUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Error restoring user', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// PATCH /admin/users/:userId/:userType
+// Full audit trail: captures only fields that actually changed.
+// Security: admins cannot change their own role or email.
+// ---------------------------------------------------------------------------
+exports.updateUser = async (req, res) => {
+    try {
+        const { userId, userType } = req.params;
+        const { name, email, role } = req.body;
+
+        if (!['teacher', 'student'].includes(userType)) {
+            return res.status(400).json({ message: 'Invalid userType' });
+        }
+
+        // --- Self-escalation guard ---
+        // An admin cannot change their own role or email. This prevents a
+        // compromised account from silently granting itself new privileges or
+        // switching to an unmonitored email address.
+        const isSelf = String(req.user._id) === String(userId);
+        if (isSelf) {
+            if (role && role !== req.user.role) {
+                return res.status(403).json({
+                    message: 'Admins cannot change their own role. Ask another admin to do it.'
+                });
+            }
+            if (email && email.toLowerCase() !== req.user.email) {
+                return res.status(403).json({
+                    message: 'Admins cannot change their own email. Ask another admin to do it.'
+                });
+            }
+        }
+
+        if (name && (name.trim().length < 2 || name.trim().length > 100)) {
+            return res.status(400).json({ message: 'Name must be between 2-100 characters' });
+        }
+
+        if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            return res.status(400).json({ message: 'Invalid email format' });
+        }
+
+        if (userType === 'teacher') {
+            if (email) {
+                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId }, isDeleted: false });
+                if (existingTeacher) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            if (role && !['teacher', 'admin'].includes(role)) {
+                return res.status(400).json({ message: 'Invalid role' });
+            }
+
+            // Step 1: Fetch the current document before making any changes.
+            const oldDoc = await Teacher.findById(userId).select('name email role').lean();
+            if (!oldDoc) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
+
+            // Step 2: Build the update payload with only the provided fields.
+            const updateData = {};
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
+            if (role) updateData.role = role;
+
+            const updatedTeacher = await Teacher.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            // Step 3: Compute the diff — only log fields that actually changed.
+            const { oldValue, newValue } = diffObjects(oldDoc, updateData);
+            const hasChanges = Object.keys(oldValue).length > 0;
+
+            if (hasChanges) {
+                await AuditLog.create({
+                    performedBy: req.user._id,
+                    performedByRole: req.user.role,
+                    action: 'UPDATE_USER',
+                    resource: 'teacher',
+                    targetId: userId,
+                    oldValue,
+                    newValue,
+                    ipAddress: getIpAddress(req),
+                    status: 'success'
+                });
+            }
+
+            return res.json({ message: 'User updated successfully', user: updatedTeacher });
+        }
+
+        if (userType === 'student') {
+            if (email) {
+                const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
+                if (existingStudent) {
+                    return res.status(400).json({ message: 'Email already in use' });
+                }
+            }
+
+            // Step 1: Fetch current document.
+            const oldDoc = await Student.findById(userId).select('name email').lean();
+            if (!oldDoc) {
+                return res.status(404).json({ message: 'Student not found' });
+            }
+
+            const updateData = {};
+            if (name) updateData.name = name.trim();
+            if (email) updateData.email = email.toLowerCase();
+
+            const updatedStudent = await Student.findByIdAndUpdate(
+                userId,
+                updateData,
+                { new: true }
+            ).select('-password');
+
+            // Step 2: Diff and log.
+            const { oldValue, newValue } = diffObjects(oldDoc, updateData);
+            const hasChanges = Object.keys(oldValue).length > 0;
+
+            if (hasChanges) {
+                await AuditLog.create({
+                    performedBy: req.user._id,
+                    performedByRole: req.user.role,
+                    action: 'UPDATE_USER',
+                    resource: 'student',
+                    targetId: userId,
+                    oldValue,
+                    newValue,
+                    ipAddress: getIpAddress(req),
+                    status: 'success'
+                });
+            }
+
+            return res.json({ message: 'User updated successfully', user: updatedStudent });
+        }
+    } catch (error) {
+        console.error('Update User Error:', error);
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /admin/analytics
+// ---------------------------------------------------------------------------
+exports.getSystemAnalytics = async (req, res) => {
+    try {
+        const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
+        const totalStudents = await Student.countDocuments({ isDeleted: false });
+        const totalSections = await Teacher.aggregate([
+            { $match: { isDeleted: false } },
+            { $unwind: '$sections' },
+            { $count: 'total' }
+        ]);
+
+        const recentUsers = await Teacher.find({ isDeleted: false })
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select('name email createdAt');
+
+        res.json({
+            message: 'System analytics retrieved successfully',
+            totalTeachers,
+            totalStudents,
+            totalSections: totalSections[0]?.total || 0,
+            totalUsers: totalTeachers + totalStudents,
+            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
+            recentUsers
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /admin/activity-logs-detailed
+// Now queries AuditLog instead of the old ActivityLog collection.
+// ---------------------------------------------------------------------------
+exports.getRecentActivityLogs = async (req, res) => {
+    try {
+        const limit = parseInt(req.query.limit) || 50;
+        const logs = await AuditLog.find()
+            .populate('performedBy', 'name email')
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .select('-__v')
+            .lean();
+
+        res.json({
+            message: 'Audit logs retrieved successfully',
+            logs
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching audit logs', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /admin/feedback
+// ---------------------------------------------------------------------------
+exports.getAllFeedback = async (req, res) => {
+    try {
+        const feedback = await Feedback.find()
+            .populate('submittedBy', 'name email')
+            .sort({ createdAt: -1 })
+            .select('-__v');
+
+        res.json({ message: 'Feedback retrieved successfully', feedback, total: feedback.length });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// POST /admin/feedback/:id/respond
+// ---------------------------------------------------------------------------
+exports.respondToFeedback = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { response } = req.body;
+
+        const feedback = await Feedback.findByIdAndUpdate(
+            id,
+            { response, respondedAt: new Date(), respondedBy: req.user._id },
+            { new: true }
+        );
+
+        if (!feedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+        }
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'RESPOND_FEEDBACK',
+            resource: 'feedback',
+            targetId: id,
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'Feedback response submitted', feedback });
+    } catch (error) {
+        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// GET /admin/settings
+// ---------------------------------------------------------------------------
+exports.getSystemSettings = async (req, res) => {
+    try {
+        let settings = await SystemSettings.find();
+        const settingsObj = {};
+        settings.forEach(setting => { settingsObj[setting.key] = setting.value; });
+
+        if (Object.keys(settingsObj).length === 0) {
+            const defaults = [
+                { key: 'max_learning_groups_per_instructor', value: 10, type: 'number', category: 'security' },
+                { key: 'max_learners_per_group', value: 30, type: 'number', category: 'security' }
+            ];
+            await SystemSettings.insertMany(defaults);
+            defaults.forEach(d => { settingsObj[d.key] = d.value; });
+        }
+
+        res.json({ message: 'System settings retrieved successfully', settings: settingsObj });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching settings', error: error.message });
+    }
+};
+
+// ---------------------------------------------------------------------------
+// POST /admin/settings
+// ---------------------------------------------------------------------------
+exports.updateSystemSetting = async (req, res) => {
+    try {
+        const { key, value } = req.body;
+
+        const settings = await SystemSettings.findOneAndUpdate(
+            { key },
+            { value, updatedBy: req.user._id, updatedAt: new Date() },
+            { new: true, upsert: true, runValidators: true }
+        );
+
+        await AuditLog.create({
+            performedBy: req.user._id,
+            performedByRole: req.user.role,
+            action: 'UPDATE_SETTINGS',
+            resource: 'settings',
+            details: { key, value },
+            ipAddress: getIpAddress(req),
+            status: 'success'
+        });
+
+        res.json({ message: 'Setting updated successfully', settings });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating setting', error: error.message });
+    }
+};
 ```
 
 ## File: chronoquest-api/src/routes/apiRoutes.js
@@ -7816,7 +7552,6 @@ const generateClassCode = require('../utils/generateCode');
 
 const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
-const questionRoutes = require('./questionRoutes');
 
 const studentController = require('../controllers/studentController');
 
@@ -7825,7 +7560,6 @@ router.get('/test', (req, res) => res.json({ message: "API is working on Port 50
 
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
-router.use('/questions', questionRoutes);
 
 router.post('/teacher/add-section', protect, async (req, res) => {
     const { sectionName } = req.body;
@@ -8104,978 +7838,6 @@ router.delete('/students/:id', protect, async (req, res) => {
 router.post('/student/sync', studentController.simulateSync);
 
 module.exports = router;
-```
-
-## File: chronoquest-api/src/controllers/adminController.js
-```javascript
-const Teacher = require('../models/teacherModel');
-const Student = require('../models/studentModel');
-const ActivityLog = require('../models/activityLogModel');
-const Feedback = require('../models/feedbackModel');
-const SystemSettings = require('../models/systemSettingsModel');
-
-exports.getAllUsers = async (req, res) => {
-    try {
-        // Filter out deleted users
-        const teachers = await Teacher.find({ isDeleted: false }).select('-password');
-        const students = await Student.find({ isDeleted: false, isActive: true }).select('-password');
-
-        const formattedTeachers = teachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = students.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            totalUsers: formattedTeachers.length + formattedStudents.length,
-            totalTeachers: formattedTeachers.length,
-            totalStudents: formattedStudents.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error: error.message });
-    }
-};
-
-exports.getDeletedUsers = async (req, res) => {
-    try {
-        const deletedTeachers = await Teacher.find({ isDeleted: true }).select('-password');
-        const deletedStudents = await Student.find({ isDeleted: true }).select('-password');
-
-        const formattedTeachers = deletedTeachers.map(t => ({
-            ...t.toObject(),
-            userType: 'teacher',
-            totalSections: t.sections?.length || 0
-        }));
-
-        const formattedStudents = deletedStudents.map(s => ({
-            ...s.toObject(),
-            userType: 'student'
-        }));
-
-        res.json({
-            message: 'Deleted users retrieved successfully',
-            teachers: formattedTeachers,
-            students: formattedStudents,
-            total: formattedTeachers.length + formattedStudents.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching deleted users', error: error.message });
-    }
-};
-
-exports.deactivateUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (userType === 'teacher') {
-            await Teacher.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_TEACHER',
-                resource: 'teacher',
-                resourceId: userId,
-                status: 'success'
-            });
-        } else if (userType === 'student') {
-            await Student.findByIdAndUpdate(userId, { isActive: false, isDeleted: true, deletedAt: new Date() });
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'DEACTIVATE_STUDENT',
-                resource: 'student',
-                resourceId: userId,
-                status: 'success'
-            });
-        }
-
-        res.json({ message: `User deactivated successfully` });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deactivating user', error: error.message });
-    }
-};
-
-exports.deleteUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({
-                message: 'Invalid userType. Use "teacher" or "student".',
-                errorCode: 'INVALID_USER_TYPE'
-            });
-        }
-
-        let deletedUser;
-
-        if (userType === 'teacher') {
-            const adminCount = await Teacher.countDocuments({ role: 'admin', isDeleted: false });
-            const userToDelete = await Teacher.findById(userId);
-
-            if (userToDelete && userToDelete.role === 'admin' && adminCount === 1) {
-                return res.status(400).json({ message: 'Cannot delete the last admin account' });
-            }
-
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: true,
-                    deletedAt: new Date()
-                },
-                { new: true }
-            );
-        } else if (userType === 'student') {
-            // SOFT DELETE: Mark as deleted instead of removing
-            deletedUser = await Student.findByIdAndUpdate(
-                userId,
-                { isDeleted: true, deletedAt: new Date(), isActive: false },  // ← ADD isActive: false
-                { new: true }
-            );
-        }
-
-        if (!deletedUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'DELETE_USER',
-            resource: userType,
-            resourceId: userId,
-            status: 'success'
-        });
-
-        res.json({ message: 'User deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting user', error: error.message });
-    }
-};
-
-// NEW: Restore a deleted user
-exports.restoreUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({ message: 'Invalid userType' });
-        }
-
-        let restoredUser;
-
-        if (userType === 'teacher') {
-            restoredUser = await Teacher.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null,
-                    isActive: true
-                },
-                { new: true }
-            ).select('-password');
-        } else if (userType === 'student') {
-            restoredUser = await Student.findByIdAndUpdate(
-                userId,
-                {
-                    isDeleted: false,
-                    deletedAt: null,
-                    isActive: true   // ← ADD THIS
-                },
-                { new: true }
-            ).select('-password');
-        }
-
-        if (!restoredUser) {
-            return res.status(404).json({ message: `${userType === 'teacher' ? 'Teacher' : 'Student'} not found` });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'RESTORE_USER',
-            resource: userType,
-            resourceId: userId,
-            status: 'success'
-        });
-
-        res.json({ message: 'User restored successfully', user: restoredUser });
-    } catch (error) {
-        res.status(500).json({ message: 'Error restoring user', error: error.message });
-    }
-};
-
-exports.updateUser = async (req, res) => {
-    try {
-        const { userId, userType } = req.params;
-        const { name, email, role } = req.body;
-
-        if (!['teacher', 'student'].includes(userType)) {
-            return res.status(400).json({ message: 'Invalid userType' });
-        }
-
-        if (name && (name.trim().length < 2 || name.trim().length > 100)) {
-            return res.status(400).json({ message: 'Name must be between 2-100 characters' });
-        }
-
-        if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            return res.status(400).json({ message: 'Invalid email format' });
-        }
-
-        if (userType === 'teacher') {
-            if (email) {
-                const existingTeacher = await Teacher.findOne({ email, _id: { $ne: userId }, isDeleted: false });
-                if (existingTeacher) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            if (role && !['teacher', 'admin'].includes(role)) {
-                return res.status(400).json({ message: 'Invalid role' });
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name.trim();
-            if (email) updateData.email = email.toLowerCase();
-            if (role) updateData.role = role;
-
-            const updatedTeacher = await Teacher.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            if (!updatedTeacher) {
-                return res.status(404).json({ message: 'Teacher not found' });
-            }
-
-            await ActivityLog.create({
-                userId: req.user._id,
-                userModel: 'Teacher',
-                userRole: req.user.role,
-                action: 'UPDATE_USER',
-                resource: 'teacher',
-                resourceId: userId,
-                details: { changedFields: Object.keys(updateData) },
-                status: 'success'
-            });
-
-            res.json({ message: 'User updated successfully', user: updatedTeacher });
-        } else if (userType === 'student') {
-            if (email) {
-                const existingStudent = await Student.findOne({ email, _id: { $ne: userId }, isDeleted: false });
-                if (existingStudent) {
-                    return res.status(400).json({ message: 'Email already in use' });
-                }
-            }
-
-            const updateData = {};
-            if (name) updateData.name = name.trim();
-            if (email) updateData.email = email.toLowerCase();
-
-            const updatedStudent = await Student.findByIdAndUpdate(
-                userId,
-                updateData,
-                { new: true }
-            ).select('-password');
-
-            if (!updatedStudent) {
-                return res.status(404).json({ message: 'Student not found' });
-            }
-
-            res.json({ message: 'User updated successfully', user: updatedStudent });
-        }
-    } catch (error) {
-        console.error('Update User Error:', error);
-        res.status(500).json({ message: 'Error updating user', error: error.message });
-    }
-};
-
-exports.getSystemAnalytics = async (req, res) => {
-    try {
-        const totalTeachers = await Teacher.countDocuments({ isDeleted: false });
-        const totalStudents = await Student.countDocuments({ isDeleted: false });
-        const totalSections = await Teacher.aggregate([
-            { $match: { isDeleted: false } },
-            { $unwind: '$sections' },
-            { $count: 'total' }
-        ]);
-
-        const recentUsers = await Teacher.find({ isDeleted: false })
-            .sort({ createdAt: -1 })
-            .limit(10)
-            .select('name email createdAt');
-
-        const platformStats = {
-            totalTeachers,
-            totalStudents,
-            totalSections: totalSections[0]?.total || 0,
-            totalUsers: totalTeachers + totalStudents,
-            avgStudentsPerTeacher: totalTeachers > 0 ? (totalStudents / totalTeachers).toFixed(2) : 0,
-            recentUsers
-        };
-
-        res.json({
-            message: 'System analytics retrieved successfully',
-            ...platformStats
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching analytics', error: error.message });
-    }
-};
-
-exports.getRecentActivityLogs = async (req, res) => {
-    try {
-        const limit = req.query.limit || 50;
-        const logs = await ActivityLog.find()
-            .populate('userId', 'name')
-            .sort({ createdAt: -1 })
-            .limit(parseInt(limit))
-            .select('-__v');
-
-        // Transform logs to include userName
-        const transformedLogs = logs.map(log => ({
-            ...log.toObject(),
-            userName: log.userId?.name || 'Unknown'
-        }));
-
-        res.json({
-            message: 'Activity logs retrieved successfully',
-            logs: transformedLogs
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching activity logs', error: error.message });
-    }
-};
-
-exports.getAllFeedback = async (req, res) => {
-    try {
-        const feedback = await Feedback.find()
-            .populate('submittedBy', 'name email')
-            .sort({ createdAt: -1 })
-            .select('-__v');
-
-        res.json({
-            message: 'Feedback retrieved successfully',
-            feedback,
-            total: feedback.length
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching feedback', error: error.message });
-    }
-};
-
-exports.respondToFeedback = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { response } = req.body;
-
-        const feedback = await Feedback.findByIdAndUpdate(
-            id,
-            {
-                response,
-                respondedAt: new Date(),
-                respondedBy: req.user._id
-            },
-            { new: true }
-        );
-
-        if (!feedback) {
-            return res.status(404).json({ message: 'Feedback not found' });
-        }
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'RESPOND_FEEDBACK',
-            resource: 'feedback',
-            resourceId: id,
-            status: 'success'
-        });
-
-        res.json({ message: 'Feedback response submitted', feedback });
-    } catch (error) {
-        res.status(500).json({ message: 'Error responding to feedback', error: error.message });
-    }
-};
-
-exports.getSystemSettings = async (req, res) => {
-    try {
-        // Find all settings
-        let settings = await SystemSettings.find();
-
-        // Convert array to object keyed by setting name
-        const settingsObj = {};
-        settings.forEach(setting => {
-            settingsObj[setting.key] = setting.value;
-        });
-
-        // If no settings exist, create defaults
-        if (Object.keys(settingsObj).length === 0) {
-            const defaults = [
-                { key: 'max_learning_groups_per_instructor', value: 10, type: 'number', category: 'security' },
-                { key: 'max_learners_per_group', value: 30, type: 'number', category: 'security' }
-            ];
-            await SystemSettings.insertMany(defaults);
-            defaults.forEach(d => {
-                settingsObj[d.key] = d.value;
-            });
-        }
-
-        res.json({
-            message: 'System settings retrieved successfully',
-            settings: settingsObj
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching settings', error: error.message });
-    }
-};
-exports.updateSystemSetting = async (req, res) => {
-    try {
-        const { key, value } = req.body;
-
-        const settings = await SystemSettings.findOneAndUpdate(
-            { key },
-            { value, updatedBy: req.user._id, updatedAt: new Date() },
-            { new: true, upsert: true, runValidators: true }
-        );
-
-        await ActivityLog.create({
-            userId: req.user._id,
-            userModel: 'Teacher',
-            userRole: req.user.role,
-            action: 'UPDATE_SETTINGS',
-            resource: 'settings',
-            resourceId: key,
-            status: 'success'
-        });
-
-        res.json({
-            message: 'Setting updated successfully',
-            settings
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating setting', error: error.message });
-    }
-};
-```
-
-## File: chrono-dashboard/src/pages/AdminPanel.js
-```javascript
-import React, { useState, useContext, useEffect, useCallback, useMemo } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import AdminSidebar from '../components/AdminSidebar';
-import QuestionManagement from './QuestionManagement';
-import UsersList from '../components/admin/UsersList';
-import FeedbackSection from '../components/admin/FeedbackSection';
-import toast, { Toaster } from 'react-hot-toast';
-import { Users, BookOpen, Lock, Menu } from 'lucide-react';
-
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
-
-const StatCard = ({ title, value, icon }) => (
-    <div className="stat-card">
-        <p className="stat-card-label">{title}</p>
-        <div className="stat-card-icon-row">
-            <div className="text-slate-900">{icon}</div>
-            <p className="stat-card-value">{value}</p>
-        </div>
-    </div>
-);
-
-const AdminPanel = () => {
-    const { teacher, setTeacher, logout } = useContext(AuthContext);
-    const [activeTab, setActiveTab] = useState('dashboard');
-    const [loading, setLoading] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false); // ← mobile sidebar toggle
-
-    const [users, setUsers] = useState({ teachers: [], students: [] });
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [editingUserType, setEditingUserType] = useState(null);
-    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: 'teacher' });
-
-    const [analytics, setAnalytics] = useState(null);
-    const [activityLogs, setActivityLogs] = useState([]);
-    const [activityLogPage, setActivityLogPage] = useState(1);
-    const LOGS_PER_PAGE = 10;
-    const [feedback, setFeedback] = useState([]);
-    const [feedbackSearch, setFeedbackSearch] = useState('');
-    const [expandedFeedback, setExpandedFeedback] = useState(null);
-
-    const [settingsForm, setSettingsForm] = useState({
-        max_learning_groups_per_instructor: '',
-        max_learners_per_group: ''
-    });
-    const [settingsSaving, setSettingsSaving] = useState(false);
-
-    const token = localStorage.getItem('teacherToken');
-    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
-
-    // Close sidebar when switching tabs on mobile
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setSidebarOpen(false);
-    };
-
-    useEffect(() => {
-        if (teacher && teacher.role !== 'admin') {
-            toast.error('Admin access required');
-            logout();
-        }
-    }, [teacher, logout]);
-
-    const fetchAllUsers = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
-            setUsers(data);
-        } catch (error) {
-            toast.error('Failed to load users');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleDeactivateUser = async (userId, userType) => {
-        if (window.confirm('Are you sure you want to deactivate this user?')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
-                toast.success('User deactivated successfully');
-                await fetchAllUsers();
-            } catch (error) {
-                toast.error(error.response?.data?.message || 'Failed to deactivate user');
-            }
-        }
-    };
-
-    const handleArchiveUser = async (userId, userType) => {
-        if (window.confirm('Are you sure you want to archive this user?')) {
-            try {
-                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
-                toast.success('User archived successfully');
-                await fetchAllUsers();
-            } catch (error) {
-                toast.error(error.response?.data?.message || 'Failed to archive user');
-            }
-        }
-    };
-
-
-
-    const handleEditUser = (user, userType) => {
-        setEditingUser(user);
-        setEditingUserType(userType);
-        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
-        setEditModalOpen(true);
-    };
-
-    const handleUpdateUser = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
-            toast.success('User updated successfully');
-
-            // If updating current user's role, refresh their auth data
-            if (editingUser._id === teacher._id) {
-                const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
-                localStorage.setItem('teacherData', JSON.stringify(data.teacher));
-                setTeacher(data.teacher);
-            }
-
-            setEditModalOpen(false);
-            fetchAllUsers();
-        } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to update user');
-        }
-    };
-
-    const fetchAnalytics = useCallback(async () => {
-        setLoading(true);
-        try {
-            const [analyticsRes, activityRes] = await Promise.all([
-                axios.get(`${API_BASE}/admin/analytics`, { headers }),
-                axios.get(`${API_BASE}/admin/activity-logs-detailed?limit=50`, { headers })
-            ]);
-            setAnalytics(analyticsRes.data);
-            setActivityLogs(activityRes.data.logs || []);
-        } catch (error) {
-            toast.error('Failed to load analytics');
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const fetchFeedback = useCallback(async () => {
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
-            setFeedback(data.feedback || []);
-        } catch (error) {
-            toast.error('Failed to load feedback');
-        }
-    }, [headers]);
-
-    const fetchSettings = useCallback(async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
-            console.log('Settings response:', data); // ← Add this for debugging
-
-            setSettingsForm(prev => ({
-                ...prev,
-                max_learning_groups_per_instructor: data.settings?.max_learning_groups_per_instructor || 10,
-                max_learners_per_group: data.settings?.max_learners_per_group || 30
-            }));
-        } catch (error) {
-            console.error('Settings fetch error:', error.response?.data || error.message); // ← Add this
-            toast.error('Failed to load settings: ' + (error.response?.data?.message || error.message));
-        }
-        setLoading(false);
-    }, [headers]);
-
-    const handleSaveSettings = async () => {
-        setSettingsSaving(true);
-        try {
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learning_groups_per_instructor',
-                value: parseInt(settingsForm.max_learning_groups_per_instructor),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            await axios.post(`${API_BASE}/admin/settings`, {
-                key: 'max_learners_per_group',
-                value: parseInt(settingsForm.max_learners_per_group),
-                type: 'number',
-                category: 'security'
-            }, { headers });
-            toast.success('Settings saved successfully');
-            fetchSettings();
-        } catch (error) {
-            toast.error('Failed to save settings');
-        }
-        setSettingsSaving(false);
-    };
-
-    useEffect(() => {
-        if (activeTab === 'users') fetchAllUsers();
-        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
-        else if (activeTab === 'feedback') fetchFeedback();
-        else if (activeTab === 'settings') fetchSettings();
-    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
-
-    const filteredTeachers = users.teachers?.filter(t =>
-        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        t.email.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredStudents = users.students?.filter(s =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
-
-    const filteredFeedback = feedback.filter(fb => {
-        if (!feedbackSearch) return true;
-        const q = feedbackSearch.toLowerCase();
-        return (
-            fb.title?.toLowerCase().includes(q) ||
-            fb.description?.toLowerCase().includes(q) ||
-            fb.submittedBy?.email?.toLowerCase().includes(q) ||
-            fb.submittedBy?.name?.toLowerCase().includes(q) ||
-            fb.type?.toLowerCase().includes(q) ||
-            fb.status?.toLowerCase().includes(q)
-        );
-    });
-
-    const AnalyticsDashboard = () => {
-        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
-        const totalPages = Math.ceil(activityLogs.length / LOGS_PER_PAGE);
-        const pagedLogs = activityLogs.slice((activityLogPage - 1) * LOGS_PER_PAGE, activityLogPage * LOGS_PER_PAGE);
-
-        return (
-            <div className="space-y-8">
-                <div className="flex-between">
-                    <div>
-                        <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
-                        <p className="page-subtitle">System-wide overview and statistics</p>
-                    </div>
-                </div>
-
-                <div className="grid-4">
-                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
-                    <StatCard title="Teachers" value={users.teachers?.length || 0} icon={<Users size={20} />} />
-                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
-                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
-                </div>
-
-                {activityLogs.length > 0 && (
-                    <div className="card">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
-                            <div>
-                                <h3 className="section-title">Recent Activity</h3>
-                                <p className="section-subtitle">{activityLogs.length} total log entries</p>
-                            </div>
-                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
-                                Page {activityLogPage} of {totalPages}
-                            </span>
-                        </div>
-                        <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '420px' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
-                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                                        {['User', 'Action', 'Resource', 'Timestamp', 'Status', 'Details'].map(h => (
-                                            <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {pagedLogs.map(log => (
-                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.userName || 'Unknown'}</p>
-                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.userEmail}</p>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
-                                                    {log.action?.replace(/_/g, ' ')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                                                {new Date(log.createdAt).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
-                                                <span style={{
-                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
-                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
-                                                    padding: '3px 7px', borderRadius: '4px', fontWeight: 600
-                                                }}>
-                                                    {log.status?.toUpperCase()}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {log.details && Object.keys(log.details).length > 0 ? JSON.stringify(log.details).substring(0, 50) + '...' : '-'}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        {totalPages > 1 && (
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
-                                <button
-                                    onClick={() => setActivityLogPage(p => Math.max(1, p - 1))}
-                                    disabled={activityLogPage === 1}
-                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === 1 ? '#f8fafc' : '#fff', color: activityLogPage === 1 ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === 1 ? 'not-allowed' : 'pointer' }}
-                                >
-                                    ← Prev
-                                </button>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                    <button
-                                        key={page}
-                                        onClick={() => setActivityLogPage(page)}
-                                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === page ? '#0f172a' : '#fff', color: activityLogPage === page ? '#fff' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}
-                                    >
-                                        {page}
-                                    </button>
-                                ))}
-                                <button
-                                    onClick={() => setActivityLogPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={activityLogPage === totalPages}
-                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === totalPages ? '#f8fafc' : '#fff', color: activityLogPage === totalPages ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === totalPages ? 'not-allowed' : 'pointer' }}
-                                >
-                                    Next →
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        );
-    };
-
-    const SettingsSection = () => (
-        <div className="space-y-6">
-            <div className="flex-between">
-                <div>
-                    <h2 className="page-title">System Settings</h2>
-                    <p className="page-subtitle">Configure platform-wide limits and security rules</p>
-                </div>
-            </div>
-
-            <div className="card">
-                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
-                </h3>
-                {loading ? (
-                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
-                ) : (
-                    <div className="space-y-6">
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
-                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learning_groups_per_instructor}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="settings-row">
-                            <div style={{ flex: 1 }}>
-                                <p className="settings-row-label">Max Learners Per Learning Group</p>
-                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
-                            </div>
-                            <input
-                                type="number"
-                                value={settingsForm.max_learners_per_group}
-                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
-                                disabled={settingsSaving}
-                                className="form-input-number"
-                            />
-                        </div>
-                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
-                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
-                                {settingsSaving ? 'Saving...' : 'Save Settings'}
-                            </button>
-                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-
-    return (
-        <div className="page">
-            <Toaster position="top-right" />
-
-            {/* ── Mobile hamburger button ── */}
-            <button
-                className="mobile-menu-btn"
-                onClick={() => setSidebarOpen(true)}
-                aria-label="Open menu"
-            >
-                <Menu size={20} />
-            </button>
-
-            {/* ── Backdrop overlay (mobile only) ── */}
-            <div
-                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
-                onClick={() => setSidebarOpen(false)}
-            />
-
-            <AdminSidebar
-                activeTab={activeTab}
-                setActiveTab={handleTabChange}
-                sidebarOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-            />
-
-            <main className="main-padded" style={{ marginLeft: '256px' }}>
-                <div style={{ padding: '32px 40px' }}>
-                    {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
-                    {activeTab === 'dashboard' && <AnalyticsDashboard />}
-                    {activeTab === 'users' && (
-                        <UsersList
-                            searchTerm={searchTerm}
-                            setSearchTerm={setSearchTerm}
-                            users={users}
-                            filteredTeachers={filteredTeachers}
-                            filteredStudents={filteredStudents}
-                            handleEditUser={handleEditUser}
-                            handleDeactivateUser={handleDeactivateUser}
-                            handleArchiveUser={handleArchiveUser}
-                            fetchAllUsers={fetchAllUsers}
-                        />
-                    )}
-                    {activeTab === 'questions' && <QuestionManagement />}
-                    {activeTab === 'feedback' && (
-                        <FeedbackSection
-                            feedbackSearch={feedbackSearch}
-                            setFeedbackSearch={setFeedbackSearch}
-                            filteredFeedback={filteredFeedback}
-                            feedback={feedback}
-                            expandedFeedback={expandedFeedback}
-                            setExpandedFeedback={setExpandedFeedback}
-                        />
-                    )}
-                    {activeTab === 'settings' && <SettingsSection />}
-                </div>
-            </main>
-
-            {editModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-md">
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
-                        <form onSubmit={handleUpdateUser} className="space-y-6">
-                            <div className="form-group">
-                                <label className="form-label-sm">Name</label>
-                                <input
-                                    type="text"
-                                    value={editFormData.name}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="User name"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label-sm">Email</label>
-                                <input
-                                    type="email"
-                                    value={editFormData.email}
-                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
-                                    className="form-input-sm"
-                                    placeholder="user@example.com"
-                                />
-                            </div>
-                            {editingUserType === 'teacher' && (
-                                <>
-                                    <div className="form-group">
-                                        <label className="form-label-sm">Role</label>
-                                        <select
-                                            value={editFormData.role}
-                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
-                                            className="form-select"
-                                        >
-                                            <option value="teacher">Teacher</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </div>
-                                </>
-                            )}
-                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
-                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
-                                <button type="submit" className="btn-indigo">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default AdminPanel;
 ```
 
 ## File: chronoquest-api/src/controllers/authController.js
@@ -9411,6 +8173,498 @@ exports.submitFeedback = async (req, res) => {
 };
 
 module.exports = exports;
+```
+
+## File: chrono-dashboard/src/pages/AdminPanel.js
+```javascript
+import React, { useState, useEffect, useCallback, useContext, useMemo } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import AdminSidebar from '../components/AdminSidebar';
+import UsersList from '../components/admin/UsersList';
+import FeedbackSection from '../components/admin/FeedbackSection';
+import AuditLogs from './AuditLogs';
+import toast, { Toaster } from 'react-hot-toast';
+import { Users, BookOpen, Lock, Menu } from 'lucide-react';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:3000/api/v1';
+const LOGS_PER_PAGE = 10;
+
+const AdminPanel = () => {
+    const { teacher, logout, setTeacher } = useContext(AuthContext);
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [users, setUsers] = useState({ teachers: [], students: [] });
+    const [analytics, setAnalytics] = useState(null);
+    const [activityLogs, setActivityLogs] = useState([]);
+    const [activityLogPage, setActivityLogPage] = useState(1);
+    const [feedback, setFeedback] = useState([]);
+    const [feedbackSearch, setFeedbackSearch] = useState('');
+    const [expandedFeedback, setExpandedFeedback] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [editingUserType, setEditingUserType] = useState('');
+    const [editFormData, setEditFormData] = useState({ name: '', email: '', role: '' });
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [settingsForm, setSettingsForm] = useState({
+        max_learning_groups_per_instructor: 10,
+        max_learners_per_group: 30
+    });
+    const [settingsSaving, setSettingsSaving] = useState(false);
+
+    const token = localStorage.getItem('teacherToken');
+    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSidebarOpen(false);
+    };
+
+    useEffect(() => {
+        if (teacher && teacher.role !== 'admin') {
+            toast.error('Admin access required');
+            logout();
+        }
+    }, [teacher, logout]);
+
+    const fetchAllUsers = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/users`, { headers });
+            setUsers(data);
+        } catch (error) {
+            toast.error('Failed to load users');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleDeactivateUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to deactivate this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/deactivate`, { userId, userType }, { headers });
+                toast.success('User deactivated successfully');
+                await fetchAllUsers();
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to deactivate user');
+            }
+        }
+    };
+
+    const handleArchiveUser = async (userId, userType) => {
+        if (window.confirm('Are you sure you want to archive this user?')) {
+            try {
+                await axios.post(`${API_BASE}/admin/users/delete`, { userId, userType }, { headers });
+                toast.success('User archived successfully');
+                await fetchAllUsers();
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Failed to archive user');
+            }
+        }
+    };
+
+    const handleEditUser = (user, userType) => {
+        setEditingUser(user);
+        setEditingUserType(userType);
+        setEditFormData({ name: user.name, email: user.email, role: user.role || 'teacher' });
+        setEditModalOpen(true);
+    };
+
+    const handleUpdateUser = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.patch(`${API_BASE}/admin/users/${editingUser._id}/${editingUserType}`, editFormData, { headers });
+            toast.success('User updated successfully');
+
+            if (editingUser._id === teacher._id) {
+                const { data } = await axios.get(`${API_BASE}/auth/profile`, { headers });
+                localStorage.setItem('teacherData', JSON.stringify(data.teacher));
+                setTeacher(data.teacher);
+            }
+
+            setEditModalOpen(false);
+            fetchAllUsers();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update user');
+        }
+    };
+
+    const fetchAnalytics = useCallback(async () => {
+        setLoading(true);
+        try {
+            const [analyticsRes, activityRes] = await Promise.all([
+                axios.get(`${API_BASE}/admin/analytics`, { headers }),
+                axios.get(`${API_BASE}/admin/audit-logs?limit=50`, { headers })
+            ]);
+            setAnalytics(analyticsRes.data);
+            setActivityLogs(activityRes.data.logs || []);
+        } catch (error) {
+            toast.error('Failed to load analytics');
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const fetchFeedback = useCallback(async () => {
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/feedback`, { headers });
+            setFeedback(data.feedback || []);
+        } catch (error) {
+            toast.error('Failed to load feedback');
+        }
+    }, [headers]);
+
+    const fetchSettings = useCallback(async () => {
+        setLoading(true);
+        try {
+            const { data } = await axios.get(`${API_BASE}/admin/settings`, { headers });
+            setSettingsForm(prev => ({
+                ...prev,
+                max_learning_groups_per_instructor: data.settings?.max_learning_groups_per_instructor || 10,
+                max_learners_per_group: data.settings?.max_learners_per_group || 30
+            }));
+        } catch (error) {
+            toast.error('Failed to load settings: ' + (error.response?.data?.message || error.message));
+        }
+        setLoading(false);
+    }, [headers]);
+
+    const handleSaveSettings = async () => {
+        setSettingsSaving(true);
+        try {
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learning_groups_per_instructor',
+                value: parseInt(settingsForm.max_learning_groups_per_instructor),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            await axios.post(`${API_BASE}/admin/settings`, {
+                key: 'max_learners_per_group',
+                value: parseInt(settingsForm.max_learners_per_group),
+                type: 'number',
+                category: 'security'
+            }, { headers });
+            toast.success('Settings saved successfully');
+            fetchSettings();
+        } catch (error) {
+            toast.error('Failed to save settings');
+        }
+        setSettingsSaving(false);
+    };
+
+    useEffect(() => {
+        if (activeTab === 'users') fetchAllUsers();
+        else if (activeTab === 'dashboard') { fetchAnalytics(); fetchAllUsers(); }
+        else if (activeTab === 'feedback') fetchFeedback();
+        else if (activeTab === 'settings') fetchSettings();
+        // 'audit' tab fetches its own data internally via AuditLogs component
+    }, [activeTab, fetchAllUsers, fetchAnalytics, fetchFeedback, fetchSettings]);
+
+    const filteredTeachers = users.teachers?.filter(t =>
+        t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.email.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredStudents = users.students?.filter(s =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.classCode || '').toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
+
+    const filteredFeedback = feedback.filter(fb => {
+        if (!feedbackSearch) return true;
+        const q = feedbackSearch.toLowerCase();
+        return (
+            fb.title?.toLowerCase().includes(q) ||
+            fb.description?.toLowerCase().includes(q) ||
+            fb.submittedBy?.email?.toLowerCase().includes(q) ||
+            fb.submittedBy?.name?.toLowerCase().includes(q) ||
+            fb.type?.toLowerCase().includes(q) ||
+            fb.status?.toLowerCase().includes(q)
+        );
+    });
+
+    const StatCard = ({ title, value, icon }) => (
+        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ background: '#f1f5f9', borderRadius: '10px', padding: '10px', color: '#475569' }}>
+                {icon}
+            </div>
+            <div>
+                <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>{title}</p>
+                <p style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>{value}</p>
+            </div>
+        </div>
+    );
+
+    const AnalyticsDashboard = () => {
+        const totalUsers = (users.teachers?.length || 0) + (users.students?.length || 0);
+        const totalPages = Math.ceil(activityLogs.length / LOGS_PER_PAGE);
+        const pagedLogs = activityLogs.slice((activityLogPage - 1) * LOGS_PER_PAGE, activityLogPage * LOGS_PER_PAGE);
+
+        return (
+            <div className="space-y-8">
+                <div className="flex-between">
+                    <div>
+                        <h2 className="page-title">Welcome, {teacher?.name || 'Admin'}</h2>
+                        <p className="page-subtitle">System-wide overview and statistics</p>
+                    </div>
+                </div>
+
+                <div className="grid-4">
+                    <StatCard title="Total Users" value={totalUsers} icon={<Users size={20} />} />
+                    <StatCard title="Teachers" value={users.teachers?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learners" value={users.students?.length || 0} icon={<Users size={20} />} />
+                    <StatCard title="Learning Groups" value={analytics?.totalSections || 0} icon={<BookOpen size={20} />} />
+                </div>
+
+                {activityLogs.length > 0 && (
+                    <div className="card">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
+                            <div>
+                                <h3 className="section-title">Recent Activity</h3>
+                                <p className="section-subtitle">{activityLogs.length} total log entries</p>
+                            </div>
+                            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>
+                                Page {activityLogPage} of {totalPages}
+                            </span>
+                        </div>
+                        <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '420px' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
+                                    <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                        {['Admin', 'Action', 'Resource', 'Timestamp', 'Status'].map(h => (
+                                            <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem' }}>{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {pagedLogs.map(log => (
+                                        <tr key={log._id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <p style={{ fontWeight: 600, color: '#1e293b', margin: 0 }}>{log.performedBy?.name || 'Unknown'}</p>
+                                                <p style={{ color: '#64748b', fontSize: '0.75rem', margin: '2px 0 0 0' }}>{log.performedByRole}</p>
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <span style={{ backgroundColor: '#e0e7ff', color: '#3730a3', padding: '3px 7px', borderRadius: '4px', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                                    {log.action?.replace(/_/g, ' ')}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#475569' }}>{log.resource || 'N/A'}</td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem', color: '#64748b', whiteSpace: 'nowrap' }}>
+                                                {new Date(log.createdAt).toLocaleString()}
+                                            </td>
+                                            <td style={{ padding: '10px 12px', fontSize: '0.8rem' }}>
+                                                <span style={{
+                                                    backgroundColor: log.status === 'success' ? '#dcfce7' : '#fee2e2',
+                                                    color: log.status === 'success' ? '#166534' : '#991b1b',
+                                                    padding: '3px 7px', borderRadius: '4px', fontWeight: 600
+                                                }}>
+                                                    {log.status?.toUpperCase()}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.max(1, p - 1))}
+                                    disabled={activityLogPage === 1}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === 1 ? '#f8fafc' : '#fff', color: activityLogPage === 1 ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === 1 ? 'not-allowed' : 'pointer' }}
+                                >
+                                    ← Prev
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setActivityLogPage(page)}
+                                        style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === page ? '#0f172a' : '#fff', color: activityLogPage === page ? '#fff' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' }}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => setActivityLogPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={activityLogPage === totalPages}
+                                    style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid #e2e8f0', background: activityLogPage === totalPages ? '#f8fafc' : '#fff', color: activityLogPage === totalPages ? '#cbd5e1' : '#475569', fontWeight: 700, fontSize: '0.75rem', cursor: activityLogPage === totalPages ? 'not-allowed' : 'pointer' }}
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const SettingsSection = () => (
+        <div className="space-y-6">
+            <div className="flex-between">
+                <div>
+                    <h2 className="page-title">System Settings</h2>
+                    <p className="page-subtitle">Configure platform-wide limits and security rules</p>
+                </div>
+            </div>
+
+            <div className="card">
+                <h3 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                    <Lock size={20} style={{ color: '#475569' }} /> Security Settings
+                </h3>
+                {loading ? (
+                    <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 600 }}>Loading settings...</div>
+                ) : (
+                    <div className="space-y-6">
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learning Groups Per Instructor</p>
+                                <p className="settings-row-desc">Maximum number of learning groups an instructor can create</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learning_groups_per_instructor}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learning_groups_per_instructor: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="settings-row">
+                            <div style={{ flex: 1 }}>
+                                <p className="settings-row-label">Max Learners Per Learning Group</p>
+                                <p className="settings-row-desc">Maximum number of learners that can join a learning group</p>
+                            </div>
+                            <input
+                                type="number"
+                                value={settingsForm.max_learners_per_group}
+                                onChange={(e) => setSettingsForm(prev => ({ ...prev, max_learners_per_group: e.target.value }))}
+                                disabled={settingsSaving}
+                                className="form-input-number"
+                            />
+                        </div>
+                        <div className="flex-gap-3" style={{ paddingTop: '16px' }}>
+                            <button onClick={handleSaveSettings} disabled={settingsSaving} className="btn-dark">
+                                {settingsSaving ? 'Saving...' : 'Save Settings'}
+                            </button>
+                            <button onClick={fetchSettings} disabled={settingsSaving} className="btn-outline-dark">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="page">
+            <Toaster position="top-right" />
+
+            <button
+                className="mobile-menu-btn"
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open menu"
+            >
+                <Menu size={20} />
+            </button>
+
+            <div
+                className={`sidebar-overlay${sidebarOpen ? ' sidebar-open' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+            />
+
+            <AdminSidebar
+                activeTab={activeTab}
+                setActiveTab={handleTabChange}
+                sidebarOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
+
+            <main className="main-padded" style={{ marginLeft: '256px' }}>
+                <div style={{ padding: '32px 40px' }}>
+                    {loading && <div style={{ textAlign: 'center', color: '#94a3b8', fontWeight: 700, marginBottom: '16px' }}>Loading...</div>}
+                    {activeTab === 'dashboard' && <AnalyticsDashboard />}
+                    {activeTab === 'users' && (
+                        <UsersList
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            users={users}
+                            filteredTeachers={filteredTeachers}
+                            filteredStudents={filteredStudents}
+                            handleEditUser={handleEditUser}
+                            handleDeactivateUser={handleDeactivateUser}
+                            handleArchiveUser={handleArchiveUser}
+                            fetchAllUsers={fetchAllUsers}
+                        />
+                    )}
+                    {activeTab === 'feedback' && (
+                        <FeedbackSection
+                            feedbackSearch={feedbackSearch}
+                            setFeedbackSearch={setFeedbackSearch}
+                            filteredFeedback={filteredFeedback}
+                            feedback={feedback}
+                            expandedFeedback={expandedFeedback}
+                            setExpandedFeedback={setExpandedFeedback}
+                        />
+                    )}
+                    {activeTab === 'audit' && <AuditLogs />}
+                    {activeTab === 'settings' && <SettingsSection />}
+                </div>
+            </main>
+
+            {editModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-md">
+                        <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Edit User</h3>
+                        <form onSubmit={handleUpdateUser} className="space-y-6">
+                            <div className="form-group">
+                                <label className="form-label-sm">Name</label>
+                                <input
+                                    type="text"
+                                    value={editFormData.name}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="User name"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label-sm">Email</label>
+                                <input
+                                    type="email"
+                                    value={editFormData.email}
+                                    onChange={(e) => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
+                                    className="form-input-sm"
+                                    placeholder="user@example.com"
+                                />
+                            </div>
+                            {editingUserType === 'teacher' && (
+                                <>
+                                    <div className="form-group">
+                                        <label className="form-label-sm">Role</label>
+                                        <select
+                                            value={editFormData.role}
+                                            onChange={(e) => setEditFormData(prev => ({ ...prev, role: e.target.value }))}
+                                            className="form-select"
+                                        >
+                                            <option value="teacher">Teacher</option>
+                                            <option value="admin">Admin</option>
+                                        </select>
+                                    </div>
+                                </>
+                            )}
+                            <div className="flex-gap-3 flex-end" style={{ paddingTop: '16px', borderTop: '1px solid #e2e8f0' }}>
+                                <button type="button" onClick={() => setEditModalOpen(false)} className="btn-outline">Cancel</button>
+                                <button type="submit" className="btn-indigo">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default AdminPanel;
 ```
 
 ## File: chronoquest-api/server.js
